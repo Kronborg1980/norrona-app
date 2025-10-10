@@ -27,14 +27,53 @@
                 <div class="grid-item"><div class="label">Arrival (ETA)</div><div class="value" id="eta-time">--:--</div><div class="sub-value" id="eta-day">--</div></div>
             </div>
             <div class="weather-panel">
-                <img id="weather-icon" src="" alt=""><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div><span id="destination">Loading...</span></div>
+                <img id="weather-icon" src="" alt="Weather condition icon"><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div><span id="destination">Loading...</span></div>
             </div>
         </div>
     </main>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script>const hamburgerMenu=document.getElementById("hamburger-menu"),mobileNav=document.getElementById("mobile-nav"),closeBtn=document.getElementById("close-btn"),mobileNavLinks=mobileNav.querySelectorAll("a");function openMobileMenu(){mobileNav.classList.add("active"),document.body.classList.add("mobile-nav-active")}function closeMobileMenu(){mobileNav.classList.remove("active"),document.body.classList.remove("mobile-nav-active")}hamburgerMenu.addEventListener("click",openMobileMenu),closeBtn.addEventListener("click",closeMobileMenu),mobileNavLinks.forEach(e=>{e.addEventListener("click",closeMobileMenu)});document.addEventListener("DOMContentLoaded",()=>{fetch("data.json?v="+Date.now()).then(e=>e.json()).then(e=>{e.logoUrl&&(document.getElementById("header-logo").src=e.logoUrl)})});const map=L.map("map",{zoomControl:!1,attributionControl:!1,renderer:L.canvas()});L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{attribution:"",subdomains:"abcd"}).addTo(map);const shipIcon=L.divIcon({html:'<svg width="32" height="18" viewBox="0 0 32 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 13 Q6 15 28 15 L30 13 L30 10 L28 8 Q24 7 6 7 L2 9 Z" fill="#00A9E0" stroke="#FFFFFF" stroke-width="1"/><rect x="20" y="2" width="8" height="7" fill="#FFFFFF" stroke="#002B5C" stroke-width="1"/></svg>',className:"",iconSize:[32,18],iconAnchor:[16,9]}),destIcon=L.icon({iconUrl:"https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",iconSize:[12,20],iconAnchor:[6,20]});let shipMarker=null,destMarker=null;const destinationMap={torshavn:{country:"Faroe Islands",lat:62.01,lon:-6.771},hirtshals:{country:"Denmark",lat:57.594,lon:9.965},seydisfjord:{country:"Iceland",lat:65.262,lon:-14.012}};function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-function formatETA(e){if(!e)return{day:"--",time:"--:--"};try{const t=new Date(e);if(isNaN(t.getTime()))return{day:"Invalid Date",time:""};const o=t.toLocaleDateString("en-GB",{weekday:"long",timeZone:"Atlantic/Faroe"}),a=t.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hour12:!1,timeZone:"Atlantic/Faroe"});return{day:o,time:a}}catch(e){return{day:"Error",time:""}}}function normalizeDestinationName(e){return e?e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ð/g,"d").replace(/[^a-z0-9]/g,""):""}async function fetchWeatherData(e,t){try{const o=`https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI&location.latitude=${e}&location.longitude=${t}`,a=await fetch(o);if(!a.ok)return;const n=await a.json();document.getElementById("weather-temp").textContent=`${Math.round(n.temperature.degrees)}°C`,document.getElementById("weather-description").textContent=n.weatherCondition.description?.text||"Clear"}catch(e){console.error("Weather fetch failed",e)}}
-async function updateShipData(){try{const e=await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels"),t=await e.json(),o=t.find(e=>"NORRONA"===e.vesselName?.toUpperCase());if(!o)return;const a=o.position?.speed||0;document.getElementById("speed-knots").textContent=`${a} kn`,document.getElementById("speed-kmh").textContent=`${(1.852*a).toFixed(1)} km/h`;const n=o.destinationFromAIS.split(",")[0].trim(),r=normalizeDestinationName(n),i=destinationMap[r];if(i){document.getElementById("destination").textContent=`${n}, ${i.country}`;const{day:e,time:t}=formatETA(o.etaFromAIS);document.getElementById("eta-day").textContent=e,document.getElementById("eta-time").textContent=t;const a=haversineDistance(o.position.latitude,o.position.longitude,i.lat,i.lon);document.getElementById("distance").textContent=`${Math.round(a)}`;const r=[o.position.latitude,o.position.longitude],s=[i.lat,i.lon];shipMarker?shipMarker.setLatLng(r):shipMarker=L.marker(r,{icon:shipIcon}).addTo(map),destMarker?destMarker.setLatLng(s):destMarker=L.marker(s,{icon:destIcon}).addTo(map),map.fitBounds(L.latLngBounds(r,s),{padding:[50,50]}),fetchWeatherData(i.lat,i.lon)}}catch(e){console.error("Failed to update ship data",e)}}
-function updateTime(){const e=(new Date).toLocaleTimeString("en-GB",{timeZone:"Atlantic/Faroe",hour:"2-digit",minute:"2-digit",hour12:!1});document.getElementById("current-time").textContent=e}updateShipData(),updateTime(),setInterval(updateShipData,12e4),setInterval(updateTime,1e3);</script>
+<script>
+    const hamburgerMenu=document.getElementById("hamburger-menu"),mobileNav=document.getElementById("mobile-nav"),closeBtn=document.getElementById("close-btn");function openMobileMenu(){mobileNav.classList.add("active"),document.body.classList.add("mobile-nav-active")}function closeMobileMenu(){mobileNav.classList.remove("active"),document.body.classList.remove("mobile-nav-active")}hamburgerMenu.addEventListener("click",openMobileMenu),closeBtn.addEventListener("click",closeMobileMenu),document.querySelectorAll(".mobile-nav a").forEach(e=>{e.addEventListener("click",closeMobileMenu)});document.addEventListener("DOMContentLoaded",()=>{fetch("data.json?v="+Date.now()).then(e=>e.json()).then(e=>{e.logoUrl&&(document.getElementById("header-logo").src=e.logoUrl)})});
+    
+    const map=L.map("map",{zoomControl:!1,attributionControl:!1,renderer:L.canvas()});L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{attribution:"",subdomains:"abcd"}).addTo(map);const shipIcon=L.divIcon({html:'<svg width="32" height="18" viewBox="0 0 32 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 13 Q6 15 28 15 L30 13 L30 10 L28 8 Q24 7 6 7 L2 9 Z" fill="#00A9E0" stroke="#FFFFFF" stroke-width="1"/><rect x="20" y="2" width="8" height="7" fill="#FFFFFF" stroke="#002B5C" stroke-width="1"/></svg>',className:"",iconSize:[32,18],iconAnchor:[16,9]}),destIcon=L.icon({iconUrl:"https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",iconSize:[12,20],iconAnchor:[6,20]});let shipMarker=null,destMarker=null;const destinationMap={torshavn:{country:"Faroe Islands",lat:62.01,lon:-6.771},hirtshals:{country:"Denmark",lat:57.594,lon:9.965},seydisfjord:{country:"Iceland",lat:65.262,lon:-14.012}};
+    
+    // THIS MAP HELPS TRANSLATE WEATHER CONDITIONS TO AN ICON
+    const conditionMap = { 'CLEAR': '01d', 'CLEAR_DAY': '01d', 'CLEAR_NIGHT': '01n', 'CLOUDY': '04d', 'CLOUDY_DAY': '04d', 'CLOUDY_NIGHT': '04n', 'PARTLY_CLOUDY': '03d', 'PARTLY_CLOUDY_DAY': '03d', 'PARTLY_CLOUDY_NIGHT': '03n', 'MOSTLY_CLOUDY': '04d', 'FOG': '50d', 'HAZE': '50d', 'MIST': '50d', 'RAIN': '10d', 'HEAVY_RAIN': '10d', 'SHOWERS': '09d', 'RAIN_SHOWERS': '09d', 'THUNDERSTORM': '11d', 'SNOW': '13d', 'SNOW_SHOWERS': '13d', 'SLEET': '13d', 'SUNNY': '01d', 'MOSTLY_SUNNY': '02d', 'PARTLY_SUNNY': '03d', 'UNKNOWN': '50d' };
+
+    function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
+    function formatETA(e){if(!e)return{day:"--",time:"--:--"};try{const t=new Date(e);if(isNaN(t.getTime()))return{day:"Invalid Date",time:""};const o=t.toLocaleDateString("en-GB",{weekday:"long",timeZone:"Atlantic/Faroe"}),a=t.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hour12:!1,timeZone:"Atlantic/Faroe"});return{day:o,time:a}}catch(e){return{day:"Error",time:""}}}
+    function normalizeDestinationName(e){return e?e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/ð/g,"d").replace(/[^a-z0-9]/g,""):""}
+    
+    async function fetchWeatherData(lat, lon) {
+        try {
+            const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; // This is a demo key, you may need to replace it eventually.
+            const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Weather API fetch failed');
+            
+            const data = await response.json();
+            
+            // Update text elements
+            document.getElementById("weather-temp").textContent = `${Math.round(data.temperature.degrees)}°C`;
+            document.getElementById("weather-description").textContent = data.weatherCondition.description?.text || "Clear";
+            
+            // --- THIS IS THE FIX ---
+            // Get the condition type from the API response
+            const conditionType = data.weatherCondition.type?.toUpperCase() || 'UNKNOWN';
+            // Find the matching icon code in our map
+            const iconCode = conditionMap[conditionType] || '50d'; // Default to a 'mist' icon if unknown
+            // Set the image source
+            document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+            // --- END OF FIX ---
+
+        } catch (error) {
+            console.error("Weather fetch failed", error);
+            document.getElementById("weather-description").textContent = 'N/A';
+        }
+    }
+
+    async function updateShipData(){try{const e=await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels"),t=await e.json(),o=t.find(e=>"NORRONA"===e.vesselName?.toUpperCase());if(!o)return;const a=o.position?.speed||0;document.getElementById("speed-knots").textContent=`${a} kn`,document.getElementById("speed-kmh").textContent=`${(1.852*a).toFixed(1)} km/h`;const n=o.destinationFromAIS.split(",")[0].trim(),r=normalizeDestinationName(n),i=destinationMap[r];if(i){document.getElementById("destination").textContent=`${n}, ${i.country}`;const{day:e,time:t}=formatETA(o.etaFromAIS);document.getElementById("eta-day").textContent=e,document.getElementById("eta-time").textContent=t;const a=haversineDistance(o.position.latitude,o.position.longitude,i.lat,i.lon);document.getElementById("distance").textContent=`${Math.round(a)}`;const r=[o.position.latitude,o.position.longitude],s=[i.lat,i.lon];shipMarker?shipMarker.setLatLng(r):shipMarker=L.marker(r,{icon:shipIcon}).addTo(map),destMarker?destMarker.setLatLng(s):destMarker=L.marker(s,{icon:destIcon}).addTo(map),map.fitBounds(L.latLngBounds(r,s),{padding:[50,50]}),fetchWeatherData(i.lat,i.lon)}}catch(e){console.error("Failed to update ship data",e)}}
+    function updateTime(){const e=(new Date).toLocaleTimeString("en-GB",{timeZone:"Atlantic/Faroe",hour:"2-digit",minute:"2-digit",hour12:!1});document.getElementById("current-time").textContent=e}updateShipData(),updateTime(),setInterval(updateShipData,12e4),setInterval(updateTime,1e3);
+</script>
 </body>
 </html>
