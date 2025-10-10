@@ -47,7 +47,7 @@
                 const page = appData.categories.find(cat => cat.id === pageId); if (!page) { contentContainer.innerHTML = '<p>Page not found.</p>'; return; }
                 document.querySelectorAll('.nav-item').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
                 if (page.type === 'home') {
-                    contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero" style="background-image: url(${page.items[0].images[0]})"><h1>Welcome Aboard</h1><p>${page.items[0].description}</p></div><div style="padding:20px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Destination</div><div class="value" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots-home">--</div><div class="sub-value">Knots</div></div></div></div></div>`;
+                    contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero" style="background-image: url(${page.items[0].images[0]})"><h1>Welcome Aboard</h1><p>${page.items[0].description}</p></div><div style="padding:20px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Destination</div><div class="value" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots-home">--</div><div class="sub-value" id="speed-kmh-home">-- km/h</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
                     contentContainer.innerHTML = `<div class="page active voyage-page"><div id="map"></div><div class="voyage-content"><div class="voyage-grid"><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">-- km/h</div></div><div class="grid-item"><div class="label">Onboard Time</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Timezone</div></div><div class="grid-item"><div class="label">Distance to Go</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">Kilometers</div></div><div class="grid-item"><div class="label" id="destination-label">Next Destination & ETA</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div></div><div class="weather-panel"><img id="weather-icon" src="" alt=""><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div></div></div></div></div>`;
@@ -87,7 +87,6 @@
                     }
                     const data = await response.json();
                     console.log("Weather API response:", JSON.stringify(data, null, 2));
-                    // Update temperature and description with fallback for missing properties
                     const tempEl = document.getElementById("weather-temp");
                     if (tempEl) {
                         tempEl.textContent = data.temperature?.degrees != null 
@@ -102,7 +101,6 @@
                     } else {
                         console.warn("Element #weather-description not found");
                     }
-                    // Update icon if element exists
                     const weatherIconEl = document.getElementById("weather-icon");
                     if (weatherIconEl) {
                         const conditionType = data.weatherCondition?.type?.toUpperCase() || data.weatherCondition?.condition?.toUpperCase() || 'UNKNOWN';
@@ -137,6 +135,7 @@
                         const homeDest = document.getElementById('destination-home');
                         const homeEta = document.getElementById('eta-home');
                         document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`;
+                        document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                         if (hasArrived) {
                             homeDestLabel.textContent = "Current Port";
                             homeDest.textContent = currentDestInfo.name;
