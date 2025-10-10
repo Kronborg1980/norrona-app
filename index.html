@@ -25,123 +25,31 @@
             const contentContainer = document.getElementById("content-container");
             let appData = {};
 
-            function createSlideshow(images) {
-                if (!images || images.length === 0) return '<div style="height:220px; background:#eee;"></div>';
-                if (images.length === 1) return `<div class="slide active"><img src="${images[0]}" loading="lazy"></div>`;
-
-                const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}" data-index="${i}"><img src="${img}"></div>`).join('');
-                const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join('');
-
-                return `<div class="slideshow" data-total="${images.length}">
-                            ${slides}
-                            <div class="slideshow-nav">
-                                <button class="prev"><span class="material-icons">arrow_back_ios</span></button>
-                                <button class="next"><span class="material-icons">arrow_forward_ios</span></button>
-                            </div>
-                            <div class="slideshow-dots">${dots}</div>
-                        </div>`;
-            }
-
-            function createMenu(menuItems) {
-                if (!menuItems || menuItems.length === 0) return '';
-                return `<div class="menu">
-                            <h4>Menu</h4>
-                            ${menuItems.map(item => `
-                                <div class="menu-item">
-                                    <div class="menu-item-header">
-                                        <span>${item.name}</span>
-                                        <span>${item.price}</span>
-                                    </div>
-                                    ${item.description ? `<div class="menu-item-desc">${item.description}</div>` : ''}
-                                </div>`).join('')}
-                        </div>`;
-            }
-            
-            function initializeSlideshows() {
-                document.querySelectorAll('.slideshow').forEach(slideshow => {
-                    let currentIndex = 0;
-                    const slides = slideshow.querySelectorAll('.slide');
-                    const dots = slideshow.querySelectorAll('.dot');
-                    const total = parseInt(slideshow.dataset.total, 10);
-
-                    function showSlide(index) {
-                        slides.forEach(s => s.classList.remove('active'));
-                        dots.forEach(d => d.classList.remove('active'));
-                        slides[index].classList.add('active');
-                        dots[index].classList.add('active');
-                        currentIndex = index;
-                    }
-
-                    slideshow.querySelector('.next').addEventListener('click', () => {
-                        showSlide((currentIndex + 1) % total);
-                    });
-                    slideshow.querySelector('.prev').addEventListener('click', () => {
-                        showSlide((currentIndex - 1 + total) % total);
-                    });
-                });
-            }
+            function createSlideshow(images) { if (!images || images.length === 0) return '<div style="height:220px; background:#eee;"></div>'; if (images.length === 1) return `<div class="slide active"><img src="${images[0]}" loading="lazy"></div>`; const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}" data-index="${i}"><img src="${img}"></div>`).join(''); const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`).join(''); return `<div class="slideshow" data-total="${images.length}">${slides}<div class="slideshow-nav"><button class="prev"><span class="material-icons">arrow_back_ios</span></button><button class="next"><span class="material-icons">arrow_forward_ios</span></button></div><div class="slideshow-dots">${dots}</div></div>`; }
+            function createMenu(menuItems) { if (!menuItems || menuItems.length === 0) return ''; return `<div class="menu"><h4>Menu</h4>${menuItems.map(item => `<div class="menu-item"><div class="menu-item-header"><span>${item.name}</span><span>${item.price}</span></div>${item.description ? `<div class="menu-item-desc">${item.description}</div>` : ''}</div>`).join('')}</div>`; }
+            function initializeSlideshows() { document.querySelectorAll('.slideshow').forEach(slideshow => { let currentIndex = 0; const slides = slideshow.querySelectorAll('.slide'); const dots = slideshow.querySelectorAll('.dot'); const total = parseInt(slideshow.dataset.total, 10); function showSlide(index) { slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active')); slides[index].classList.add('active'); dots[index].classList.add('active'); currentIndex = index; } slideshow.querySelector('.next').addEventListener('click', () => { showSlide((currentIndex + 1) % total); }); slideshow.querySelector('.prev').addEventListener('click', () => { showSlide((currentIndex - 1 + total) % total); }); }); }
 
             function renderPage(categoryId) {
-                const category = appData.categories.find(cat => cat.id === categoryId);
-                if (!category) { contentContainer.innerHTML = '<p class="text-center text-red-500">Content not found.</p>'; return; }
-
+                const category = appData.categories.find(cat => cat.id === categoryId); if (!category) { contentContainer.innerHTML = '<p>Content not found.</p>'; return; }
                 document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
                 document.querySelectorAll(`.nav-link[data-id="${categoryId}"]`).forEach(link => link.classList.add('active'));
-
-                contentContainer.innerHTML = `
-                    <div class="section-header"><h2>${category.title}</h2></div>
-                    <div class="content-grid">${category.items.map(item => `
-                        <div class="item-card">
-                            ${createSlideshow(item.images)}
-                            <div class="item-info">
-                                <h3>${item.name}</h3>
-                                ${item.description ? `<p>${item.description}</p>` : ''}
-                                <div class="fields">
-                                    ${item.fields.map(field => `<div class="field"><strong>${field.label}:</strong><span>${field.value}</span></div>`).join('')}
-                                </div>
-                                ${createMenu(item.menu)}
-                            </div>
-                        </div>`).join('')}
-                    </div>`;
-                
-                initializeSlideshows();
-                window.location.hash = categoryId;
+                contentContainer.innerHTML = `<div class="section-header"><h2>${category.title}</h2></div><div class="content-grid">${category.items.map(item => `<div class="item-card">${createSlideshow(item.images)}<div class="item-info"><h3>${item.name}</h3>${item.description ? `<p>${item.description}</p>` : ''}<div class="fields">${item.fields.map(field => `<div class="field"><strong>${field.label}:</strong><span>${field.value}</span></div>`).join('')}</div>${createMenu(item.menu)}</div></div>`).join('')}</div>`;
+                initializeSlideshows(); window.location.hash = categoryId;
             }
 
             async function init() {
                 try {
-                    const response = await fetch("data.json?v=" + Date.now());
-                    if (!response.ok) throw new Error("Could not load data.");
-                    appData = await response.json();
-
+                    const response = await fetch("data.json?v=" + Date.now()); if (!response.ok) throw new Error("Could not load data."); appData = await response.json();
                     document.getElementById("header-logo").src = appData.settings.logoUrl;
-                    
-                    const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-link" data-id="${cat.id}">${cat.title}</a>`).join('');
-                    document.getElementById("nav-links").innerHTML = navHtml;
-
-                    const mobileNavHtml = appData.categories.map(cat => `<li><a href="#${cat.id}" class="nav-link" data-id="${cat.id}">${cat.title}</a></li>`).join('');
-                    document.getElementById("mobile-nav-links").innerHTML = mobileNavHtml;
-
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        link.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.target.dataset.id); closeMobileMenu(); });
-                    });
-
+                    const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-link" data-id="${cat.id}">${cat.title}</a>`).join(''); document.getElementById("nav-links").innerHTML = navHtml;
+                    const mobileNavHtml = appData.categories.map(cat => `<li><a href="#${cat.id}" class="nav-link" data-id="${cat.id}">${cat.title}</a></li>`).join(''); document.getElementById("mobile-nav-links").innerHTML = mobileNavHtml;
+                    document.querySelectorAll('.nav-link').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.target.dataset.id); closeMobileMenu(); }); });
                     const initialCategoryId = window.location.hash.substring(1) || appData.categories[0]?.id;
-                    if (initialCategoryId) renderPage(initialCategoryId);
-                    else contentContainer.innerHTML = '<p class="text-center">Welcome! Select a category to begin.</p>';
-
-                } catch (error) {
-                    console.error(error);
-                    contentContainer.innerHTML = `<p class="text-center text-red-500">${error.message}</p>`;
-                }
+                    if (initialCategoryId) renderPage(initialCategoryId); else contentContainer.innerHTML = '<p>Welcome!</p>';
+                } catch (error) { console.error(error); contentContainer.innerHTML = `<p>${error.message}</p>`; }
             }
-            
-            const mobileNav = document.getElementById("mobile-nav");
-            function openMobileMenu() { mobileNav.classList.add("active"); document.body.classList.add("mobile-nav-active"); }
-            function closeMobileMenu() { mobileNav.classList.remove("active"); document.body.classList.remove("mobile-nav-active"); }
-            document.getElementById("hamburger-menu").addEventListener("click", openMobileMenu);
-            document.getElementById("close-btn").addEventListener("click", closeMobileMenu);
-            
+            const mobileNav = document.getElementById("mobile-nav"); function openMobileMenu() { mobileNav.classList.add("active"); document.body.classList.add("mobile-nav-active"); } function closeMobileMenu() { mobileNav.classList.remove("active"); document.body.classList.remove("mobile-nav-active"); }
+            document.getElementById("hamburger-menu").addEventListener("click", openMobileMenu); document.getElementById("close-btn").addEventListener("click", closeMobileMenu);
             init();
         });
     </script>
