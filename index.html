@@ -8,7 +8,7 @@
 <body>
     <header class="main-header">
         <nav class="container navbar">
-            <a href="index.html" class="logo"><img src="https://www.smyrilline.com/media/cfbbld2d/smyril-line-logo-white.svg" alt="Smyril Line Logo"></a>
+            <a href="index.html" class="logo"><img id="header-logo" src="https://www.smyrilline.com/media/cfbbld2d/smyril-line-logo-white.svg" alt="Smyril Line Logo"></a>
             <ul class="nav-links"><li><a href="index.html" class="nav-link active">Home</a></li><li><a href="outlets.html" class="nav-link">Outlets</a></li><li><a href="entertainment.html" class="nav-link">Entertainment</a></li><li><a href="voyage.html" class="nav-link">Voyage Info</a></li></ul>
             <button class="hamburger-menu" id="hamburger-menu"><span class="material-icons">menu</span></button>
         </nav>
@@ -18,6 +18,6 @@
         <ul><li><a href="index.html" class="nav-link active">Home</a></li><li><a href="outlets.html" class="nav-link">Outlets</a></li><li><a href="entertainment.html" class="nav-link">Entertainment</a></li><li><a href="voyage.html" class="nav-link">Voyage Info</a></li></ul>
     </div>
     <main><section class="hero"><h1>Welcome Aboard Norröna</h1><p>Your guide to dining, entertainment, and our journey ahead.</p></section></main>
-    <script>const hamburgerMenu=document.getElementById("hamburger-menu"),mobileNav=document.getElementById("mobile-nav"),closeBtn=document.getElementById("close-btn"),mobileNavLinks=mobileNav.querySelectorAll("a");function openMobileMenu(){mobileNav.classList.add("active"),document.body.classList.add("mobile-nav-active")}function closeMobileMenu(){mobileNav.classList.remove("active"),document.body.classList.remove("mobile-nav-active")}hamburgerMenu.addEventListener("click",openMobileMenu),closeBtn.addEventListener("click",closeMobileMenu),mobileNavLinks.forEach(e=>{e.addEventListener("click",closeMobileMenu)});</script>
+    <script>const hamburgerMenu=document.getElementById("hamburger-menu"),mobileNav=document.getElementById("mobile-nav"),closeBtn=document.getElementById("close-btn"),mobileNavLinks=mobileNav.querySelectorAll("a");function openMobileMenu(){mobileNav.classList.add("active"),document.body.classList.add("mobile-nav-active")}function closeMobileMenu(){mobileNav.classList.remove("active"),document.body.classList.remove("mobile-nav-active")}hamburgerMenu.addEventListener("click",openMobileMenu),closeBtn.addEventListener("click",closeMobileMenu),mobileNavLinks.forEach(e=>{e.addEventListener("click",closeMobileMenu)});document.addEventListener("DOMContentLoaded",()=>{fetch("data.json?v="+Date.now()).then(e=>e.json()).then(e=>{e.logoUrl&&(document.getElementById("header-logo").src=e.logoUrl)})});</script>
 </body>
 </html>

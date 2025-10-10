@@ -1,91 +1,25 @@
 {
+  "logoUrl": "https://www.smyrilline.com/media/cfbbld2d/smyril-line-logo-white.svg",
   "outlets": [
     {
-      "id": "skansagardur",
-      "name": "Skansagarður Buffet",
-      "deck": 6,
-      "description": "Our all-inclusive buffet with freshly prepared dishes from quality ingredients, including gluten-free and vegetarian options.",
-      "image": "https://images.unsplash.com/photo-1555243896-c709bfa0b564?q=80&w=800&auto=format&fit=crop",
-      "hours": [
-        { "day": "Breakfast", "time": "07:00 - 10:00" },
-        { "day": "Dinner", "time": "18:00 - 21:00" }
-      ]
+      "id": "skansagardur", "name": "Skansagarður Buffet", "deck": 6, "description": "Our all-inclusive buffet with freshly prepared dishes from quality ingredients.", "image": "https://images.unsplash.com/photo-1555243896-c709bfa0b564?q=80&w=800&auto=format&fit=crop",
+      "hours": [{ "day": "Breakfast", "time": "07:00 - 10:00" }, { "day": "Dinner", "time": "18:00 - 21:00" }]
     },
     {
-      "id": "munkastova",
-      "name": "Munkastova",
-      "deck": 6,
-      "description": "An award-winning á la carte restaurant offering a fine selection of Nordic cuisine in a relaxed, intimate atmosphere.",
-      "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop",
-      "hours": [
-        { "day": "Dinner", "time": "18:00 - 21:00" }
-      ]
+      "id": "munkastova", "name": "Munkastova", "deck": 6, "description": "An award-winning á la carte restaurant offering a fine selection of Nordic cuisine.", "image": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop",
+      "hours": [{ "day": "Dinner", "time": "18:00 - 21:00" }]
     },
     {
-      "id": "noatun",
-      "name": "Nóatún Cafeteria",
-      "deck": 5,
-      "description": "A place for all ages to gather and enjoy a good cup of coffee, a light bite, or a delicious pizza.",
-      "image": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=800&auto=format&fit=crop",
+      "id": "sjobudin", "name": "Sjóbúðin Tax-Free", "deck": 5, "description": "Great deals on perfume, cosmetics, sweets, and spirits.", "image": "https://images.unsplash.com/photo-1570857502809-0818b873383f?q=80&w=800&auto=format&fit=crop",
       "hours": [{ "day": "Schedule", "time": "Varies by sailing" }]
-    },
-    {
-      "id": "laterna",
-      "name": "Laterna Magica",
-      "deck": 10,
-      "description": "Thirty metres above the sea, offering spectacular Atlantic views, a wide selection of drinks, and light meals.",
-      "image": "https://images.unsplash.com/photo-1618335829737-2228915674e0?q=80&w=800&auto=format&fit=crop",
-      "hours": [{ "day": "Service", "time": "Morning & Afternoon" }]
-    },
-    {
-      "id": "sjobudin",
-      "name": "Sjóbúðin Tax-Free",
-      "deck": 5,
-      "description": "Great deals on perfume, cosmetics, sweets, and spirits. Find the perfect gift or treat for yourself.",
-      "image": "https://images.unsplash.com/photo-1570857502809-0818b873383f?q=80&w=800&auto=format&fit=crop",
-      "hours": [{ "day": "Schedule", "time": "Varies by sailing" }]
-    },
-    {
-      "id": "reception",
-      "name": "Reception",
-      "deck": 5,
-      "description": "We are here to assist with cabin keys, information, currency exchange, and any questions you may have.",
-      "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=800&auto=format&fit=crop",
-      "hours": [{ "day": "All Day", "time": "Open 24 hours" }]
     }
   ],
   "entertainment": [
     {
-      "id": "undirhusid",
-      "name": "Undirhúsið Pub",
-      "description": "Relax with a good book or enjoy cakes, beer, and wine. In the evenings, we have bingo and live Faroese music.",
-      "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop",
-      "time": "21:00 - Late",
-      "location": "Deck 5"
+      "id": "undirhusid", "name": "Undirhúsið Pub", "description": "Relax with a good book or enjoy cakes, beer, and wine. Live music in the evenings.", "image": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop", "time": "21:00 - Late", "location": "Deck 5"
     },
     {
-      "id": "pool",
-      "name": "Pool, Fitness & Sauna",
-      "description": "Stay active in our fitness room, take a refreshing dip in the swimming pool, or unwind in the sauna.",
-      "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=800&auto=format&fit=crop",
-      "time": "07:00-10:00 & 15:00-19:00",
-      "location": "Deck 2"
-    },
-    {
-      "id": "hottubs",
-      "name": "Outdoor Hot Tubs",
-      "description": "Relax in one of our three large outdoor hot tubs and enjoy the fresh sea air and stunning ocean views.",
-      "image": "https://images.unsplash.com/photo-1583259640236-2583c6753c15?q=80&w=800&auto=format&fit=crop",
-      "time": "Book at reception",
-      "location": "Deck 8"
-    },
-    {
-      "id": "cinema",
-      "name": "Movie Screening",
-      "description": "Catch a blockbuster movie in our comfortable cinema, located next to the reception.",
-      "image": "https://images.unsplash.com/photo-1605792657403-bed01e479b18?q=80&w=800&auto=format&fit=crop",
-      "time": "18:00 & 21:00",
-      "location": "Cinema, Deck 5"
+      "id": "pool", "name": "Pool, Fitness & Sauna", "description": "Stay active in our fitness room, take a refreshing dip, or unwind in the sauna.", "image": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=800&auto=format&fit=crop", "time": "07:00-10:00 & 15:00-19:00", "location": "Deck 2"
     }
   ]
 }

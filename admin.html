@@ -1,188 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Norröna Backoffice</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
-        .input-field { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; transition: border-color 0.2s, box-shadow 0.2s; }
-        .input-field:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4); }
-        .label { display: block; font-weight: 600; color: #374151; margin-bottom: 0.5rem; }
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
-        .hidden { display: none; }
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,.8); z-index: 2000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-    </style>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Norröna Backoffice</title>
+    <script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>body{font-family:'Poppins',sans-serif;background-color:#f3f4f6}.input-field{width:100%;padding:.75rem;border:1px solid #d1d5db;border-radius:.5rem;transition:border-color .2s,box-shadow .2s}.input-field:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.4)}.label{display:block;font-weight:600;color:#374151;margin-bottom:.5rem}.accordion-content{max-height:0;overflow:hidden;transition:max-height .5s ease-out}</style>
 </head>
 <body>
-
-    <div id="login-screen">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Admin Login</h2>
-            <div class="space-y-4">
-                <div><label for="password" class="label">Password</label><input type="password" id="password" class="input-field" autofocus></div>
-                <button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">Login</button>
-                <p id="login-error" class="text-red-500 text-sm text-center hidden">Incorrect Password.</p>
-            </div>
+    <header class="bg-gray-800 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"><h1 class="text-2xl font-bold">Norröna Backoffice (No PAT Required)</h1></div>
+    </header>
+    <main id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
+            <p class="font-bold">New Workflow</p>
+            <p>1. Make changes below. <br>2. Click the green button to download the `data.json` file. <br>3. Upload the downloaded file to your GitHub repository.</p>
         </div>
+        <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Outlets</h2><div id="outlets-container" class="space-y-4"><p class="text-gray-500">Loading data...</p></div></section>
+        <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Entertainment</h2><div id="entertainment-container" class="space-y-4"></div><button id="add-entertainment" class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition"><span class="material-icons">add</span> Add New Entertainment Item</button></section>
+    </main>
+    <div class="sticky bottom-0 bg-white/80 backdrop-blur-sm p-4 border-t shadow-inner">
+        <div class="max-w-7xl mx-auto"><button id="generate-json" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg text-lg flex items-center justify-center gap-3 transition transform hover:scale-105"><span class="material-icons">download</span>Generate & Download data.json</button></div>
     </div>
-
-    <div id="admin-panel" class="hidden">
-        <header class="bg-gray-800 text-white shadow-lg">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                <h1 class="text-2xl font-bold">Norröna Backoffice (Simple Version)</h1>
-            </div>
-        </header>
-
-        <main id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
-                <p class="font-bold">Workflow</p>
-                <p>1. Make changes below. <br>2. Click the green button to download the `data.json` file. <br>3. Upload this downloaded file to your GitHub repository.</p>
-            </div>
-            <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Outlets</h2><div id="outlets-container" class="space-y-4"><p class="text-gray-500">Loading data...</p></div></section>
-            <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Entertainment</h2><div id="entertainment-container" class="space-y-4"></div><button id="add-entertainment" class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition"><span class="material-icons">add</span> Add New Entertainment Item</button></section>
-        </main>
-
-        <div class="sticky bottom-0 bg-white/80 backdrop-blur-sm p-4 border-t shadow-inner">
-            <div class="max-w-7xl mx-auto">
-                <button id="generate-json" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg text-lg flex items-center justify-center gap-3 transition transform hover:scale-105">
-                    <span class="material-icons">download</span> Generate & Download data.json
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // --- PASSWORD CONFIGURATION ---
-        // To change the password, simply change the text between the quotes below.
-        const CORRECT_PASSWORD = 'kronborg';
-        // ------------------------------
-
-        let appData = { outlets: [], entertainment: [] };
-        const loginScreen = document.getElementById("login-screen");
-        const adminPanel = document.getElementById("admin-panel");
-        const loginButton = document.getElementById("login-button");
-        const passwordInput = document.getElementById("password");
-        const loginError = document.getElementById("login-error");
-        
-        const outletsContainer = document.getElementById("outlets-container");
-        const entertainmentContainer = document.getElementById("entertainment-container");
-
-        function handleLogin() {
-            if (passwordInput.value === CORRECT_PASSWORD) {
-                loginScreen.classList.add('hidden');
-                adminPanel.classList.remove('hidden');
-                loadInitialData();
-            } else {
-                loginError.classList.remove('hidden');
-                passwordInput.value = '';
-            }
-        }
-
-        loginButton.addEventListener('click', handleLogin);
-        passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleLogin();
-            }
-        });
-
-        function render() {
-            outletsContainer.innerHTML = appData.outlets.map(outlet => `
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <button class="accordion-trigger w-full p-4 bg-gray-50 hover:bg-gray-100 flex justify-between items-center" data-target="content-${outlet.id}">
-                        <h3 class="text-xl font-bold text-gray-800">${outlet.name}</h3>
-                        <span class="material-icons text-gray-500">expand_more</span>
-                    </button>
-                    <div id="content-${outlet.id}" class="accordion-content">
-                        <div class="p-6 space-y-6">
-                            <div><label class="label">Name</label><input type="text" class="input-field" value="${outlet.name}" data-id="${outlet.id}" data-key="name"></div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div><label class="label">Deck</label><input type="number" class="input-field" value="${outlet.deck}" data-id="${outlet.id}" data-key="deck"></div>
-                                <div><label class="label">Image URL</label><input type="text" class="input-field" value="${outlet.image}" data-id="${outlet.id}" data-key="image"></div>
-                            </div>
-                            <div><label class="label">Description</label><textarea class="input-field h-24" data-id="${outlet.id}" data-key="description">${outlet.description}</textarea></div>
-                            <div>
-                                <h4 class="label">Opening Hours</h4>
-                                <div class="space-y-2" data-id="${outlet.id}" data-hours-container>${outlet.hours.map((hour, index) => `<div class="flex items-center gap-2"><input type="text" class="input-field" placeholder="Day / Period" value="${hour.day}" data-id="${outlet.id}" data-key="day" data-index="${index}"><input type="text" class="input-field" placeholder="Time" value="${hour.time}" data-id="${outlet.id}" data-key="time" data-index="${index}"><button class="remove-hour text-red-500 hover:text-red-700 p-2" data-id="${outlet.id}" data-index="${index}"><span class="material-icons">remove_circle</span></button></div>`).join('')}</div>
-                                <button class="add-hour mt-2 text-sm font-semibold text-blue-600 hover:text-blue-800" data-id="${outlet.id}">+ Add Hour</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`).join('');
-            entertainmentContainer.innerHTML = appData.entertainment.map((item, index) => `
-                <div class="bg-white rounded-lg shadow-md p-6 relative">
-                    <button class="remove-entertainment absolute top-4 right-4 text-red-500 hover:text-red-700" data-index="${index}"><span class="material-icons">delete</span></button>
-                    <div class="space-y-6">
-                        <div><label class="label">Name</label><input type="text" class="input-field" value="${item.name}" data-collection="entertainment" data-index="${index}" data-key="name"></div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label class="label">Time / Schedule</label><input type="text" class="input-field" value="${item.time}" data-collection="entertainment" data-index="${index}" data-key="time"></div>
-                            <div><label class="label">Location</label><input type="text" class="input-field" value="${item.location}" data-collection="entertainment" data-index="${index}" data-key="location"></div>
-                        </div>
-                        <div><label class="label">Image URL</label><input type="text" class="input-field" value="${item.image}" data-collection="entertainment" data-index="${index}" data-key="image"></div>
-                        <div><label class="label">Description</label><textarea class="input-field h-24" data-collection="entertainment" data-index="${index}" data-key="description">${item.description}</textarea></div>
-                    </div>
-                </div>`).join('');
-        }
-        
-        function loadInitialData() {
-            fetch("data.json?v=" + Date.now())
-                .then(response => {
-                    if (!response.ok) { throw new Error("Could not find data.json. Make sure it's uploaded to your repository."); }
-                    return response.json();
-                })
-                .then(data => {
-                    appData = data;
-                    render();
-                })
-                .catch(error => {
-                    console.error(error);
-                    outletsContainer.innerHTML = `<p class="text-red-500 font-bold">${error.message}</p>`;
-                    render();
-                });
-        }
-
-        const appContainer = document.getElementById('app');
-        appContainer.addEventListener('input', e => {
-            const target = e.target;
-            if (target.matches('input, textarea')) {
-                const id = target.dataset.id; const collection = target.dataset.collection;
-                const key = target.dataset.key; const index = parseInt(target.dataset.index, 10);
-                if (collection === 'entertainment') { appData.entertainment[index][key] = target.value; } 
-                else {
-                    const outlet = appData.outlets.find(o => o.id === id); if (!outlet) return;
-                    if (key === 'day' || key === 'time') { outlet.hours[index][key] = target.value; } 
-                    else { outlet[key] = target.value; }
-                }
-            }
-        });
-        appContainer.addEventListener('click', e => {
-            const target = e.target.closest('button'); if (!target) return;
-            if (target.matches('.accordion-trigger')) {
-                const content = document.getElementById(target.dataset.target); const icon = target.querySelector('.material-icons');
-                if (content.style.maxHeight) { content.style.maxHeight = null; icon.style.transform = 'rotate(0deg)'; } 
-                else { content.style.maxHeight = content.scrollHeight + 'px'; icon.style.transform = 'rotate(180deg)'; }
-            }
-            if (target.matches('.add-hour')) { appData.outlets.find(o => o.id === target.dataset.id).hours.push({ day: '', time: '' }); render(); }
-            if (target.matches('.remove-hour')) { appData.outlets.find(o => o.id === target.dataset.id).hours.splice(target.dataset.index, 1); render(); }
-            if (target.matches('.remove-entertainment')) { appData.entertainment.splice(target.dataset.index, 1); render(); }
-        });
-        document.getElementById('add-entertainment').addEventListener('click', () => {
-             appData.entertainment.push({ id: `new-${Date.now()}`, name: 'New Item', description: '', image: 'https://placehold.co/800x400/002B5C/FFFFFF?text=New+Item', time: '', location: '' });
-             render();
-        });
-        document.getElementById('generate-json').addEventListener('click', () => {
-            const jsonString = JSON.stringify(appData, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'data.json';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-    });
-    </script>
+    <script>document.addEventListener("DOMContentLoaded",()=>{let e={outlets:[],entertainment:[]};const t=document.getElementById("outlets-container"),n=document.getElementById("entertainment-container");function a(){t.innerHTML=e.outlets.map(e=>`<div class="bg-white rounded-lg shadow-md overflow-hidden"><button class="accordion-trigger w-full p-4 bg-gray-50 hover:bg-gray-100 flex justify-between items-center" data-target="content-${e.id}"><h3 class="text-xl font-bold text-gray-800">${e.name}</h3><span class="material-icons text-gray-500">expand_more</span></button><div id="content-${e.id}" class="accordion-content"><div class="p-6 space-y-6"><div><label class="label">Name</label><input type="text" class="input-field" value="${e.name}" data-id="${e.id}" data-key="name"></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="label">Deck</label><input type="number" class="input-field" value="${e.deck}" data-id="${e.id}" data-key="deck"></div><div><label class="label">Image URL</label><input type="text" class="input-field" value="${e.image}" data-id="${e.id}" data-key="image"></div></div><div><label class="label">Description</label><textarea class="input-field h-24" data-id="${e.id}" data-key="description">${e.description}</textarea></div><div><h4 class="label">Opening Hours</h4><div class="space-y-2" data-id="${e.id}" data-hours-container>${e.hours.map((t,n)=>`<div class="flex items-center gap-2"><input type="text" class="input-field" placeholder="Day / Period" value="${t.day}" data-id="${e.id}" data-key="day" data-index="${n}"><input type="text" class="input-field" placeholder="Time" value="${t.time}" data-id="${e.id}" data-key="time" data-index="${n}"><button class="remove-hour text-red-500 hover:text-red-700 p-2" data-id="${e.id}" data-index="${n}"><span class="material-icons">remove_circle</span></button></div>`).join("")}</div><button class="add-hour mt-2 text-sm font-semibold text-blue-600 hover:text-blue-800" data-id="${e.id}">+ Add Hour</button></div></div></div></div>`).join(""),n.innerHTML=e.entertainment.map((t,n)=>`<div class="bg-white rounded-lg shadow-md p-6 relative"><button class="remove-entertainment absolute top-4 right-4 text-red-500 hover:text-red-700" data-index="${n}"><span class="material-icons">delete</span></button><div class="space-y-6"><div><label class="label">Name</label><input type="text" class="input-field" value="${t.name}" data-collection="entertainment" data-index="${n}" data-key="name"></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="label">Time / Schedule</label><input type="text" class="input-field" value="${t.time}" data-collection="entertainment" data-index="${n}" data-key="time"></div><div><label class="label">Location</label><input type="text" class="input-field" value="${t.location}" data-collection="entertainment" data-index="${n}" data-key="location"></div></div><div><label class="label">Image URL</label><input type="text" class="input-field" value="${t.image}" data-collection="entertainment" data-index="${n}" data-key="image"></div><div><label class="label">Description</label><textarea class="input-field h-24" data-collection="entertainment" data-index="${n}" data-key="description">${t.description}</textarea></div></div></div>`).join("")}fetch("data.json?v="+Date.now()).then(t=>t.json()).then(t=>{e=t,a()}).catch(n=>{console.error("Could not load data.json. Using blank template.",n),a()});const i=document.getElementById("app");i.addEventListener("input",t=>{const n=t.target;if(n.matches("input, textarea")){const t=n.dataset.id,i=n.dataset.collection,o=n.dataset.key,l=parseInt(n.dataset.index,10);if("entertainment"===i)e.entertainment[l][o]=n.value;else{const i=e.outlets.find(e=>e.id===t);i&&("day"===o||"time"===o?i.hours[l][o]=n.value:i[o]=n.value)}}}),i.addEventListener("click",t=>{const n=t.target.closest("button");if(!n)return;if(n.matches(".accordion-trigger")){const e=document.getElementById(n.dataset.target),t=n.querySelector(".material-icons");e.style.maxHeight?(e.style.maxHeight=null,t.style.transform="rotate(0deg)"):(e.style.maxHeight=e.scrollHeight+"px",t.style.transform="rotate(180deg)")}n.matches(".add-hour")?(e.outlets.find(e=>e.id===n.dataset.id).hours.push({day:"",time:""}),a()):n.matches(".remove-hour")?(e.outlets.find(e=>e.id===n.dataset.id).hours.splice(n.dataset.index,1),a()):n.matches(".remove-entertainment")&&(e.entertainment.splice(n.dataset.index,1),a())}),document.getElementById("add-entertainment").addEventListener("click",()=>{e.entertainment.push({id:`new-${Date.now()}`,name:"New Item",description:"",image:"https://placehold.co/800x400/002B5C/FFFFFF?text=New+Item",time:"",location:""}),a()}),document.getElementById("generate-json").addEventListener("click",()=>{const t=JSON.stringify(e,null,2),n=new Blob([t],{type:"application/json"}),a=URL.createObjectURL(n),i=document.createElement("a");i.href=a,i.download="data.json",document.body.appendChild(i),i.click(),document.body.removeChild(i),URL.revokeObjectURL(a)})});</script>
 </body>
 </html>
