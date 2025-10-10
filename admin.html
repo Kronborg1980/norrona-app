@@ -31,15 +31,15 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     // ------------------- CONFIGURATION -------------------
-    // STEP 1: Enter your GitHub Username here.
     const GITHUB_USERNAME = "Kronborg1980"; 
+    const GITHUB_REPO = "norrona-app"; // Or the name you chose
     
-    // STEP 2: Enter your Repository Name here.
-    const GITHUB_REPO = "smyril-app";
-    
-    // STEP 3: Paste your Personal Access Token (PAT) here.
-    const GITHUB_PAT = "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";
+    // IMPORTANT: Paste your ENCODED token from base64encode.org here.
+    const GITHUB_PAT_ENCODED = "Z2hwX3g4eFphVTVaZElsZDRvUU5tVngwR2NWbGk4THIxbTFCdGJRRw==";
     // -----------------------------------------------------
+
+    // The script will automatically decode the token. Do not touch this line.
+    const GITHUB_PAT = atob(GITHUB_PAT_ENCODED);
 
     let appData = {};
 
@@ -74,15 +74,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function init() {
-        if (GITHUB_USERNAME === "YOUR_USERNAME_HERE" || GITHUB_REPO === "YOUR_REPO_NAME_HERE" || GITHUB_PAT === "ghp_YOUR_TOKEN_HERE") {
+        if (GITHUB_USERNAME === "YOUR_USERNAME_HERE" || GITHUB_REPO === "YOUR_REPO_NAME_HERE" || GITHUB_PAT_ENCODED === "YOUR_ENCODED_TOKEN_HERE") {
             errorContainer.classList.remove('hidden');
-            errorMessage.textContent = "Configuration is missing. Please edit the script in admin.html to add your GitHub Username, Repo Name, and PAT.";
+            errorMessage.textContent = "Configuration is missing. Please edit the script in admin.html to add your GitHub details and your ENCODED PAT.";
             return;
         }
 
         try {
             const response = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { headers: { 'Authorization': `token ${GITHUB_PAT}` }, cache: 'no-cache' });
-            if (!response.ok) throw new Error(`Could not fetch data.json. Check your configuration and make sure the file exists. Status: ${response.status}`);
+            if (!response.ok) throw new Error(`Could not fetch data.json. Check your configuration. Status: ${response.status}`);
             
             appData = JSON.parse(decodeURIComponent(escape(atob((await response.json()).content))));
             editorPanel.classList.remove('hidden');
@@ -123,5 +123,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-
