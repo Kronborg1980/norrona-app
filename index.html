@@ -27,7 +27,7 @@
             const contentContainer = document.getElementById("content-container");
             let appData = {};
             let map;
-            // Define map icons (restored from voyage.html)
+            // Define map icons
             const shipIcon = L.divIcon({
                 html: '<svg width="32" height="18" viewBox="0 0 32 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 13 Q6 15 28 15 L30 13 L30 10 L28 8 Q24 7 6 7 L2 9 Z" fill="#00A9E0" stroke="#FFFFFF" stroke-width="1"/><rect x="20" y="2" width="8" height="7" fill="#FFFFFF" stroke="#002B5C" stroke-width="1"/></svg>',
                 className: "",
@@ -78,28 +78,47 @@
             function formatETA(e) { if (!e) return { day: "--", time: "--:--" }; try { const t = new Date(e); if (isNaN(t.getTime())) return { day: "Invalid Date", time: "" }; const o = t.toLocaleDateString("en-GB", { weekday: "long", timeZone: "Atlantic/Faroe" }), a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a } } catch (e) { return { day: "Error", time: "" } } }
             async function fetchWeatherData(lat, lon) {
                 try {
-                    // Replace with your valid Google Weather API key
-                    const apiKey = 'YOUR_GOOGLE_WEATHER_API_KEY_HERE';
+                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI';
                     const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
+                    console.log("Fetching weather data from:", url);
                     const response = await fetch(url);
-                    if (!response.ok) throw new Error('Weather API fetch failed');
+                    if (!response.ok) {
+                        throw new Error(`Weather API fetch failed: ${response.status} ${response.statusText}`);
+                    }
                     const data = await response.json();
-                    // Update temperature and description regardless of icon element
-                    document.getElementById("weather-temp").textContent = `${Math.round(data.temperature.degrees)}°C`;
-                    document.getElementById("weather-description").textContent = data.weatherCondition.description?.text || "N/A";
+                    console.log("Weather API response:", JSON.stringify(data, null, 2));
+                    // Update temperature and description with fallback for missing properties
+                    const tempEl = document.getElementById("weather-temp");
+                    if (tempEl) {
+                        tempEl.textContent = data.temperature?.degrees != null 
+                            ? `${Math.round(data.temperature.degrees)}°C` 
+                            : '--°C';
+                    } else {
+                        console.warn("Element #weather-temp not found");
+                    }
+                    const descEl = document.getElementById("weather-description");
+                    if (descEl) {
+                        descEl.textContent = data.weatherCondition?.description?.text || data.weatherCondition?.description || "N/A";
+                    } else {
+                        console.warn("Element #weather-description not found");
+                    }
                     // Update icon if element exists
                     const weatherIconEl = document.getElementById("weather-icon");
                     if (weatherIconEl) {
-                        const conditionType = data.weatherCondition.type?.toUpperCase() || 'UNKNOWN';
+                        const conditionType = data.weatherCondition?.type?.toUpperCase() || data.weatherCondition?.condition?.toUpperCase() || 'UNKNOWN';
                         const iconCode = conditionMap[conditionType] || '50d';
                         weatherIconEl.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                    } else {
+                        console.warn("Element #weather-icon not found");
                     }
                 } catch (error) {
-                    console.error("Weather fetch failed:", error);
+                    console.error("Weather fetch failed:", error.message);
                     const weatherDescEl = document.getElementById("weather-description");
                     if (weatherDescEl) weatherDescEl.textContent = 'Unavailable';
                     const weatherTempEl = document.getElementById("weather-temp");
                     if (weatherTempEl) weatherTempEl.textContent = '--°C';
+                    const weatherIconEl = document.getElementById("weather-icon");
+                    if (weatherIconEl) weatherIconEl.src = '';
                 }
             }
             async function updateShipData(isHomePage = false) {
@@ -153,7 +172,6 @@
                             if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
                             map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
                         }
-                        // Ensure DOM is ready before fetching weather
                         setTimeout(() => fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon), 0);
                     }
                 } catch (e) { console.error("Failed to update ship data", e); }
