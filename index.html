@@ -73,7 +73,7 @@
             
             async function fetchWeatherData(lat, lon) {
                 try {
-                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; // The Google Weather API key you confirmed is working
+                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; // Using your confirmed Google Weather API key
                     const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
                     const response = await fetch(url);
                     if (!response.ok) throw new Error('Weather API fetch failed');
@@ -129,7 +129,7 @@
                         document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                         
                         const distance = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
-                        if (distance < 1) {
+                        if (distance < 1 && speedKnots < 1) {
                             document.getElementById("distance").textContent = "In Harbour";
                             document.getElementById("distance-unit").textContent = "At Destination";
                         } else {
