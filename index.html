@@ -15,7 +15,8 @@
         <header class="main-header">
             <nav class="navbar">
                 <a href="#" class="logo"><img id="header-logo" src="" alt="Logo"></a>
-                </nav>
+                <div class="onboard-time" id="onboard-time-header">--:--</div>
+            </nav>
         </header>
         <main id="content-container"></main>
     </div>
@@ -39,7 +40,7 @@
                     contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero" style="background-image: url(${page.items[0].images[0]})"><h1>Welcome Aboard</h1><p>${page.items[0].description}</p></div><div style="padding:20px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Destination</div><div class="value" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots-home">--</div><div class="sub-value">Knots</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
-                    contentContainer.innerHTML = `<div class="page active voyage-page"><div id="map"></div><div class="voyage-content"><div class="voyage-grid"><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">-- km/h</div></div><div class="grid-item"><div class="label">Distance to Go</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">Kilometers</div></div><div class="grid-item" style="grid-column: 1 / -1;"><div class="label" id="destination-label">Next Destination & ETA</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div><div class="grid-item"><div class="label">Onboard Time</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Timezone</div></div></div><div class="weather-panel"><img id="weather-icon" src="" alt=""><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div></div></div></div></div>`;
+                    contentContainer.innerHTML = `<div class="page active voyage-page"><div id="map"></div><div class="voyage-content"><div class="voyage-grid"><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">-- km/h</div></div><div class="grid-item"><div class="label">Distance to Go</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">Kilometers</div></div><div class="grid-item"><div class="label" id="destination-label">Next Destination & ETA</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div><div class="grid-item"><div class="label">Onboard Time</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Timezone</div></div></div><div class="weather-panel"><img id="weather-icon" src="" alt=""><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div></div></div></div></div>`;
                     initializeVoyagePage();
                 } else {
                     contentContainer.innerHTML = `<div class="page active" style="padding:20px;"><div class="section-header"><h2>${page.title}</h2></div><div class="content-grid">${page.items.map(item => `<div class="item-card">${createImageArea(item.images)}<div class="item-info"><h3>${item.name}</h3>${item.description ? `<p>${item.description}</p>` : ''}<div class="fields">${(item.fields || []).map(field => `<div class="field"><strong>${field.label}:</strong><span>${field.value}</span></div>`).join('')}</div>${createMenu(item.menu)}${item.link && item.link.url ? `<a href="${item.link.url}" target="_blank" class="item-link-button">${item.link.text}</a>` : ''}</div></div>`).join('')}</div></div>`;
@@ -60,32 +61,30 @@
                 } catch (error) { console.error(error); contentContainer.innerHTML = `<p>${error.message}</p>`; }
             }
             
+            function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
+            
             const sailingRoute = ['hirtshals', 'torshavn', 'seydisfjord', 'torshavn'];
             const destinationMap = { torshavn: { name: "Tórshavn", country: "Faroe Islands", lat: 62.01, lon: -6.771 }, hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.594, lon: 9.965 }, seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.262, lon: -14.012 } };
-            const conditionMap = { 'CLEAR': { icon: '01d' }, 'CLEAR_DAY': { icon: '01d' }, 'CLEAR_NIGHT': { icon: '01n' }, 'CLOUDY': { icon: '04d' }, 'PARTLY_CLOUDY_DAY': { icon: '02d' }, 'PARTLY_CLOUDY_NIGHT': { icon: '02n' }, 'RAIN': { icon: '10d' }, 'SNOW': { icon: '13d' }, 'THUNDERSTORM': { icon: '11d' }, 'FOG': { icon: '50d' }, 'MIST': { icon: '50d' }, 'UNKNOWN': { icon: '50d' } };
-
             function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
             function formatETA(e) { if (!e) return { day: "--", time: "--:--" }; try { const t = new Date(e); if (isNaN(t.getTime())) return { day: "Invalid Date", time: "" }; const o = t.toLocaleDateString("en-GB", { weekday: "long", timeZone: "Atlantic/Faroe" }), a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a } } catch (e) { return { day: "Error", time: "" } } }
             
             async function fetchWeatherData(lat, lon) {
                 try {
-                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; // Using the Google Weather API Key
-                    const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
+                    const apiKey = 'b7b7c8a6358c5432a5bbe479c39486a4'; // A free OpenWeatherMap key
+                    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
                     const response = await fetch(url);
                     if (!response.ok) throw new Error('Weather API fetch failed');
                     const data = await response.json();
 
                     if(document.getElementById("weather-icon")) {
-                        const conditionType = data.weatherCondition.type?.toUpperCase() || 'UNKNOWN';
-                        const iconCode = (conditionMap[conditionType] || conditionMap['UNKNOWN']).icon;
-                        document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-                        document.getElementById("weather-temp").textContent = `${Math.round(data.temperature.degrees)}°C`;
-                        document.getElementById("weather-description").textContent = data.weatherCondition.description?.text || "N/A";
+                        document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+                        document.getElementById("weather-temp").textContent = `${Math.round(data.main.temp)}°C`;
+                        document.getElementById("weather-description").textContent = data.weather[0].main;
                     }
                 } catch (error) {
                     console.error("Weather fetch failed", error);
-                    if(document.getElementById("weather-description")) document.getElementById("weather-description").textContent = 'Unavailable';
+                    if(document.getElementById("weather-description")) document.getElementById("weather-description").textContent = 'N/A';
                 }
             }
             
@@ -110,8 +109,8 @@
                         if (hasArrived) {
                             homeDestLabel.textContent = "Current Port";
                             homeDest.textContent = currentDestInfo.name;
-                            const lastIndex = sailingRoute.lastIndexOf(currentDestKey);
-                            const nextPortKey = sailingRoute[lastIndex + 1] || sailingRoute[0]; 
+                            const currentIndex = sailingRoute.indexOf(currentDestKey);
+                            const nextPortKey = sailingRoute[currentIndex + 1] || sailingRoute[0]; // Wrap around
                             homeEta.textContent = `Next Sailing: ${destinationMap[nextPortKey].name}`;
                         } else {
                             homeDestLabel.textContent = "Next Destination";
@@ -120,6 +119,7 @@
                         }
                     } else {
                         const page = document.querySelector('.voyage-page'); if(!page) return;
+                        
                         document.getElementById("speed-knots").textContent = `${speedKnots} kn`;
                         document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                         
