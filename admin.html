@@ -1,37 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Norröna Backoffice</title>
-    <script src="https://cdn.tailwindcss.com"></script><style type="text/css">@font-face {font-family:Poppins;font-style:normal;font-weight:400;src:url(/cf-fonts/s/poppins/5.0.11/latin-ext/400/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:400;src:url(/cf-fonts/s/poppins/5.0.11/latin/400/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:400;src:url(/cf-fonts/s/poppins/5.0.11/devanagari/400/normal.woff2);unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+25CC,U+A830-A839,U+A8E0-A8FF;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:500;src:url(/cf-fonts/s/poppins/5.0.11/devanagari/500/normal.woff2);unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+25CC,U+A830-A839,U+A8E0-A8FF;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:500;src:url(/cf-fonts/s/poppins/5.0.11/latin-ext/500/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:500;src:url(/cf-fonts/s/poppins/5.0.11/latin/500/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:600;src:url(/cf-fonts/s/poppins/5.0.11/latin-ext/600/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:600;src:url(/cf-fonts/s/poppins/5.0.11/devanagari/600/normal.woff2);unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+25CC,U+A830-A839,U+A8E0-A8FF;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:600;src:url(/cf-fonts/s/poppins/5.0.11/latin/600/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:700;src:url(/cf-fonts/s/poppins/5.0.11/latin-ext/700/normal.woff2);unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:700;src:url(/cf-fonts/s/poppins/5.0.11/latin/700/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:700;src:url(/cf-fonts/s/poppins/5.0.11/devanagari/700/normal.woff2);unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+25CC,U+A830-A839,U+A8E0-A8FF;font-display:swap;}</style><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>body{font-family:'Poppins',sans-serif;background-color:#f3f4f6}.input-field{width:100%;padding:.75rem;border:1px solid #d1d5db;border-radius:.5rem;transition:border-color .2s,box-shadow .2s}.input-field:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.4)}.label{display:block;font-weight:600;color:#374151;margin-bottom:.5rem}.accordion-content{max-height:0;overflow:hidden;transition:max-height .5s ease-out}#settings-modal{position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.8);z-index:2000;display:flex;justify-content:center;align-items:center;backdrop-filter:blur(5px)}.hidden{display:none}.status-log{font-family:monospace;white-space:pre-wrap}.log-success{color:#16a34a}.log-error{color:#dc2626}.log-info{color:#6b7280}</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Norröna Backoffice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f3f4f6; }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        }
+        .label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+    </style>
 </head>
 <body>
+
     <header class="bg-gray-800 text-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center"><h1 class="text-2xl font-bold">Norröna Backoffice</h1><button id="open-settings" class="p-2 rounded-full hover:bg-gray-700"><span class="material-icons">settings</span></button></div>
-    </header>
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8"><h2 class="text-xl font-bold text-gray-800 mb-4">Status Log</h2><div id="status-log" class="status-log text-sm bg-gray-900 text-white p-4 rounded-md h-48 overflow-y-auto"></div></div>
-        <div id="login-container" class="hidden"><div class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm mx-auto"><h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Admin Login</h2><div class="space-y-4"><div><label for="username" class="label">Username</label><input type="text" id="username" class="input-field" value="kronborg"></div><div><label for="password" class="label">Password</label><input type="password" id="password" class="input-field" value="kronborg"></div><button id="login-button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">Login</button></div></div></div>
-        <div id="editor-container" class="hidden space-y-12">
-            <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Outlets</h2><div id="outlets-container" class="space-y-4"></div></section>
-            <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Entertainment</h2><div id="entertainment-container" class="space-y-4"></div><button id="add-entertainment" class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition"><span class="material-icons">add</span> Add New Entertainment Item</button></section>
-            <div class="sticky bottom-0 bg-white/80 backdrop-blur-sm p-4 border-t -mx-4 -mb-8"><button id="save-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg text-lg flex items-center justify-center gap-3 transition transform hover:scale-105"><span class="material-icons">save</span>Save Changes to GitHub</button></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 class="text-2xl font-bold">Norröna Backoffice (Simple Version)</h1>
         </div>
-    </main>
-    <div id="settings-modal" class="hidden">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg relative">
-            <button id="close-settings" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"><span class="material-icons">close</span></button>
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Settings</h2>
-            <div class="space-y-4">
-                <div><label for="setting-repo" class="label">GitHub Repo (e.g., YourUsername/norrona-guide)</label><input type="text" id="setting-repo" class="input-field"></div>
-                <div><label for="setting-pat" class="label">GitHub Personal Access Token</label><input type="password" id="setting-pat" class="input-field"></div>
-                <hr class="my-6"><h3 class="text-xl font-bold text-gray-800">Change Login</h3>
-                <div><label for="setting-user" class="label">New Username</label><input type="text" id="setting-user" class="input-field"></div>
-                <div><label for="setting-pass" class="label">New Password</label><input type="password" id="setting-pass" class="input-field"></div>
-                <button id="save-settings" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition mt-4">Save Settings & Reload</button>
+    </header>
+
+    <main id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md" role="alert">
+            <p class="font-bold">Important: New Workflow</p>
+            <p>1. Make your changes below. <br>2. Click the green button at the bottom to download the `data.json` file. <br>3. Upload this downloaded file to your GitHub repository, overwriting the old one.</p>
+        </div>
+        <section>
+            <h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Outlets</h2>
+            <div id="outlets-container" class="space-y-4">
+                <p class="text-gray-500">Loading data...</p>
             </div>
+        </section>
+        <section>
+            <h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Entertainment</h2>
+            <div id="entertainment-container" class="space-y-4"></div>
+            <button id="add-entertainment" class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">
+                <span class="material-icons">add</span> Add New Entertainment Item
+            </button>
+        </section>
+    </main>
+
+    <div class="sticky bottom-0 bg-white/80 backdrop-blur-sm p-4 border-t shadow-inner">
+        <div class="max-w-7xl mx-auto">
+            <button id="generate-json" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg text-lg flex items-center justify-center gap-3 transition transform hover:scale-105">
+                <span class="material-icons">download</span> Generate & Download data.json
+            </button>
         </div>
     </div>
-    <script>document.addEventListener("DOMContentLoaded",async()=>{let e,t,o,a={},n={};const i=document.getElementById("status-log"),r=document.getElementById("login-container"),s=document.getElementById("editor-container"),d=document.getElementById("settings-modal");function l(t,o="log-info"){const a=document.createElement("div");a.className=o,a.textContent=`> ${t}`,i.appendChild(a),i.scrollTop=i.scrollHeight,console.log(t)}function c(){const e=localStorage.getItem("githubConfig");e&&(e=JSON.parse(e),document.getElementById("setting-repo").value=e.repo||"",document.getElementById("setting-pat").value=e.pat||""),d.classList.remove("hidden")}async function u(a,n,i){try{const r=await fetch(`https://api.github.com/repos/${e}/${t}/contents/${a}`,{headers:{Authorization:`token ${o}`}}),s=r.ok?(await r.json()).sha:void 0,d=await fetch(`https://api.github.com/repos/${e}/${t}/contents/${a}`,{method:"PUT",headers:{Authorization:`token ${o}`,"Content-Type":"application/json"},body:JSON.stringify({message:i,content:btoa(unescape(encodeURIComponent(n))),sha:s})});if(!d.ok)throw new Error(`Failed to update ${a}: ${(await d.json()).message}`);return!0}catch(e){return l(e.message,"log-error"),!1}}async function m(){l("App starting...");const i=localStorage.getItem("githubConfig");if(!i||!JSON.parse(i).repo||!JSON.parse(i).pat)return l("Local settings not found or incomplete. Please configure.","log-error"),void c();const s=(JSON.parse(i));o=s.pat,[e,t]=s.repo.split("/"),l(`Settings found for repo: ${s.repo}`,"log-success");try{n=await async function(a){const n=`https://api.github.com/repos/${e}/${t}/contents/${a}`;l(`Fetching from ${n}`);const i=await fetch(n,{headers:{Authorization:`token ${o}`},cache:"no-cache"});if(!i.ok)throw new Error(`Could not fetch ${a}. Status: ${i.status}. Check Repo Name, PAT, and if file exists.`);return JSON.parse(atob((await i.json()).content))}("config.json"),l("Login configuration loaded from GitHub.","log-success"),r.classList.remove("hidden"),l("Please enter your credentials to continue.")}catch(e){l(e.message,"log-error"),l("Cannot proceed without login configuration. Please check your settings.","log-error")}}document.getElementById("login-button").addEventListener("click",async()=>{const e=document.getElementById("username").value,t=document.getElementById("password").value;l(`Attempting login with user: ${e}`),e===n.user&&t===n.pass?(l("Login successful!","log-success"),r.classList.add("hidden"),l("Loading app data..."),async function(){try{a=await async function(a){const n=`https://api.github.com/repos/${e}/${t}/contents/${a}`;l(`Fetching from ${n}`);const i=await fetch(n,{headers:{Authorization:`token ${o}`},cache:"no-cache"});if(!i.ok)throw new Error(`Could not fetch ${a}. Status: ${i.status}. Check Repo Name, PAT, and if file exists.`);return JSON.parse(atob((await i.json()).content))}("data.json"),l("App data loaded successfully.","log-success"),s.classList.remove("hidden"),p()}catch(e){l(e.message,"log-error")}}()):l("Login failed: Invalid credentials.","log-error")}),document.getElementById("save-settings").addEventListener("click",()=>{localStorage.setItem("githubConfig",JSON.stringify({repo:document.getElementById("setting-repo").value,pat:document.getElementById("setting-pat").value}));const e=document.getElementById("setting-user").value,t=document.getElementById("setting-pass").value;e&&t&&sessionStorage.setItem("adminCredentials",JSON.stringify({user:e,pass:t})),d.classList.add("hidden"),l("Settings saved locally. Reloading page..."),setTimeout(()=>{location.reload()},1e3)}),document.getElementById("open-settings").addEventListener("click",c),document.getElementById("close-settings").addEventListener("click",()=>d.classList.add("hidden")),document.getElementById("save-button").addEventListener("click",async e=>{const t=e.currentTarget;t.disabled=!0,t.innerHTML="Saving...";let o=null;const n=sessionStorage.getItem("adminCredentials");n&&(o=JSON.parse(n));const i=await u("data.json",JSON.stringify(a,null,2),"Update content from admin panel");let r=!0;o&&(r=await u("config.json",JSON.stringify(o,null,2),"Update credentials from admin panel")),i&&r?(l("Saved to GitHub successfully!","log-success"),t.innerHTML='<span class="material-icons">check_circle</span> Saved!',sessionStorage.removeItem("adminCredentials")):l("Save failed. Check console for details.","log-error"),setTimeout(()=>{t.disabled=!1,t.innerHTML='<span class="material-icons">save</span>Save Changes to GitHub'},3e3)});function p(){const e=document.getElementById("outlets-container"),t=document.getElementById("entertainment-container");e.innerHTML=a.outlets.map(e=>`<div class="bg-white rounded-lg shadow-md overflow-hidden"><button class="accordion-trigger w-full p-4 bg-gray-50 hover:bg-gray-100 flex justify-between items-center" data-target="content-${e.id}"><h3 class="text-xl font-bold text-gray-800">${e.name}</h3><span class="material-icons text-gray-500">expand_more</span></button><div id="content-${e.id}" class="accordion-content"><div class="p-6 space-y-6"><div><label class="label">Name</label><input type="text" class="input-field" value="${e.name}" data-id="${e.id}" data-key="name"></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="label">Deck</label><input type="number" class="input-field" value="${e.deck}" data-id="${e.id}" data-key="deck"></div><div><label class="label">Image URL</label><input type="text" class="input-field" value="${e.image}" data-id="${e.id}" data-key="image"></div></div><div><label class="label">Description</label><textarea class="input-field h-24" data-id="${e.id}" data-key="description">${e.description}</textarea></div><div><h4 class="label">Opening Hours</h4><div class="space-y-2" data-id="${e.id}" data-hours-container>${e.hours.map((t,o)=>`<div class="flex items-center gap-2"><input type="text" class="input-field" placeholder="Day / Period" value="${t.day}" data-id="${e.id}" data-key="day" data-index="${o}"><input type="text" class="input-field" placeholder="Time" value="${t.time}" data-id="${e.id}" data-key="time" data-index="${o}"><button class="remove-hour text-red-500 hover:text-red-700 p-2" data-id="${e.id}" data-index="${o}"><span class="material-icons">remove_circle</span></button></div>`).join("")}</div><button class="add-hour mt-2 text-sm font-semibold text-blue-600 hover:text-blue-800" data-id="${e.id}">+ Add Hour</button></div></div></div></div>`).join(""),t.innerHTML=a.entertainment.map((e,t)=>`<div class="bg-white rounded-lg shadow-md p-6 relative"><button class="remove-entertainment absolute top-4 right-4 text-red-500 hover:text-red-700" data-index="${t}"><span class="material-icons">delete</span></button><div class="space-y-6"><div><label class="label">Name</label><input type="text" class="input-field" value="${e.name}" data-collection="entertainment" data-index="${t}" data-key="name"></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label class="label">Time / Schedule</label><input type="text" class="input-field" value="${e.time}" data-collection="entertainment" data-index="${t}" data-key="time"></div><div><label class="label">Location</label><input type="text" class="input-field" value="${e.location}" data-collection="entertainment" data-index="${t}" data-key="location"></div></div><div><label class="label">Image URL</label><input type="text" class="input-field" value="${e.image}" data-collection="entertainment" data-index="${t}" data-key="image"></div><div><label class="label">Description</label><textarea class="input-field h-24" data-collection="entertainment" data-index="${t}" data-key="description">${e.description}</textarea></div></div></div>`).join("")}document.getElementById("editor-container").addEventListener("input",e=>{const t=e.target;if(t.matches("input, textarea")){const e=t.dataset.id,o=t.dataset.collection,n=t.dataset.key,i=parseInt(t.dataset.index,10);"entertainment"===o?a.entertainment[i][n]=t.value:void 0}}),document.getElementById("editor-container").addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;if(t.matches(".accordion-trigger")){const e=document.getElementById(t.dataset.target),o=t.querySelector(".material-icons");e.style.maxHeight? (e.style.maxHeight=null,o.style.transform="rotate(0deg)"):(e.style.maxHeight=e.scrollHeight+"px",o.style.transform="rotate(180deg)")}t.matches(".add-hour")?(a.outlets.find(e=>e.id===t.dataset.id).hours.push({day:"",time:""}),p()):t.matches(".remove-hour")?(a.outlets.find(e=>e.id===t.dataset.id).hours.splice(t.dataset.index,1),p()):t.matches(".remove-entertainment")&&(a.entertainment.splice(t.dataset.index,1),p())}),document.getElementById("add-entertainment").addEventListener("click",()=>{a.entertainment.push({id:`new-${Date.now()}`,name:"New Item",description:"",image:"https://placehold.co/800x400/002B5C/FFFFFF?text=New+Item",time:"",location:""}),p()}),m()});</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98c6aa78adf50032',t:'MTc2MDEwNTA1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let appData = { outlets: [], entertainment: [] };
+        const outletsContainer = document.getElementById("outlets-container");
+        const entertainmentContainer = document.getElementById("entertainment-container");
+
+        function render() {
+            outletsContainer.innerHTML = appData.outlets.map(outlet => `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <button class="accordion-trigger w-full p-4 bg-gray-50 hover:bg-gray-100 flex justify-between items-center" data-target="content-${outlet.id}">
+                        <h3 class="text-xl font-bold text-gray-800">${outlet.name}</h3>
+                        <span class="material-icons text-gray-500">expand_more</span>
+                    </button>
+                    <div id="content-${outlet.id}" class="accordion-content">
+                        <div class="p-6 space-y-6">
+                            <div><label class="label">Name</label><input type="text" class="input-field" value="${outlet.name}" data-id="${outlet.id}" data-key="name"></div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div><label class="label">Deck</label><input type="number" class="input-field" value="${outlet.deck}" data-id="${outlet.id}" data-key="deck"></div>
+                                <div><label class="label">Image URL</label><input type="text" class="input-field" value="${outlet.image}" data-id="${outlet.id}" data-key="image"></div>
+                            </div>
+                            <div><label class="label">Description</label><textarea class="input-field h-24" data-id="${outlet.id}" data-key="description">${outlet.description}</textarea></div>
+                            <div>
+                                <h4 class="label">Opening Hours</h4>
+                                <div class="space-y-2" data-id="${outlet.id}" data-hours-container>
+                                    ${outlet.hours.map((hour, index) => `
+                                        <div class="flex items-center gap-2">
+                                            <input type="text" class="input-field" placeholder="Day / Period" value="${hour.day}" data-id="${outlet.id}" data-key="day" data-index="${index}">
+                                            <input type="text" class="input-field" placeholder="Time" value="${hour.time}" data-id="${outlet.id}" data-key="time" data-index="${index}">
+                                            <button class="remove-hour text-red-500 hover:text-red-700 p-2" data-id="${outlet.id}" data-index="${index}"><span class="material-icons">remove_circle</span></button>
+                                        </div>`).join('')}
+                                </div>
+                                <button class="add-hour mt-2 text-sm font-semibold text-blue-600 hover:text-blue-800" data-id="${outlet.id}">+ Add Hour</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`).join('');
+            entertainmentContainer.innerHTML = appData.entertainment.map((item, index) => `
+                <div class="bg-white rounded-lg shadow-md p-6 relative">
+                    <button class="remove-entertainment absolute top-4 right-4 text-red-500 hover:text-red-700" data-index="${index}"><span class="material-icons">delete</span></button>
+                    <div class="space-y-6">
+                        <div><label class="label">Name</label><input type="text" class="input-field" value="${item.name}" data-collection="entertainment" data-index="${index}" data-key="name"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label class="label">Time / Schedule</label><input type="text" class="input-field" value="${item.time}" data-collection="entertainment" data-index="${index}" data-key="time"></div>
+                            <div><label class="label">Location</label><input type="text" class="input-field" value="${item.location}" data-collection="entertainment" data-index="${index}" data-key="location"></div>
+                        </div>
+                        <div><label class="label">Image URL</label><input type="text" class="input-field" value="${item.image}" data-collection="entertainment" data-index="${index}" data-key="image"></div>
+                        <div><label class="label">Description</label><textarea class="input-field h-24" data-collection="entertainment" data-index="${index}" data-key="description">${item.description}</textarea></div>
+                    </div>
+                </div>`).join('');
+        }
+        
+        // Load the initial data from the data.json file
+        fetch("data.json?v=" + Date.now()) // Append cache-busting parameter
+            .then(response => {
+                if (!response.ok) { throw new Error("Could not find data.json. Make sure it's uploaded to your repository."); }
+                return response.json();
+            })
+            .then(data => {
+                appData = data;
+                render();
+            })
+            .catch(error => {
+                console.error(error);
+                outletsContainer.innerHTML = `<p class="text-red-500 font-bold">${error.message}</p>`;
+                render(); // Render with empty data so the UI still works
+            });
+
+        const appContainer = document.getElementById('app');
+
+        appContainer.addEventListener('input', e => {
+            const target = e.target;
+            if (target.matches('input, textarea')) {
+                const id = target.dataset.id;
+                const collection = target.dataset.collection;
+                const key = target.dataset.key;
+                const index = parseInt(target.dataset.index, 10);
+
+                if (collection === 'entertainment') {
+                    appData.entertainment[index][key] = target.value;
+                } else {
+                    const outlet = appData.outlets.find(o => o.id === id);
+                    if (!outlet) return;
+                    if (key === 'day' || key === 'time') {
+                        outlet.hours[index][key] = target.value;
+                    } else {
+                        outlet[key] = target.value;
+                    }
+                }
+            }
+        });
+
+        appContainer.addEventListener('click', e => {
+            const target = e.target.closest('button');
+            if (!target) return;
+            if (target.matches('.accordion-trigger')) {
+                const content = document.getElementById(target.dataset.target);
+                const icon = target.querySelector('.material-icons');
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            }
+            if (target.matches('.add-hour')) {
+                appData.outlets.find(o => o.id === target.dataset.id).hours.push({ day: '', time: '' });
+                render();
+            }
+            if (target.matches('.remove-hour')) {
+                appData.outlets.find(o => o.id === target.dataset.id).hours.splice(target.dataset.index, 1);
+                render();
+            }
+            if (target.matches('.remove-entertainment')) {
+                appData.entertainment.splice(target.dataset.index, 1);
+                render();
+            }
+        });
+
+        document.getElementById('add-entertainment').addEventListener('click', () => {
+            appData.entertainment.push({ id: `new-${Date.now()}`, name: 'New Item', description: '', image: 'https://placehold.co/800x400/002B5C/FFFFFF?text=New+Item', time: '', location: '' });
+            render();
+        });
+
+        document.getElementById('generate-json').addEventListener('click', () => {
+            const jsonString = JSON.stringify(appData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    });
+    </script>
+</body>
 </html>
