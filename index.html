@@ -25,8 +25,9 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const contentContainer = document.getElementById("content-container");
-            let appData = {}; let map;
-            
+            let appData = {};
+            let map;
+
             function createImageArea(images) { if (!Array.isArray(images) || images.length === 0) return `<div class="image-container"></div>`; if (images.length === 1) return `<div class="image-container"><img src="${images[0]}" class="item-card-image" loading="lazy"></div>`; const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${img}"></div>`).join(''); const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join(''); return `<div class="image-container"><div class="slideshow" data-total="${images.length}">${slides}<div class="slideshow-nav"><button class="prev">&lt;</button><button class="next">&gt;</button></div><div class="slideshow-dots">${dots}</div></div></div>`; }
             function createMenu(menuItems) { if (!Array.isArray(menuItems) || menuItems.length === 0) return ''; return `<div class="menu"><h4>Menu</h4>${menuItems.map(item => `<div class="menu-item"><div class="menu-item-header"><span>${item.name}</span><span>${item.price}</span></div>${item.description ? `<div class="menu-item-desc">${item.description}</div>` : ''}</div>`).join('')}</div>`; }
             function initializeSlideshows() { document.querySelectorAll('.slideshow').forEach(slideshow => { let currentIndex = 0; const slides = slideshow.querySelectorAll('.slide'), dots = slideshow.querySelectorAll('.dot'), total = slides.length; function showSlide(index) { slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active')); slides[index].classList.add('active'); dots[index].classList.add('active'); currentIndex = index; } slideshow.querySelector('.next').addEventListener('click', () => showSlide((currentIndex + 1) % total)); slideshow.querySelector('.prev').addEventListener('click', () => showSlide((currentIndex - 1 + total) % total)); }); }
@@ -73,7 +74,7 @@
             
             async function fetchWeatherData(lat, lon) {
                 try {
-                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; // Using your confirmed Google Weather API key
+                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; // Your Google Weather API key
                     const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
                     const response = await fetch(url);
                     if (!response.ok) throw new Error('Weather API fetch failed');
@@ -88,7 +89,7 @@
                         document.getElementById("weather-description").textContent = data.weatherCondition.description?.text || "N/A";
                     }
                 } catch (error) {
-                    console.error("Weather fetch failed", error);
+                    console.error("Weather fetch failed:", error);
                     const weatherDescEl = document.getElementById("weather-description");
                     if(weatherDescEl) weatherDescEl.textContent = 'Unavailable';
                 }
@@ -98,11 +99,13 @@
                 try {
                     const response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
                     const norrona = (await response.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
-                    if (!norrona) return;
+                    if (!norrona || !norrona.destinationFromAIS) return;
 
                     const speedKnots = norrona.position?.speed || 0;
                     const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
                     const currentDestInfo = destinationMap[currentDestKey];
+                    if (!currentDestInfo) return; // Stop if destination is unknown
+
                     const hasArrived = new Date(norrona.etaFromAIS).getTime() < Date.now();
                     const { day, time } = formatETA(norrona.etaFromAIS);
 
@@ -112,19 +115,20 @@
                         const homeEta = document.getElementById('eta-home');
                         document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`;
 
-                        if (hasArrived && currentDestInfo) {
+                        if (hasArrived) {
                             homeDestLabel.textContent = "Current Port";
                             homeDest.textContent = currentDestInfo.name;
                             const lastIndex = sailingRoute.lastIndexOf(currentDestKey);
                             const nextPortKey = sailingRoute[lastIndex + 1] || sailingRoute[0]; 
                             homeEta.textContent = `Next Sailing: ${destinationMap[nextPortKey].name}`;
-                        } else if (currentDestInfo) {
+                        } else {
                             homeDestLabel.textContent = "Next Destination";
                             homeDest.textContent = currentDestInfo.name;
                             homeEta.textContent = `Arrival: ${day}, ${time}`;
                         }
-                    } else {
-                        const page = document.querySelector('.voyage-page'); if(!page || !currentDestInfo) return;
+                    } else { // Voyage Page
+                        const page = document.querySelector('.voyage-page'); if(!page) return;
+                        
                         document.getElementById("speed-knots").textContent = `${speedKnots} kn`;
                         document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                         
@@ -156,7 +160,12 @@
                 } catch (e) { console.error("Failed to update ship data", e) }
             }
             
-            function initializeVoyagePage() { if (map) { map.remove(); map = null; } map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() }); L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map); updateShipData(); }
+            function initializeVoyagePage() { 
+                if (map) { map.remove(); map = null; } 
+                map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() }); 
+                L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map); 
+                updateShipData();
+            }
             
             setInterval(updateShipData, 120000); 
             setInterval(updateHeaderTime, 1000);
