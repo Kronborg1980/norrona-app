@@ -173,6 +173,20 @@
                 if (map) { map.remove(); map = null; }
                 map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() });
                 L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
+                // Add dotted route line
+                const routeCoordinates = [
+                    [57.594, 9.965], // Hirtshals
+                    [59.5, 2.0],    // Waypoint to avoid Norway
+                    [62.01, -6.771], // Tórshavn
+                    [65.262, -14.012], // Seyðisfjörður
+                    [62.01, -6.771]  // Tórshavn
+                ];
+                L.polyline(routeCoordinates, {
+                    color: '#00A9E0',
+                    weight: 2,
+                    dashArray: '5, 10',
+                    opacity: 0.7
+                }).addTo(map);
                 updateShipData();
             }
             setInterval(updateShipData, 120000);
