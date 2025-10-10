@@ -27,13 +27,7 @@
             const contentContainer = document.getElementById("content-container");
             let appData = {};
             let map;
-            // Define map icons
-            const shipIcon = L.divIcon({
-                html: '<svg width="32" height="18" viewBox="0 0 32 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 13 Q6 15 28 15 L30 13 L30 10 L28 8 Q24 7 6 7 L2 9 Z" fill="#00A9E0" stroke="#FFFFFF" stroke-width="1"/><rect x="20" y="2" width="8" height="7" fill="#FFFFFF" stroke="#002B5C" stroke-width="1"/></svg>',
-                className: "",
-                iconSize: [32, 18],
-                iconAnchor: [16, 9]
-            });
+            // Define destination marker icon
             const destIcon = L.icon({
                 iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
                 iconSize: [12, 20],
@@ -167,7 +161,7 @@
                         if (map) {
                             const shipPos = [norrona.position.latitude, norrona.position.longitude];
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
-                            if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: shipIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
+                            if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
                             if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
                             map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
                         }
