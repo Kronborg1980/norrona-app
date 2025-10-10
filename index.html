@@ -4,34 +4,7 @@
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>Norröna Onboard Guide</title>
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-    <style>
-        :root{--smyril-blue:#002B5C;--smyril-accent:#00A9E0;--background-dark:#011832;--glass-bg:rgba(0, 25, 53, 0.6);--text-light:#ffffff;--text-muted:rgba(255, 255, 255, 0.6);--border-radius:16px}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Poppins',sans-serif;background-color:var(--background-dark);color:var(--text-light);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-        #app-shell{max-width:500px;margin:0 auto;background-color:var(--background-dark);min-height:100vh;display:flex;flex-direction:column;padding-bottom:70px}
-        .main-header{position:sticky;top:0;z-index:1000;background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1)}
-        .navbar{display:flex;justify-content:space-between;align-items:center;height:60px;padding:0 20px}
-        .navbar .logo img{height:24px}
-        .onboard-time{font-weight:600;font-size:.9rem}
-        main{flex-grow:1}
-        .page{padding:20px;display:none}.page.active{display:block}
-        .section-header{margin-bottom:20px;text-align:center}.section-header h2{font-size:2rem;font-weight:700;color:var(--text-light)}
-        .item-card{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);box-shadow:0 8px 30px rgba(0,0,0,.2);overflow:hidden;margin-bottom:20px;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}
-        .item-card.visible{opacity:1;transform:translateY(0)}
-        .image-container{width:100%;height:200px;background:#00152b}
-        .item-card-image{width:100%;height:100%;object-fit:cover;display:block}
-        .item-info{padding:20px}
-        .item-info h3{font-size:1.3rem;font-weight:600}
-        .item-info p{color:var(--text-muted);margin:8px 0;font-size:.9rem}
-        .item-info .fields{border-top:1px solid rgba(255,255,255,0.1);margin-top:15px;padding-top:15px;display:grid;gap:8px;font-size:.9rem}
-        .item-info .field{display:flex;justify-content:space-between}
-        .item-info .field strong{color:var(--text-light);font-weight:600}
-        .item-link-button{display:block;background-color:var(--smyril-accent);color:var(--text-dark);text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:20px;transition:transform .2s ease}.item-link-button:hover{transform:scale(1.05)}
-        .menu{border-top:1px solid rgba(255,255,255,.1);margin-top:15px;padding-top:15px}.menu h4{font-weight:700;color:var(--smyril-accent);margin-bottom:10px}.menu-item{margin-bottom:10px;font-size:.9rem}.menu-item-header{display:flex;justify-content:space-between;font-weight:600}.menu-item-desc{font-size:.8rem;color:var(--text-muted)}
-        .slideshow{position:relative;width:100%;height:100%;overflow:hidden}.slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity .5s ease-in-out}.slide.active{opacity:1}.slide img{width:100%;height:100%;object-fit:cover}
-        #map{width:100%;height:40vh;border-bottom:1px solid rgba(255,255,255,.1)}.leaflet-container{background-color:#1a1a1a}
-        .voyage-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0}.grid-item{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);padding:20px;text-align:center}.grid-item .label{font-size:.8rem;color:var(--smyril-accent);margin-bottom:8px;text-transform:uppercase}.grid-item .value{font-size:1.5rem;font-weight:700}.grid-item .sub-value{font-size:.8rem;color:var(--text-muted)}
-        .weather-panel{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);padding:20px;display:flex;align-items:center;gap:20px}.weather-panel img{width:60px;height:60px}.weather-info .label{font-size:.8rem;color:var(--smyril-accent);text-transform:uppercase}.weather-info .value{font-size:1.2rem;font-weight:700}
+    <style>:root{--smyril-blue:#002B5C;--smyril-accent:#00A9E0;--background-dark:#011832;--glass-bg:rgba(0, 25, 53, 0.6);--text-light:#ffffff;--text-muted:rgba(255, 255, 255, 0.6);--border-radius:16px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Poppins',sans-serif;background-color:var(--background-dark);color:var(--text-light);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}#app-shell{max-width:500px;margin:0 auto;background-color:var(--background-dark);min-height:100vh;display:flex;flex-direction:column;padding-bottom:70px}.main-header{position:sticky;top:0;z-index:1000;background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1)}.navbar{display:flex;justify-content:space-between;align-items:center;height:60px;padding:0 20px}.navbar .logo img{height:24px}.onboard-time{font-weight:600;font-size:.9rem}main{flex-grow:1}.page{padding:20px;display:none}.page.active{display:block}.section-header{margin-bottom:20px;text-align:center}.section-header h2{font-size:2rem;font-weight:700;color:var(--text-light)}.item-card{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);box-shadow:0 8px 30px rgba(0,0,0,.2);overflow:hidden;margin-bottom:20px;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}.item-card.visible{opacity:1;transform:translateY(0)}.image-container{width:100%;height:200px;background:#00152b}.item-card-image{width:100%;height:100%;object-fit:cover;display:block}.item-info{padding:20px}.item-info h3{font-size:1.3rem;font-weight:600}.item-info p{color:var(--text-muted);margin:8px 0;font-size:.9rem}.item-info .fields{border-top:1px solid rgba(255,255,255,.1);margin-top:15px;padding-top:15px;display:grid;gap:8px;font-size:.9rem}.item-info .field{display:flex;justify-content:space-between}.item-info .field strong{color:var(--text-light);font-weight:600}.item-link-button{display:block;background-color:var(--smyril-accent);color:var(--text-dark);text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:20px;transition:transform .2s ease}.item-link-button:hover{transform:scale(1.05)}.menu{border-top:1px solid rgba(255,255,255,.1);margin-top:15px;padding-top:15px}.menu h4{font-weight:700;color:var(--smyril-accent);margin-bottom:10px}.menu-item{margin-bottom:10px;font-size:.9rem}.menu-item-header{display:flex;justify-content:space-between;font-weight:600}.menu-item-desc{font-size:.8rem;color:var(--text-muted)}.slideshow{position:relative;width:100%;height:100%;overflow:hidden}.slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity .5s ease-in-out}.slide.active{opacity:1}.slide img{width:100%;height:100%;object-fit:cover}#map{width:100%;height:40vh;border-bottom:1px solid rgba(255,255,255,.1)}.leaflet-container{background-color:#1a1a1a}.voyage-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0}.grid-item{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);padding:20px;text-align:center}.grid-item .label{font-size:.8rem;color:var(--smyril-accent);margin-bottom:8px;text-transform:uppercase}.grid-item .value{font-size:1.5rem;font-weight:700}.grid-item .sub-value{font-size:.8rem;color:var(--text-muted)}.weather-panel{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);padding:20px;display:flex;align-items:center;gap:20px}.weather-panel img{width:60px;height:60px}.weather-info .label{font-size:.8rem;color:var(--smyril-accent);text-transform:uppercase}.weather-info .value{font-size:1.2rem;font-weight:700}
         .home-hero{height:50vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;background-size:cover;background-position:center;position:relative}.home-hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to top,var(--background-dark) 0%,rgba(0,0,0,0.3) 100%)}.home-hero *{position:relative;z-index:2}.home-hero h1{font-size:2.5rem}.home-hero p{font-size:1.1rem;color:var(--text-muted)}
         .bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;height:70px;background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-around;align-items:center;z-index:1000}
         .nav-item{display:flex;flex-direction:column;align-items:center;color:var(--text-muted);text-decoration:none;font-size:.7rem;transition:color .2s ease}.nav-item.active{color:var(--smyril-accent)}.nav-item .material-icons{font-size:24px;margin-bottom:2px}
@@ -42,8 +15,7 @@
         <header class="main-header">
             <nav class="navbar">
                 <a href="#" class="logo"><img id="header-logo" src="" alt="Logo"></a>
-                <div class="onboard-time" id="onboard-time">--:--</div>
-            </nav>
+                </nav>
         </header>
         <main id="content-container"></main>
     </div>
@@ -67,10 +39,10 @@
                     contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero" style="background-image: url(${page.items[0].images[0]})"><h1>Welcome Aboard</h1><p>${page.items[0].description}</p></div><div style="padding:20px;"><div class="voyage-grid"><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots-home">--</div></div><div class="grid-item"><div class="label">Next Destination</div><div class="value" id="destination-home">--</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
-                    contentContainer.innerHTML = `<div class="page active voyage-page"><div id="map"></div><div class="voyage-content"><div class="voyage-grid"><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">-- km/h</div></div><div class="grid-item"><div class="label">Distance to Go</div><div class="value" id="distance">--</div><div class="sub-value">Kilometers</div></div></div><div class="grid-item" style="grid-column: 1 / -1;"><div class="label">Next Destination & ETA</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div><div class="weather-panel mt-4"><img id="weather-icon" src=""><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div></div></div></div></div>`;
+                    contentContainer.innerHTML = `<div class="page active voyage-page"><div id="map"></div><div class="voyage-content"><div class="voyage-grid"><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">-- km/h</div></div><div class="grid-item"><div class="label">Distance to Go</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">Kilometers</div></div><div class="grid-item"><div class="label" id="destination-label">Next Destination & ETA</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div><div class="grid-item"><div class="label">Onboard Time</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Timezone</div></div></div><div class="weather-panel"><img id="weather-icon" src=""><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div></div></div></div></div>`;
                     initializeVoyagePage();
                 } else {
-                    contentContainer.innerHTML = `<div class="page active"><div class="section-header"><h2>${page.title}</h2></div><div class="content-grid">${page.items.map(item => `<div class="item-card">${createImageArea(item.images)}<div class="item-info"><h3>${item.name}</h3>${item.description ? `<p>${item.description}</p>` : ''}<div class="fields">${(item.fields || []).map(field => `<div class="field"><strong>${field.label}:</strong><span>${field.value}</span></div>`).join('')}</div>${createMenu(item.menu)}${item.link && item.link.url ? `<a href="${item.link.url}" target="_blank" class="item-link-button">${item.link.text}</a>` : ''}</div></div>`).join('')}</div></div>`;
+                    contentContainer.innerHTML = `<div class="page active" style="padding:20px;"><div class="section-header"><h2>${page.title}</h2></div><div class="content-grid">${page.items.map(item => `<div class="item-card">${createImageArea(item.images)}<div class="item-info"><h3>${item.name}</h3>${item.description ? `<p>${item.description}</p>` : ''}<div class="fields">${(item.fields || []).map(field => `<div class="field"><strong>${field.label}:</strong><span>${field.value}</span></div>`).join('')}</div>${createMenu(item.menu)}${item.link && item.link.url ? `<a href="${item.link.url}" target="_blank" class="item-link-button">${item.link.text}</a>` : ''}</div></div>`).join('')}</div></div>`;
                     initializeSlideshows();
                 }
                 animateVisibleItems();
@@ -88,9 +60,6 @@
                 } catch (error) { console.error(error); contentContainer.innerHTML = `<p>${error.message}</p>`; }
             }
             
-            function updateOnboardTime() { document.getElementById('onboard-time').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
-            updateOnboardTime(); setInterval(updateOnboardTime, 1000);
-            
             const destinationMap = { torshavn: { country: "Faroe Islands", lat: 62.01, lon: -6.771 }, hirtshals: { country: "Denmark", lat: 57.594, lon: 9.965 }, seydisfjord: { country: "Iceland", lat: 65.262, lon: -14.012 } };
             function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
@@ -106,8 +75,7 @@
 
                     const speedKnots = norrona.position?.speed || 0;
                     const destNameRaw = norrona.destinationFromAIS.split(",")[0].trim();
-                    const destKey = normalizeDestinationName(destNameRaw);
-                    const destInfo = destinationMap[destKey];
+                    const destInfo = destinationMap[normalizeDestinationName(destNameRaw)];
 
                     if(isHomePage) {
                         document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`;
@@ -118,10 +86,21 @@
                         document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                         if (destInfo) {
                             const { day, time } = formatETA(norrona.etaFromAIS);
-                            document.getElementById("destination-voyage").textContent = `${destNameRaw}, ${destInfo.country}`;
-                            document.getElementById("eta-voyage").textContent = `${day} at ${time}`;
                             const distance = haversineDistance(norrona.position.latitude, norrona.position.longitude, destInfo.lat, destInfo.lon);
-                            document.getElementById("distance").textContent = `${Math.round(distance)}`;
+                            const hasArrived = new Date(norrona.etaFromAIS).getTime() < Date.now();
+                            
+                            document.getElementById("destination-label").textContent = hasArrived ? "Arrival Information" : "Next Destination & ETA";
+                            document.getElementById("destination-voyage").textContent = `${destNameRaw}, ${destInfo.country}`;
+                            document.getElementById("eta-voyage").textContent = hasArrived ? `Arrived ${day} at ${time}` : `Arriving ${day} at ${time}`;
+                            
+                            if (distance < 1) {
+                                document.getElementById("distance").textContent = "In Harbour";
+                                document.getElementById("distance-unit").textContent = "At Destination";
+                            } else {
+                                document.getElementById("distance").textContent = `${Math.round(distance)}`;
+                                document.getElementById("distance-unit").textContent = "Kilometers";
+                            }
+
                             if (map) {
                                 const shipPos = [norrona.position.latitude, norrona.position.longitude];
                                 const destPos = [destInfo.lat, destInfo.lon];
@@ -136,8 +115,10 @@
             }
             
             function initializeVoyagePage() { if (map) { map.remove(); map = null; } map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() }); L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map); updateShipData(); }
+            function updateTime() { const onboardTimeEl = document.getElementById('onboard-time'); if(onboardTimeEl) {onboardTimeEl.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });} }
             
             setInterval(updateShipData, 120000); 
+            setInterval(updateTime, 1000);
             init();
         });
     </script>
