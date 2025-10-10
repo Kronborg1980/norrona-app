@@ -4,19 +4,42 @@
   },
   "categories": [
     {
+      "id": "home",
+      "title": "Home",
+      "icon": "home",
+      "type": "home",
+      "items": [
+        {
+          "name": "Welcome Screen",
+          "description": "Your guide to the Norröna experience.",
+          "images": [
+            "https://images.unsplash.com/photo-1542144593-8706a1755f15?q=80&w=1920&auto=format&fit=crop"
+          ],
+          "fields": [],
+          "menu": []
+        }
+      ]
+    },
+    {
       "id": "outlets",
       "title": "Outlets",
+      "icon": "restaurant",
+      "type": "grid",
       "items": [
         {
           "id": "item-1",
           "name": "Skansagarður Buffet",
           "description": "Our all-inclusive buffet with a grand selection of hot and cold dishes.",
           "images": ["https://images.unsplash.com/photo-1555243896-c709bfa0b564?q=80&w=800&auto=format&fit=crop"],
-          "fields": [
-            { "label": "Deck", "value": "6" },
-            { "label": "Breakfast", "value": "07:00 - 10:00" },
-            { "label": "Dinner", "value": "18:00 - 21:00" }
-          ],
+          "fields": [{"label": "Deck","value": "6"},{"label": "Breakfast","value": "07:00 - 10:00"},{"label": "Dinner","value": "18:00 - 21:00"}],
+          "menu": []
+        },
+        {
+          "id": "item-2",
+          "name": "Munkastova Restaurant",
+          "description": "An award-winning á la carte restaurant offering a fine selection of Nordic cuisine.",
+          "images": ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop"],
+          "fields": [{"label": "Deck","value": "6"},{"label": "Service","value": "18:00 - 21:00"}],
           "menu": []
         },
         {
@@ -24,31 +47,24 @@
           "name": "Sjóbúðin Tax-Free",
           "description": "Great deals on perfume, cosmetics, sweets, and spirits.",
           "images": ["https://images.unsplash.com/photo-1570857502809-0818b873383f?q=80&w=800&auto=format&fit=crop"],
-          "fields": [
-            { "label": "Deck", "value": "5" },
-            { "label": "Schedule", "value": "Varies by sailing" }
-          ],
+          "fields": [{"label": "Deck","value": "5"},{"label": "Schedule","value": "Varies by sailing"}],
           "menu": [],
-          "link": {
-            "text": "View Onboard Catalogue",
-            "url": "https://www.smyrilline.com/wp-content/uploads/2025/02/Onboard-Katalog-2023.pdf"
-          }
+          "link": {"text": "View Onboard Catalogue","url": "https://www.smyrilline.com/wp-content/uploads/2025/02/Onboard-Katalog-2023.pdf"}
         }
       ]
     },
     {
       "id": "entertainment",
       "title": "Entertainment",
+      "icon": "celebration",
+      "type": "grid",
       "items": [
         {
           "id": "item-6",
           "name": "Undirhúsið Pub",
           "description": "Relax with a good book or enjoy cakes, beer, and wine. Live music in the evenings.",
           "images": ["https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop"],
-          "fields": [
-            { "label": "Location", "value": "Deck 5" },
-            { "label": "Time", "value": "21:00 - Late" }
-          ],
+          "fields": [{"label": "Location","value": "Deck 5"},{"label": "Time","value": "21:00 - Late"}],
           "menu": []
         }
       ]
@@ -56,6 +72,7 @@
     {
       "id": "voyage",
       "title": "Voyage Info",
+      "icon": "map",
       "type": "voyage",
       "items": []
     }
