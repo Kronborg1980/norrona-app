@@ -25,9 +25,8 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const contentContainer = document.getElementById("content-container");
-            let appData = {};
-            let map;
-
+            let appData = {}; let map;
+            
             function createImageArea(images) { if (!Array.isArray(images) || images.length === 0) return `<div class="image-container"></div>`; if (images.length === 1) return `<div class="image-container"><img src="${images[0]}" class="item-card-image" loading="lazy"></div>`; const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${img}"></div>`).join(''); const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join(''); return `<div class="image-container"><div class="slideshow" data-total="${images.length}">${slides}<div class="slideshow-nav"><button class="prev">&lt;</button><button class="next">&gt;</button></div><div class="slideshow-dots">${dots}</div></div></div>`; }
             function createMenu(menuItems) { if (!Array.isArray(menuItems) || menuItems.length === 0) return ''; return `<div class="menu"><h4>Menu</h4>${menuItems.map(item => `<div class="menu-item"><div class="menu-item-header"><span>${item.name}</span><span>${item.price}</span></div>${item.description ? `<div class="menu-item-desc">${item.description}</div>` : ''}</div>`).join('')}</div>`; }
             function initializeSlideshows() { document.querySelectorAll('.slideshow').forEach(slideshow => { let currentIndex = 0; const slides = slideshow.querySelectorAll('.slide'), dots = slideshow.querySelectorAll('.dot'), total = slides.length; function showSlide(index) { slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active')); slides[index].classList.add('active'); dots[index].classList.add('active'); currentIndex = index; } slideshow.querySelector('.next').addEventListener('click', () => showSlide((currentIndex + 1) % total)); slideshow.querySelector('.prev').addEventListener('click', () => showSlide((currentIndex - 1 + total) % total)); }); }
@@ -66,7 +65,7 @@
             
             const sailingRoute = ['hirtshals', 'torshavn', 'seydisfjord', 'torshavn'];
             const destinationMap = { torshavn: { name: "Tórshavn", country: "Faroe Islands", lat: 62.01, lon: -6.771 }, hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.594, lon: 9.965 }, seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.262, lon: -14.012 } };
-            const conditionMap = { 'CLEAR': '01d', 'CLEAR_DAY': '01d', 'CLEAR_NIGHT': '01n', 'CLOUDY': '04d', 'CLOUDY_DAY': '04d', 'CLOUDY_NIGHT': '04n', 'PARTLY_CLOUDY': '03d', 'PARTLY_CLOUDY_DAY': '03d', 'PARTLY_CLOUDY_NIGHT': '03n', 'MOSTLY_CLOUDY': '04d', 'FOG': '50d', 'HAZE': '50d', 'MIST': '50d', 'RAIN': '10d', 'HEAVY_RAIN': '10d', 'SHOWERS': '09d', 'RAIN_SHOWERS': '09d', 'THUNDERSTORM': '11d', 'SNOW': '13d', 'SNOW_SHOWERS': '13d', 'SLEET': '13d', 'SUNNY': '01d', 'MOSTLY_SUNNY': '02d', 'PARTLY_SUNNY': '03d', 'UNKNOWN': '50d' };
+            const conditionMap = { 'CLEAR': {description:'Clear',icon:'01d'},'CLEAR_DAY':{description:'Clear',icon:'01d'},'CLEAR_NIGHT':{description:'Clear',icon:'01n'},'CLOUDY':{description:'Cloudy',icon:'04d'},'PARTLY_CLOUDY_DAY':{description:'Partly Cloudy',icon:'02d'},'PARTLY_CLOUDY_NIGHT':{description:'Partly Cloudy',icon:'02n'},'RAIN':{description:'Rain',icon:'10d'},'SNOW':{description:'Snow',icon:'13d'},'THUNDERSTORM':{description:'Thunderstorm',icon:'11d'},'FOG':{description:'Fog',icon:'50d'},'MIST':{description:'Mist',icon:'50d'},'UNKNOWN':{description:'Unknown',icon:'50d'}};
 
             function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
@@ -74,7 +73,7 @@
             
             async function fetchWeatherData(lat, lon) {
                 try {
-                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; // Your Google Weather API key
+                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI';
                     const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
                     const response = await fetch(url);
                     if (!response.ok) throw new Error('Weather API fetch failed');
@@ -83,10 +82,10 @@
                     const weatherIconEl = document.getElementById("weather-icon");
                     if(weatherIconEl) {
                         const conditionType = data.weatherCondition.type?.toUpperCase() || 'UNKNOWN';
-                        const iconCode = conditionMap[conditionType] || '50d';
-                        weatherIconEl.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+                        const condition = conditionMap[conditionType] || conditionMap['UNKNOWN'];
+                        weatherIconEl.src = `https://openweathermap.org/img/wn/${condition.icon}@2x.png`;
                         document.getElementById("weather-temp").textContent = `${Math.round(data.temperature.degrees)}°C`;
-                        document.getElementById("weather-description").textContent = data.weatherCondition.description?.text || "N/A";
+                        document.getElementById("weather-description").textContent = data.weatherCondition.description?.text || condition.description;
                     }
                 } catch (error) {
                     console.error("Weather fetch failed:", error);
@@ -104,8 +103,7 @@
                     const speedKnots = norrona.position?.speed || 0;
                     const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
                     const currentDestInfo = destinationMap[currentDestKey];
-                    if (!currentDestInfo) return; // Stop if destination is unknown
-
+                    if (!currentDestInfo) return; 
                     const hasArrived = new Date(norrona.etaFromAIS).getTime() < Date.now();
                     const { day, time } = formatETA(norrona.etaFromAIS);
 
@@ -126,7 +124,7 @@
                             homeDest.textContent = currentDestInfo.name;
                             homeEta.textContent = `Arrival: ${day}, ${time}`;
                         }
-                    } else { // Voyage Page
+                    } else { 
                         const page = document.querySelector('.voyage-page'); if(!page) return;
                         
                         document.getElementById("speed-knots").textContent = `${speedKnots} kn`;
