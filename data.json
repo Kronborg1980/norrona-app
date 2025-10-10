@@ -24,19 +24,6 @@
             { "name": "Evening Buffet", "description": "Includes starters, main courses, and dessert.", "price": "€45" },
             { "name": "Breakfast Buffet", "description": "Full continental and cooked breakfast.", "price": "€25" }
           ]
-        },
-        {
-          "id": "item-1672531200001",
-          "name": "Sjóbúðin Tax-Free",
-          "description": "Great deals on perfume, cosmetics, sweets, and spirits.",
-          "images": [
-            "https://images.unsplash.com/photo-1570857502809-0818b873383f?q=80&w=800&auto=format&fit=crop"
-          ],
-          "fields": [
-            { "label": "Deck", "value": "5" },
-            { "label": "Schedule", "value": "Varies by sailing" }
-          ],
-          "menu": []
         }
       ]
     },
