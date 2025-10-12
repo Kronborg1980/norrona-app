@@ -160,10 +160,19 @@
                         if (onboardTimeEl) onboardTimeEl.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
                         if (map) {
                             const shipPos = [norrona.position.latitude, norrona.position.longitude];
-                            const destPos = [currentDestInfo.lat, currentDestInfo.lon];
-                            if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
-                            if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
-                            map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
+                            
+                            // 1. ADD/UPDATE THE SHIP MARKER
+                            if (!map.shipMarker) {
+                                map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map);
+                            } else {
+                                map.shipMarker.setLatLng(shipPos);
+                            }
+                            
+                            // 2. REMOVED THE DESTINATION MARKER LOGIC
+                            // No 'destMarker' code here anymore.
+
+                            // 3. CENTER THE MAP ON THE SHIP'S POSITION
+                            map.setView(shipPos, 6); // A zoom level of 6 is a good starting point
                         }
                         setTimeout(() => fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon), 0);
                     }
@@ -176,7 +185,7 @@
                 // Add dotted route line
                 const routeCoordinates = [
                     [57.594, 9.965], // Hirtshals
-                    [59.5, 2.0],    // Waypoint to avoid Norway
+                    [59.5, 2.0],     // Waypoint to avoid Norway
                     [62.01, -6.771], // Tórshavn
                     [65.262, -14.012], // Seyðisfjörður
                     [62.01, -6.771]  // Tórshavn
