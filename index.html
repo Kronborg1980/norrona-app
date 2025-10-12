@@ -1,198 +1,486 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>Norröna Onboard Guide</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-    <style>:root{--smyril-blue:#002B5C;--smyril-accent:#00A9E0;--background-dark:#011832;--glass-bg:rgba(0, 25, 53, 0.6);--text-light:#ffffff;--text-muted:rgba(255, 255, 255, 0.6);--border-radius:16px}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Poppins',sans-serif;background-color:var(--background-dark);color:var(--text-light);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}#app-shell{max-width:500px;margin:0 auto;background-color:var(--background-dark);min-height:100vh;display:flex;flex-direction:column;padding-bottom:70px}.main-header{position:sticky;top:0;z-index:1000;background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1)}.navbar{display:flex;justify-content:space-between;align-items:center;height:60px;padding:0 20px}.navbar .logo img{height:24px}.onboard-time{font-weight:600;font-size:.9rem}main{flex-grow:1}.page{padding:20px;display:none}.page.active{display:block}.section-header{margin-bottom:20px;text-align:center}.section-header h2{font-size:2rem;font-weight:700;color:var(--text-light)}.item-card{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);box-shadow:0 8px 30px rgba(0,0,0,.2);overflow:hidden;margin-bottom:20px;opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s}.item-card.visible{opacity:1;transform:translateY(0)}.image-container{width:100%;height:200px;background:#00152b}.item-card-image{width:100%;height:100%;object-fit:cover;display:block}.item-info{padding:20px}.item-info h3{font-size:1.3rem;font-weight:600}.item-info p{color:var(--text-muted);margin:8px 0;font-size:.9rem}.item-info .fields{border-top:1px solid rgba(255,255,255,.1);margin-top:15px;padding-top:15px;display:grid;gap:8px;font-size:.9rem}.item-info .field{display:flex;justify-content:space-between}.item-info .field strong{color:var(--text-light);font-weight:600}.item-link-button{display:block;background-color:var(--smyril-accent);color:var(--text-dark);text-align:center;padding:12px;border-radius:8px;text-decoration:none;font-weight:600;margin-top:20px;transition:transform .2s ease}.item-link-button:hover{transform:scale(1.05)}.menu{border-top:1px solid rgba(255,255,255,.1);margin-top:15px;padding-top:15px}.menu h4{font-weight:700;color:var(--smyril-accent);margin-bottom:10px}.menu-item{margin-bottom:10px;font-size:.9rem}.menu-item-header{display:flex;justify-content:space-between;font-weight:600}.menu-item-desc{font-size:.8rem;color:var(--text-muted)}.slideshow{position:relative;width:100%;height:100%;overflow:hidden}.slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity .5s ease-in-out}.slide.active{opacity:1}.slide img{width:100%;height:100%;object-fit:cover}#map{width:100%;height:40vh;border-bottom:1px solid rgba(255,255,255,.1)}.leaflet-container{background-color:#1a1a1a}.voyage-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0}.grid-item{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);padding:20px;text-align:center}.grid-item .label{font-size:.8rem;color:var(--smyril-accent);margin-bottom:8px;text-transform:uppercase}.grid-item .label.two-line span{display:block}.grid-item .value{font-size:1.5rem;font-weight:700}.grid-item .sub-value{font-size:.8rem;color:var(--text-muted)}.weather-panel{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--border-radius);padding:20px;display:flex;align-items:center;gap:20px}.weather-panel img{width:60px;height:60px}.weather-info .label{font-size:.8rem;color:var(--smyril-accent);text-transform:uppercase}.weather-info .value{font-size:1.2rem;font-weight:700}
-        .home-hero{height:50vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;background-size:cover;background-position:center;position:relative}.home-hero::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to top,var(--background-dark) 0%,rgba(0,0,0,0.3) 100%)}.home-hero *{position:relative;z-index:2}.home-hero h1{font-size:2.5rem}.home-hero p{font-size:1.1rem;color:var(--text-muted)}
-        .bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;height:70px;background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-around;align-items:center;z-index:1000}
-        .nav-item{display:flex;flex-direction:column;align-items:center;color:var(--text-muted);text-decoration:none;font-size:.7rem;transition:color .2s ease}.nav-item.active{color:var(--smyril-accent)}.nav-item .material-icons{font-size:24px;margin-bottom:2px}
-    </style>
+<meta charset="UTF--8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kronborgs Widget</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<style>
+body {
+margin: 0;
+padding: 0;
+background: #000000;
+color: white;
+font-family: 'Inter', sans-serif;
+}
+:root {
+--header-font-size: 21.2px;
+--info-font-size: 20.2px;
+--clock-font-size: 55px;
+--weather-font-size: 20.2px;
+--map-zoom-level: 1;
+}
+.widget {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 120px;
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+justify-content: space-between;
+background: #000000;
+padding: 12px 6px;
+box-sizing: border-box;
+gap: 3.6px; /* Gap reduced by 10% from 4px */
+}
+.section {
+flex: 1;
+text-align: center;
+padding: 0 6px;
+opacity: 0;
+animation: fadeIn 0.5s ease-in forwards;
+}
+.section h2 {
+font-size: var(--header-font-size);
+margin: 0 0 6px;
+line-height: 24px;
+color: #e5e7eb;
+}
+.section p {
+font-size: var(--info-font-size);
+margin: 2px 0;
+color: #d1d5db;
+}
+.time-section p {
+font-size: var(--clock-font-size);
+color: #ffffff;
+}
+.weather-details {
+font-size: var(--weather-font-size);
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+.weather-details p {
+font-size: var(--weather-font-size);
+}
+.map-section {
+flex: 2.2;
+display: flex;
+justify-content: center;
+}
+#map {
+height: 100px;
+width: 70%;
+border: none;
+background: #000000;
+overflow: hidden;
+margin: 0 auto;
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.leaflet-container {
+background: #000000;
+border-radius: 8px;
+}
+.leaflet-tile-container {
+background: #000000;
+}
+.weather-section {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 12px;
+}
+.weather-icon {
+width: 62.4px;
+height: 62.4px;
+transition: opacity 0.3s ease;
+}
+.nav-section {
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.nav-section p {
+line-height: 1.2;
+}
+#debug {
+position: fixed;
+top: 10px;
+left: 10px;
+color: #ef4444;
+font-size: 14px;
+z-index: 1000;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(5px); }
+to { opacity: 1; transform: translateY(0); }
+}
+@media (orientation: portrait) {
+.widget {
+height: 150px;
+}
+#map {
+width: 90%;
+height: 120px;
+}
+}
+</style>
 </head>
 <body>
-    <div id="app-shell">
-        <header class="main-header">
-            <nav class="navbar">
-                <a href="#" class="logo"><img id="header-logo" src="" alt="Logo"></a>
-                <div class="onboard-time" id="onboard-time-header">--:--</div>
-            </nav>
-        </header>
-        <main id="content-container"></main>
-    </div>
-    <nav class="bottom-nav" id="bottom-nav"></nav>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const contentContainer = document.getElementById("content-container");
-            let appData = {};
-            let map;
-            // Define destination marker icon
-            const destIcon = L.icon({
-                iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-                iconSize: [12, 20],
-                iconAnchor: [6, 20]
-            });
-            function createImageArea(images) { if (!Array.isArray(images) || images.length === 0) return `<div class="image-container"></div>`; if (images.length === 1) return `<div class="image-container"><img src="${images[0]}" class="item-card-image" loading="lazy"></div>`; const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${img}"></div>`).join(''); const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join(''); return `<div class="image-container"><div class="slideshow" data-total="${images.length}">${slides}<div class="slideshow-nav"><button class="prev">&lt;</button><button class="next">&gt;</button></div><div class="slideshow-dots">${dots}</div></div></div>`; }
-            function createMenu(menuItems) { if (!Array.isArray(menuItems) || menuItems.length === 0) return ''; return `<div class="menu"><h4>Menu</h4>${menuItems.map(item => `<div class="menu-item"><div class="menu-item-header"><span>${item.name}</span><span>${item.price}</span></div>${item.description ? `<div class="menu-item-desc">${item.description}</div>` : ''}</div>`).join('')}</div>`; }
-            function initializeSlideshows() { document.querySelectorAll('.slideshow').forEach(slideshow => { let currentIndex = 0; const slides = slideshow.querySelectorAll('.slide'), dots = slideshow.querySelectorAll('.dot'), total = slides.length; function showSlide(index) { slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active')); slides[index].classList.add('active'); dots[index].classList.add('active'); currentIndex = index; } slideshow.querySelector('.next').addEventListener('click', () => showSlide((currentIndex + 1) % total)); slideshow.querySelector('.prev').addEventListener('click', () => showSlide((currentIndex - 1 + total) % total)); }); }
-            function animateVisibleItems() { const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, { threshold: 0.1 }); document.querySelectorAll('.item-card').forEach(card => observer.observe(card)); }
-            function renderPage(pageId) {
-                const page = appData.categories.find(cat => cat.id === pageId); if (!page) { contentContainer.innerHTML = '<p>Page not found.</p>'; return; }
-                document.querySelectorAll('.nav-item').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
-                if (page.type === 'home') {
-                    contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero" style="background-image: url(${page.items[0].images[0]})"><h1>Welcome Aboard</h1><p>${page.items[0].description}</p></div><div style="padding:20px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Destination</div><div class="value" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label two-line"><span>Current</span><span>Speed</span></div><div class="value" id="speed-knots-home">--</div><div class="sub-value" id="speed-kmh-home">-- km/h</div></div></div></div></div>`;
-                    updateShipData(true);
-                } else if (page.type === 'voyage') {
-                    contentContainer.innerHTML = `<div class="page active voyage-page"><div id="map"></div><div class="voyage-content"><div class="voyage-grid"><div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">-- km/h</div></div><div class="grid-item"><div class="label">Onboard Time</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Timezone</div></div><div class="grid-item"><div class="label">Distance to Go</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">Kilometers</div></div><div class="grid-item"><div class="label" id="destination-label">Next Destination & ETA</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div></div><div class="weather-panel"><img id="weather-icon" src="" alt=""><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp">--°C</span>, <span id="weather-description">--</span></div></div></div></div></div>`;
-                    initializeVoyagePage();
-                } else {
-                    contentContainer.innerHTML = `<div class="page active" style="padding:20px;"><div class="section-header"><h2>${page.title}</h2></div><div class="content-grid">${page.items.map(item => `<div class="item-card">${createImageArea(item.images)}<div class="item-info"><h3>${item.name}</h3>${item.description ? `<p>${item.description}</p>` : ''}<div class="fields">${(item.fields || []).map(field => `<div class="field"><strong>${field.label}:</strong><span>${field.value}</span></div>`).join('')}</div>${createMenu(item.menu)}${item.link && item.link.url ? `<a href="${item.link.url}" target="_blank" class="item-link-button">${item.link.text}</a>` : ''}</div></div>`).join('')}</div></div>`;
-                    initializeSlideshows();
-                }
-                animateVisibleItems();
-                window.location.hash = pageId;
-            }
-            async function init() {
-                try {
-                    const response = await fetch("data.json?v=" + Date.now()); if (!response.ok) throw new Error("Could not load data."); appData = await response.json();
-                    document.getElementById("header-logo").src = appData.settings.logoUrl;
-                    const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join(''); document.getElementById("bottom-nav").innerHTML = navHtml;
-                    document.querySelectorAll('.nav-item').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }); });
-                    const initialPageId = window.location.hash.substring(1) || appData.categories[0]?.id;
-                    if (initialPageId) renderPage(initialPageId); else contentContainer.innerHTML = '<p>Welcome!</p>';
-                } catch (error) { console.error(error); contentContainer.innerHTML = `<p>${error.message}</p>`; }
-            }
-            function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
-            const sailingRoute = ['hirtshals', 'torshavn', 'seydisfjord', 'torshavn'];
-            const destinationMap = { torshavn: { name: "Tórshavn", country: "Faroe Islands", lat: 62.01, lon: -6.771 }, hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.594, lon: 9.965 }, seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.262, lon: -14.012 } };
-            const conditionMap = { 'CLEAR': '01d', 'CLEAR_DAY': '01d', 'CLEAR_NIGHT': '01n', 'CLOUDY': '04d', 'CLOUDY_DAY': '04d', 'CLOUDY_NIGHT': '04n', 'PARTLY_CLOUDY': '03d', 'PARTLY_CLOUDY_DAY': '03d', 'PARTLY_CLOUDY_NIGHT': '03n', 'MOSTLY_CLOUDY': '04d', 'FOG': '50d', 'HAZE': '50d', 'MIST': '50d', 'RAIN': '10d', 'HEAVY_RAIN': '10d', 'SHOWERS': '09d', 'RAIN_SHOWERS': '09d', 'THUNDERSTORM': '11d', 'SNOW': '13d', 'SNOW_SHOWERS': '13d', 'SLEET': '13d', 'SUNNY': '01d', 'MOSTLY_SUNNY': '02d', 'PARTLY_SUNNY': '03d', 'UNKNOWN': '50d' };
-            function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
-            function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-            function formatETA(e) { if (!e) return { day: "--", time: "--:--" }; try { const t = new Date(e); if (isNaN(t.getTime())) return { day: "Invalid Date", time: "" }; const o = t.toLocaleDateString("en-GB", { weekday: "long", timeZone: "Atlantic/Faroe" }), a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a } } catch (e) { return { day: "Error", time: "" } } }
-            async function fetchWeatherData(lat, lon) {
-                try {
-                    const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI';
-                    const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
-                    console.log("Fetching weather data from:", url);
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`Weather API fetch failed: ${response.status} ${response.statusText}`);
-                    }
-                    const data = await response.json();
-                    console.log("Weather API response:", JSON.stringify(data, null, 2));
-                    const tempEl = document.getElementById("weather-temp");
-                    if (tempEl) {
-                        tempEl.textContent = data.temperature?.degrees != null 
-                            ? `${Math.round(data.temperature.degrees)}°C` 
-                            : '--°C';
-                    } else {
-                        console.warn("Element #weather-temp not found");
-                    }
-                    const descEl = document.getElementById("weather-description");
-                    if (descEl) {
-                        descEl.textContent = data.weatherCondition?.description?.text || data.weatherCondition?.description || "N/A";
-                    } else {
-                        console.warn("Element #weather-description not found");
-                    }
-                    const weatherIconEl = document.getElementById("weather-icon");
-                    if (weatherIconEl) {
-                        const conditionType = data.weatherCondition?.type?.toUpperCase() || data.weatherCondition?.condition?.toUpperCase() || 'UNKNOWN';
-                        const iconCode = conditionMap[conditionType] || '50d';
-                        weatherIconEl.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-                    } else {
-                        console.warn("Element #weather-icon not found");
-                    }
-                } catch (error) {
-                    console.error("Weather fetch failed:", error.message);
-                    const weatherDescEl = document.getElementById("weather-description");
-                    if (weatherDescEl) weatherDescEl.textContent = 'Unavailable';
-                    const weatherTempEl = document.getElementById("weather-temp");
-                    if (weatherTempEl) weatherTempEl.textContent = '--°C';
-                    const weatherIconEl = document.getElementById("weather-icon");
-                    if (weatherIconEl) weatherIconEl.src = '';
-                }
-            }
-            async function updateShipData(isHomePage = false) {
-                try {
-                    const response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
-                    const norrona = (await response.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
-                    if (!norrona || !norrona.destinationFromAIS) return;
-                    const speedKnots = norrona.position?.speed || 0;
-                    const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
-                    const currentDestInfo = destinationMap[currentDestKey];
-                    if (!currentDestInfo) return;
-                    const hasArrived = new Date(norrona.etaFromAIS).getTime() < Date.now();
-                    const { day, time } = formatETA(norrona.etaFromAIS);
-                    if (isHomePage) {
-                        const homeDestLabel = document.getElementById('home-dest-label');
-                        const homeDest = document.getElementById('destination-home');
-                        const homeEta = document.getElementById('eta-home');
-                        document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`;
-                        document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
-                        if (hasArrived) {
-                            homeDestLabel.textContent = "Current Port";
-                            homeDest.textContent = currentDestInfo.name;
-                            const lastIndex = sailingRoute.lastIndexOf(currentDestKey);
-                            const nextPortKey = sailingRoute[lastIndex + 1] || sailingRoute[0];
-                            homeEta.textContent = `Next Sailing: ${destinationMap[nextPortKey].name}`;
-                        } else {
-                            homeDestLabel.textContent = "Next Destination";
-                            homeDest.textContent = currentDestInfo.name;
-                            homeEta.textContent = `Arrival: ${day}, ${time}`;
-                        }
-                    } else {
-                        const page = document.querySelector('.voyage-page'); if(!page) return;
-                        document.getElementById("speed-knots").textContent = `${speedKnots} kn`;
-                        document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
-                        const distance = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
-                        if (distance < 1 && speedKnots < 1) {
-                            document.getElementById("distance").textContent = "In Harbour";
-                            document.getElementById("distance-unit").textContent = "At Destination";
-                        } else {
-                            document.getElementById("distance").textContent = `${Math.round(distance)}`;
-                            document.getElementById("distance-unit").textContent = "Kilometers";
-                        }
-                        document.getElementById("destination-label").textContent = hasArrived ? "Arrival Information" : "Next Destination & ETA";
-                        document.getElementById("destination-voyage").textContent = `${currentDestInfo.name}, ${currentDestInfo.country}`;
-                        document.getElementById("eta-voyage").textContent = hasArrived ? `Arrived ${day} at ${time}` : `Arriving ${day} at ${time}`;
-                        const onboardTimeEl = document.getElementById('onboard-time');
-                        if (onboardTimeEl) onboardTimeEl.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
-                        if (map) {
-                            const shipPos = [norrona.position.latitude, norrona.position.longitude];
-                            const destPos = [currentDestInfo.lat, currentDestInfo.lon];
-                            if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
-                            if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
-                            map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
-                        }
-                        setTimeout(() => fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon), 0);
-                    }
-                } catch (e) { console.error("Failed to update ship data", e); }
-            }
-            function initializeVoyagePage() {
-                if (map) { map.remove(); map = null; }
-                map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() });
-                L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
-                // Add dotted route line
-                const routeCoordinates = [
-                    [57.594, 9.965], // Hirtshals
-                    [59.5, 2.0],    // Waypoint to avoid Norway
-                    [62.01, -6.771], // Tórshavn
-                    [65.262, -14.012], // Seyðisfjörður
-                    [62.01, -6.771]  // Tórshavn
-                ];
-                L.polyline(routeCoordinates, {
-                    color: '#00A9E0',
-                    weight: 2,
-                    dashArray: '5, 10',
-                    opacity: 0.7
-                }).addTo(map);
-                updateShipData();
-            }
-            setInterval(updateShipData, 120000);
-            setInterval(updateHeaderTime, 1000);
-            init();
-        });
-    </script>
+<div id="debug">Debug: Loading...</div>
+<div class="widget">
+<div class="section nav-section">
+<h2>Navigation</h2>
+<p id="course-speed">Loading...</p>
+</div>
+<div class="section" id="distance-section">
+<h2>Distance to Destination</h2>
+<p id="distance">Loading...</p>
+</div>
+<div class="section map-section">
+<div id="map"></div>
+</div>
+<div class="section">
+<h2>Next Destination</h2>
+<p id="destination">Loading...</p>
+<p id="eta">Loading...</p>
+</div>
+<div class="section">
+<h2>Weather at Destination</h2>
+<div class="weather-section">
+<img class="weather-icon" id="weather-icon" src="" alt="Weather Icon">
+<div class="weather-details">
+<p id="weather-description">Loading...</p>
+<p id="weather-temp">Loading...</p>
+</div>
+</div>
+</div>
+<div class="section time-section">
+<h2>Onboard Time</h2>
+<p id="current-time">Loading...</p>
+</div>
+</div>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+var map = L.map('map', {
+zoomControl: false,
+attributionControl: false,
+renderer: L.canvas(),
+maxZoom: 20
+});
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+subdomains: 'abcd',
+minZoom: 0,
+maxZoom: 20
+}).addTo(map);
+const defaultIcon = L.icon({
+iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+iconSize: [12, 20],
+iconAnchor: [6, 20],
+popupAnchor: [0, -18],
+shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+shadowSize: [20, 20]
+});
+const shipIcon = L.icon({
+iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+iconSize: [12, 20],
+iconAnchor: [6, 20],
+popupAnchor: [0, -18],
+shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+shadowSize: [20, 20]
+});
+const harbourIcon = L.icon({
+iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+iconSize: [12, 20],
+iconAnchor: [6, 20],
+popupAnchor: [0, -18],
+shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+shadowSize: [20, 20]
+});
+let currentMarker = null;
+let destinationMarker = null;
+let routeLine = null;
+let departureLine = null;
+let departureMarker = null;
+const destinationMap = {
+'torshavn': { name: 'Tórshavn', country: 'Faroe Islands', latitude: 62.010, longitude: -6.771 },
+'hirtshals': { name: 'Hirtshals', country: 'Denmark', latitude: 57.594, longitude: 9.965 },
+'seydisfjord': { name: 'Seyðisfjörður', country: 'Iceland', latitude: 65.262, longitude: -14.012 }
+};
+const routeWaypoints = {
+'torshavn-hirtshals': [
+[62.010, -6.771],[61.000, -6.000],[58.000, 5.000],[57.594, 9.965]
+],
+'hirtshals-torshavn': [
+[57.594, 9.965],[58.000, 5.000],[61.000, -6.000],[62.010, -6.771]
+],
+'torshavn-seydisfjord': [
+[62.010, -6.771],[63.500, -10.000],[65.262, -14.012]
+],
+'seydisfjord-torshavn': [
+[65.262, -14.012],[63.500, -10.000],[62.010, -6.771]
+],
+'hirtshals-seydisfjord': [
+[57.594, 9.965],[61.000, 5.000],[64.000, -10.000],[65.262, -14.012]
+],
+'seydisfjord-hirtshals': [
+[65.262, -14.012],[64.000, -10.000],[61.000, 5.000],[57.594, 9.965]
+]
+};
+function getRouteKey(origin, destination) {
+return `${origin}-${destination}`;
+}
+function normalizeDestinationName(name) {
+if (!name) return '';
+return name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ð/g, 'd').replace(/[^a-z0-9]/g, '');
+}
+function haversineDistance(lat1, lon1, lat2, lon2) {
+const R = 6371;
+const dLat = (lat2 - lat1) * Math.PI / 180;
+const dLon = (lon2 - lon1) * Math.PI / 180;
+const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+Math.sin(dLon / 2) * Math.sin(dLon / 2);
+const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+return R * c;
+}
+function findClosestHarbour(currentLat, currentLon, threshold = 1.5) {
+let closestHarbour = null;
+let minDistance = Infinity;
+for (const key in destinationMap) {
+const harbour = destinationMap[key];
+const distance = haversineDistance(currentLat, currentLon, harbour.latitude, harbour.longitude);
+if (distance < minDistance) {
+minDistance = distance;
+closestHarbour = { key: key, ...harbour };
+}
+}
+if (minDistance <= threshold) {
+return { ...closestHarbour, distance: minDistance };
+}
+return null;
+}
+function formatETA(eta) {
+if (!eta) {
+return 'N/A';
+}
+try {
+const date = new Date(eta);
+if (isNaN(date.getTime())) {
+return 'N/A';
+}
+const now = new Date();
+const prefix = date.getTime() < now.getTime() ? 'Arrived: ' : '';
+const day = date.toLocaleDateString('en-GB', { weekday: 'long', timeZone: 'Atlantic/Faroe' });
+const time = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Atlantic/Faroe' });
+return `${prefix}${day}, ${time}`;
+} catch (error) {
+return 'N/A';
+}
+}
+function formatTravelTime(distance, speedKnots) {
+if (speedKnots === 0) return 'N/A';
+const speedKmh = speedKnots * 1.852;
+const hours = distance / speedKmh;
+if (isNaN(hours) || hours < 0) return 'N/A';
+const days = Math.floor(hours / 24);
+const remainingHours = Math.floor(hours % 24);
+const minutes = Math.round((hours % 1) * 60);
+let timeString = '';
+if (days > 0) timeString += `${days}d `;
+if (remainingHours > 0 || days > 0) timeString += `${remainingHours}h `;
+timeString += `${minutes}m`;
+return timeString.trim();
+}
+const conditionMap = {
+'CLEAR': { description: 'Clear', icon: '01d' }, 'CLEAR_DAY': { description: 'Clear', icon: '01d' }, 'CLEAR_NIGHT': { description: 'Clear', icon: '01n' }, 'CLOUDY': { description: 'Cloudy', icon: '04d' }, 'CLOUDY_DAY': { description: 'Cloudy', icon: '04d' }, 'CLOUDY_NIGHT': { description: 'Cloudy', icon: '04n' }, 'PARTLY_CLOUDY': { description: 'Partly Cloudy', icon: '03d' }, 'PARTLY_CLOUDY_DAY': { description: 'Partly Cloudy', icon: '03d' }, 'PARTLY_CLOUDY_NIGHT': { description: 'Partly Cloudy', icon: '03n' }, 'MOSTLY_CLOUDY': { description: 'Mostly Cloudy', icon: '04d' }, 'MOSTLY_CLOUDY_DAY': { description: 'Mostly Cloudy', icon: '04d' }, 'MOSTLY_CLOUDY_NIGHT': { description: 'Mostly Cloudy', icon: '04n' }, 'OVERCAST': { description: 'Overcast', icon: '04d' }, 'FOG': { description: 'Fog', icon: '50d' }, 'HAZE': { description: 'Haze', icon: '50d' }, 'MIST': { description: 'Mist', icon: '50d' }, 'SMOKE': { description: 'Smoke', icon: '50d' }, 'DUST': { description: 'Dust', icon: '50d' }, 'LIGHT_RAIN': { description: 'Light Rain', icon: '10d' }, 'RAIN': { description: 'Rain', icon: '10d' }, 'RAIN_DAY': { description: 'Rain', icon: '10d' }, 'RAIN_NIGHT': { description: 'Rain', icon: '10n' }, 'HEAVY_RAIN': { description: 'Heavy Rain', icon: '10d' }, 'SHOWERS': { description: 'Showers', icon: '09d' }, 'SCATTERED_SHOWERS': { description: 'Scattered Showers', icon: '09d' }, 'RAIN_SHOWERS': { description: 'Rain Showers', icon: '09d' }, 'THUNDERSTORM': { description: 'Thunderstorm', icon: '11d' }, 'SCATTERED_THUNDERSTORMS': { description: 'Scattered Thunderstorms', icon: '11d' }, 'CHANCE_OF_RAIN': { description: 'Chance of Rain', icon: '10d' }, 'CHANCE_OF_STORM': { description: 'Chance of Storm', icon: '11d' }, 'SNOW': { description: 'Snow', icon: '13d' }, 'SNOW_DAY': { description: 'Snow', icon: '13d' }, 'SNOW_NIGHT': { description: 'Snow', icon: '13n' }, 'SNOW_SHOWERS': { description: 'Snow Showers', icon: '13d' }, 'CHANCE_OF_SNOW': { description: 'Chance of Snow', icon: '13d' }, 'FLURRIES': { description: 'Flurries', icon: '13d' }, 'SLEET': { description: 'Sleet', icon: '13d' }, 'ICY': { description: 'Icy', icon: '13d' }, 'SUNNY': { description: 'Sunny', icon: '01d' }, 'MOSTLY_SUNNY': { description: 'Mostly Sunny', icon: '02d' }, 'PARTLY_SUNNY': { description: 'Partly Sunny', icon: '03d' }, 'STORM': { description: 'Storm', icon: '11d' }, 'UNKNOWN': { description: 'Unknown', icon: '04d' }
+};
+function getWeatherCacheKey(lat, lon) {
+const roundedLat = Number(lat).toFixed(3); const roundedLon = Number(lon).toFixed(3); return `weather_${roundedLat}_${roundedLon}`;
+}
+function loadCachedWeather(lat, lon) {
+const cacheKey = getWeatherCacheKey(lat, lon); const cached = localStorage.getItem(cacheKey); if (cached) { try { const data = JSON.parse(cached); const cacheTime = data.timestamp || 0; const now = Date.now(); if (data.description === 'Unknown' || data.temp === 0) { localStorage.removeItem(cacheKey); return null; } if (now - cacheTime < 30 * 60 * 1000) { return data; } else { localStorage.removeItem(cacheKey); return null; } } catch (e) { localStorage.removeItem(cacheKey); return null; } } return null;
+}
+function saveCachedWeather(lat, lon, weatherData) {
+const cacheKey = getWeatherCacheKey(lat, lon); try { weatherData.timestamp = Date.now(); localStorage.setItem(cacheKey, JSON.stringify(weatherData)); } catch (e) { console.error('Error saving cached weather data:', e.message); }
+}
+function displayCachedWeather(cachedWeather) {
+if (!cachedWeather) return false; document.getElementById('weather-description').textContent = cachedWeather.description; document.getElementById('weather-temp').textContent = `${cachedWeather.temp}°C`; document.getElementById('weather-icon').src = cachedWeather.iconSrc; document.getElementById('weather-icon').alt = cachedWeather.description; return true;
+}
+async function fetchWeather(lat, lon) {
+const cachedWeather = loadCachedWeather(lat, lon); if (cachedWeather) { displayCachedWeather(cachedWeather); return; } try { const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI'; const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`; const response = await fetch(url, { cache: 'no-store' }); if (!response.ok) { throw new Error(`Weather API response not OK: ${response.status}`); } const data = await response.json(); if (!data.weatherCondition || !data.temperature || typeof data.temperature.degrees !== 'number') { throw new Error('Invalid API response'); } const conditionType = data.weatherCondition.type?.toUpperCase() || 'UNKNOWN'; const conditionText = data.weatherCondition.description?.text || conditionMap[conditionType]?.description || 'Unknown'; const condition = conditionMap[conditionType] || conditionMap['UNKNOWN']; const temp = data.temperature.degrees ?? 0; const description = conditionText; const icon = condition.icon; const iconSrc = `https://openweathermap.org/img/wn/${icon}@2x.png`; document.getElementById('weather-description').textContent = description; document.getElementById('weather-temp').textContent = `${Math.round(temp)}°C`; document.getElementById('weather-icon').src = iconSrc; document.getElementById('weather-icon').alt = description; saveCachedWeather(lat, lon, { description, temp, iconSrc }); } catch (error) { console.error(`Error fetching weather for ${lat},${lon}:`, error.message); if (!displayCachedWeather(loadCachedWeather(lat, lon))) { document.getElementById('weather-description').textContent = 'N/A'; document.getElementById('weather-temp').textContent = 'N/A'; document.getElementById('weather-icon').src = ''; document.getElementById('weather-icon').alt = 'N/A'; } }
+}
+function loadCachedData() {
+const cached = localStorage.getItem('shipData'); if (cached) { try { const data = JSON.parse(cached); const cacheTime = data.timestamp || 0; if (Date.now() - cacheTime < 15 * 60 * 1000) { return data; } } catch (e) { /* ignore */ } } return null;
+}
+function saveCachedData(data) {
+try { data.timestamp = Date.now(); localStorage.setItem('shipData', JSON.stringify(data)); } catch (e) { console.error('Error saving cached ship data:', e.message); }
+}
+function displayCachedData(cachedData) {
+if (!cachedData) return;
+document.getElementById('course-speed').innerHTML = cachedData.courseSpeed || 'N/A';
+document.getElementById('distance').textContent = cachedData.distance || 'N/A';
+document.getElementById('destination').textContent = cachedData.destination || 'N/A';
+document.getElementById('eta').textContent = cachedData.eta || 'N/A';
+const clearMapLayers = () => {
+if (currentMarker) { map.removeLayer(currentMarker); currentMarker = null; }
+if (destinationMarker) { map.removeLayer(destinationMarker); destinationMarker = null; }
+if (departureMarker) { map.removeLayer(departureMarker); departureMarker = null; }
+if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+if (departureLine) { map.removeLayer(departureLine); departureLine = null; }
+};
+clearMapLayers();
+if (cachedData.isInHarbour && cachedData.harbourMarker) {
+currentMarker = L.marker(cachedData.harbourMarker.latLng, { icon: harbourIcon }).addTo(map).bindPopup(cachedData.harbourMarker.popup);
+map.setView(cachedData.harbourMarker.latLng, 20);
+} else if (cachedData.currentMarker) {
+currentMarker = L.marker(cachedData.currentMarker.latLng, { icon: shipIcon }).addTo(map).bindPopup('<b>Norröna (Current Position)</b><br>(Cached)');
+if (cachedData.destinationMarker) {
+destinationMarker = L.marker(cachedData.destinationMarker.latLng, { icon: defaultIcon }).addTo(map).bindPopup(`<b>${cachedData.destination}</b><br>(Destination, Cached)`);
+}
+if (cachedData.departureMarker) {
+departureMarker = L.marker(cachedData.departureMarker.latLng, { icon: defaultIcon }).addTo(map).bindPopup(`<b>${cachedData.departureName}</b><br>(Departure, Cached)`);
+}
+if (cachedData.currentMarker && cachedData.destinationMarker && cachedData.departureMarker && cachedData.departureName) {
+const routeKey = getRouteKey(normalizeDestinationName(cachedData.departureName.split(',')[0]), normalizeDestinationName(cachedData.destination.split(',')[0]));
+const waypoints = routeWaypoints[routeKey] || [cachedData.departureMarker.latLng, cachedData.currentMarker.latLng, cachedData.destinationMarker.latLng];
+const waypointsWithCurrent = [waypoints[0], cachedData.currentMarker.latLng, ...waypoints.slice(1)];
+departureLine = L.polyline([waypointsWithCurrent[0], waypointsWithCurrent[1]], { color: '#808080', weight: 2 }).addTo(map);
+routeLine = L.polyline(waypointsWithCurrent.slice(1), { color: '#FFFFFF', weight: 2, dashArray: '5, 5' }).addTo(map);
+const bounds = L.latLngBounds([cachedData.currentMarker.latLng, cachedData.destinationMarker.latLng, cachedData.departureMarker.latLng]);
+map.fitBounds(bounds, { padding: [10, 10] });
+}
+}
+}
+function calculateZoomLevel(distance) {
+if (distance > 100) return 5; if (distance <= 1) return 18; return Math.round(5 + (18 - 5) * (100 - distance) / (100 - 1));
+}
+async function updateShipData(attempt = 1, maxAttempts = 5) {
+const debug = document.getElementById('debug');
+const controller = new AbortController();
+const timeoutId = setTimeout(() => controller.abort(), 15000);
+try {
+debug.textContent = `Debug: Fetching API (Attempt ${attempt}/${maxAttempts})`;
+const response = await fetch('https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels', { cache: 'no-store', signal: controller.signal });
+clearTimeout(timeoutId);
+if (!response.ok) throw new Error(`Vessel API response not OK: ${response.status}`);
+const data = await response.json();
+if (!data || !Array.isArray(data) || data.length === 0) throw new Error('API returned empty or invalid data');
+const norrona = data.find(vessel => vessel.vesselName?.toUpperCase() === 'NORRONA');
+if (!norrona || !norrona.position || !norrona.destinationFromAIS) throw new Error('Norröna data incomplete');
+debug.textContent = 'Debug: API Success';
+const { latitude, longitude, speed, course } = norrona.position;
+const speedKnots = speed || 0;
+const speedKmh = (speedKnots * 1.852).toFixed(1);
+
+const courseSpeedText = `${(course || 0).toFixed(1)}°<br>${speedKnots.toFixed(1)} kn / ${speedKmh} km/h`;
+
+document.getElementById('course-speed').innerHTML = courseSpeedText;
+const destNameNormalized = normalizeDestinationName(norrona.destinationFromAIS.split(',')[0]);
+const destInfo = destinationMap[destNameNormalized];
+if (!destInfo) throw new Error(`Destination ${destNameNormalized} not found`);
+const displayName = `${destInfo.name}, ${destInfo.country}`;
+document.getElementById('destination').textContent = displayName;
+document.getElementById('eta').textContent = formatETA(norrona.etaFromAIS);
+const clearMapLayers = () => {
+if (currentMarker) map.removeLayer(currentMarker); if (destinationMarker) map.removeLayer(destinationMarker); if (departureMarker) map.removeLayer(departureMarker); if (routeLine) map.removeLayer(routeLine); if (departureLine) map.removeLayer(departureLine);
+currentMarker = destinationMarker = departureMarker = routeLine = departureLine = null;
+};
+clearMapLayers();
+const currentHarbour = findClosestHarbour(latitude, longitude);
+const isInHarbour = currentHarbour && speedKnots < 1;
+let newCachedData = {};
+if (isInHarbour) {
+document.getElementById('distance').textContent = `In Harbour at ${currentHarbour.name}`;
+map.setView([latitude, longitude], 20);
+currentMarker = L.marker([latitude, longitude], { icon: harbourIcon }).addTo(map).bindPopup(`<b>In Harbour</b><br>${currentHarbour.name}`);
+
+localStorage.setItem('lastKnownPort', currentHarbour.key);
+
+newCachedData = {
+isInHarbour: true,
+distance: `In Harbour at ${currentHarbour.name}`,
+harbourMarker: { latLng: [latitude, longitude], popup: `<b>In Harbour</b><br>${currentHarbour.name}` }
+};
+} else {
+const distanceToDest = haversineDistance(latitude, longitude, destInfo.latitude, destInfo.longitude);
+document.getElementById('distance').textContent = `~${Math.round(distanceToDest)} km / ${formatTravelTime(distanceToDest, speedKnots)}`;
+
+const departureInfoKey = localStorage.getItem('lastKnownPort') || 'hirtshals';
+const departureInfo = destinationMap[departureInfoKey];
+if (!departureInfo) throw new Error(`Departure port ${departureInfoKey} not found`);
+
+currentMarker = L.marker([latitude, longitude], { icon: shipIcon }).addTo(map).bindPopup('<b>Norröna (Current Position)</b>');
+destinationMarker = L.marker([destInfo.latitude, destInfo.longitude], { icon: defaultIcon }).addTo(map).bindPopup(`<b>${displayName}</b><br>Destination`);
+departureMarker = L.marker([departureInfo.latitude, departureInfo.longitude], { icon: defaultIcon }).addTo(map).bindPopup(`<b>${departureInfo.name}</b><br>Departure`);
+
+const routeKey = getRouteKey(departureInfoKey, destNameNormalized);
+const waypoints = routeWaypoints[routeKey] || [[departureInfo.latitude, departureInfo.longitude], [latitude, longitude], [destInfo.latitude, destInfo.longitude]];
+const waypointsWithCurrent = [waypoints[0], [latitude, longitude], ...waypoints.slice(1)];
+departureLine = L.polyline([waypointsWithCurrent[0], waypointsWithCurrent[1]], { color: '#808080', weight: 2 }).addTo(map);
+routeLine = L.polyline(waypointsWithCurrent.slice(1), { color: '#FFFFFF', weight: 2, dashArray: '5, 5' }).addTo(map);
+
+const bounds = L.latLngBounds([[latitude, longitude], [destInfo.latitude, destInfo.longitude], [departureInfo.latitude, departureInfo.longitude]]);
+map.fitBounds(bounds, { padding: [10, 10], maxZoom: calculateZoomLevel(distanceToDest) });
+
+newCachedData = {
+isInHarbour: false,
+distance: `~${Math.round(distanceToDest)} km / ${formatTravelTime(distanceToDest, speedKnots)}`,
+currentMarker: { latLng: [latitude, longitude] },
+destinationMarker: { latLng: [destInfo.latitude, destInfo.longitude] },
+departureMarker: { latLng: [departureInfo.latitude, departureInfo.longitude] },
+departureName: departureInfo.name
+};
+}
+saveCachedData({
+...newCachedData,
+courseSpeed: courseSpeedText,
+destination: displayName,
+eta: formatETA(norrona.etaFromAIS)
+});
+await fetchWeather(destInfo.latitude, destInfo.longitude);
+} catch (error) {
+const errorMessage = error.message || 'Unknown error';
+debug.textContent = `Debug: Error - ${errorMessage} (Attempt ${attempt}/${maxAttempts})`;
+if (attempt < maxAttempts) {
+const delay = 30000 * attempt;
+debug.textContent += ` | Retrying in ${delay / 1000}s`;
+await new Promise(resolve => setTimeout(resolve, delay));
+return updateShipData(attempt + 1, maxAttempts);
+}
+const cachedData = loadCachedData();
+if (cachedData) {
+debug.textContent += ' | Using cached data';
+displayCachedData(cachedData);
+} else {
+debug.textContent += ' | No cached data available';
+}
+}
+}
+function updateTime() {
+const now = new Date();
+const options = { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit', hour12: false };
+document.getElementById('current-time').textContent = now.toLocaleTimeString('en-GB', options);
+}
+const cachedData = loadCachedData();
+if (cachedData) {
+document.getElementById('debug').textContent = 'Debug: Loading cached data';
+displayCachedData(cachedData);
+if (cachedData.destinationMarker) {
+fetchWeather(cachedData.destinationMarker.latLng[0], cachedData.destinationMarker.latLng[1]);
+} else if (cachedData.harbourMarker) {
+fetchWeather(cachedData.harbourMarker.latLng[0], cachedData.harbourMarker.latLng[1]);
+}
+}
+updateTime();
+updateShipData();
+setInterval(updateTime, 1000);
+setInterval(updateShipData, 120000);
+</script>
 </body>
 </html>
