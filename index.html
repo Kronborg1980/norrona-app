@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>Norröna Guide</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Norröna Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <style>
         :root { --primary: #00f3ff; --bg: #050b14; --panel: rgba(16, 30, 48, 0.9); --text: #fff; --dim: rgba(255,255,255,0.6); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 90px; overflow-x: hidden; min-height: 100vh; }
         
+        /* Loader & Errors */
+        #loader { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); z-index: 2000; font-size: 1.2rem; color: var(--primary); transition: opacity 0.5s; }
+        #loader.fade-out { opacity: 0; pointer-events: none; }
+        #error-display { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #330000; color: #ffaaaa; padding: 20px; border: 1px solid red; z-index: 9999; max-width: 90%; border-radius: 10px; }
+
         /* Utilities */
         .neon { color: var(--primary); text-shadow: 0 0 12px rgba(0, 243, 255, 0.4); }
         .glass { background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
 
         /* Nav */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #0f172a; border-radius: 40px; display: flex; justify-content: space-around; padding: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 9999; }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--dim); text-decoration: none; font-size: 10px; transition: 0.3s; }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #0f172a; border-radius: 40px; display: flex; justify-content: space-around; padding: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 1000; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--dim); text-decoration: none; font-size: 10px; transition: 0.3s; cursor: pointer; }
         .nav-btn.active { color: var(--primary); transform: translateY(-4px); }
         .nav-btn span { font-size: 24px; margin-bottom: 2px; }
 
         /* Content */
-        .page { padding: 20px; display: none; animation: fade 0.4s ease; }
+        .page { padding: 20px; display: none; animation: fade 0.4s ease; padding-bottom: 40px; }
         .page.active { display: block; }
         @keyframes fade { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
@@ -31,7 +39,7 @@
 
         /* Items */
         .item-card { margin-bottom: 30px; overflow: hidden; }
-        .item-img { height: 200px; width: 100%; object-fit: cover; border-radius: 16px; margin-bottom: 12px; display: block; }
+        .item-img { height: 200px; width: 100%; object-fit: cover; border-radius: 16px; margin-bottom: 12px; display: block; background: #111; }
         .meta-row { display: flex; gap: 15px; margin: 10px 0; font-size: 0.9rem; color: var(--dim); }
         .meta-item { display: flex; align-items: center; gap: 5px; }
         
@@ -39,14 +47,14 @@
         .sub-list-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin: 20px 0 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
         
         .menu-list .menu-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .menu-item .info { flex: 1; }
+        .menu-item .info { flex: 1; padding-right: 10px; }
         .menu-item .title { font-weight: 500; font-size: 1rem; }
         .menu-item .sub { font-size: 0.85rem; color: var(--dim); margin-top:2px;}
-        .menu-item .price { font-weight: 700; color: var(--primary); margin-left: 10px; white-space: nowrap; }
+        .menu-item .price { font-weight: 700; color: var(--primary); white-space: nowrap; }
 
         .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .catalog-item { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; text-align: center; }
-        .catalog-item img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 8px; mix-blend-mode: lighten; }
+        .catalog-item img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 8px; }
         .catalog-item .price { display: block; color: var(--primary); font-weight: 700; margin-top: 4px; }
 
         .action-btn { display: block; width: 100%; background: var(--primary); color: #000; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; text-decoration: none; margin-top: 15px; }
@@ -60,14 +68,18 @@
     </style>
 </head>
 <body>
+    <div id="loader">Loading Norröna App...</div>
+    <div id="error-display"></div>
+    
     <main id="app-container"></main>
     <nav class="bottom-nav" id="nav-container"></nav>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
     <script>
-    // --- 1. THE FALLBACK DATA (This makes it work offline) ---
+    // --- 1. DATA BACKUP (This ensures it works offline) ---
     const DEFAULT_DATA = {
-      "settings": { "shipName": "Norröna", "accentColor": "#00f3ff" },
+      "settings": { "shipName": "Norröna", "logoUrl": "" },
       "categories": [
         {
           "id": "home", "title": "Dashboard", "icon": "home", "type": "home",
@@ -102,47 +114,70 @@
     };
 
     document.addEventListener("DOMContentLoaded", async () => {
-        let appData = {}, map = null;
-        
-        // --- 2. LOAD DATA (Try Fetch, Fail to Default) ---
+        let appData = {};
+        let map = null;
+        const loader = document.getElementById('loader');
+
         try {
-            // Attempt to load from file/server
-            const res = await fetch("data.json?v=" + Date.now());
-            if(!res.ok) throw new Error("Fetch Failed");
-            appData = await res.json();
-            console.log("Loaded from data.json");
-        } catch(e) {
-            // If failed (local file or missing), use default
-            console.warn("Using Default Data (Offline Mode)");
-            appData = DEFAULT_DATA;
+            // --- 2. ATTEMPT TO LOAD DATA ---
+            try {
+                const res = await fetch("data.json?v=" + Date.now());
+                if(!res.ok) throw new Error("File not found");
+                appData = await res.json();
+                console.log("Loaded remote/local data");
+            } catch(e) {
+                console.warn("Loading failed, using backup data.");
+                appData = DEFAULT_DATA;
+            }
+
+            // --- 3. INITIALIZE APP ---
+            if(!appData || !appData.categories) throw new Error("Data is invalid");
+            initApp();
+            
+            // Hide loader
+            setTimeout(() => loader.classList.add('fade-out'), 500);
+
+        } catch (criticalError) {
+            // Show error on screen if everything fails
+            loader.style.display = 'none';
+            const errBox = document.getElementById('error-display');
+            errBox.style.display = 'block';
+            errBox.innerText = "CRITICAL ERROR: " + criticalError.message;
         }
 
-        initApp();
-
         function initApp() {
-            // Build Nav
+            // Build Navigation
             const navHTML = appData.categories.map(cat => 
-                `<a href="#${cat.id}" class="nav-btn" data-id="${cat.id}" onclick="renderPage('${cat.id}')">
+                `<div class="nav-btn" data-id="${cat.id}">
                     <span class="material-icons">${cat.icon}</span>${cat.title}
-                 </a>`
+                 </div>`
             ).join('');
             document.getElementById('nav-container').innerHTML = navHTML;
+
+            // Add Click Listeners
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => renderPage(btn.dataset.id));
+            });
             
-            // Load page
-            const hash = window.location.hash.replace('#','') || appData.categories[0].id;
-            renderPage(hash);
+            // Render First Page
+            const startPage = window.location.hash.replace('#','') || appData.categories[0].id;
+            renderPage(startPage);
+
+            // Start Live Updates
             setInterval(updateLiveStats, 30000);
         }
 
-        // --- 3. RENDER LOGIC ---
+        // --- 4. RENDER ENGINE ---
         window.renderPage = (pageId) => {
             const cat = appData.categories.find(c => c.id === pageId);
-            if(!cat) return;
+            if(!cat) return; // Category not found
 
+            // Update Nav
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.id === pageId));
+            
             const container = document.getElementById('app-container');
             
-            // VOYAGE
+            // --- LAYOUT: VOYAGE ---
             if(cat.type === 'voyage') {
                 container.innerHTML = `
                     <div class="page active">
@@ -153,17 +188,17 @@
                             <div class="stat-box"><div class="stat-val" id="stat-dist">--</div><div class="stat-lbl">Dist (km)</div></div>
                         </div>
                     </div>`;
-                setTimeout(initMap, 100);
+                setTimeout(initMap, 200); // Delay for DOM
                 return;
             }
 
-            // HOME
+            // --- LAYOUT: HOME ---
             if(cat.type === 'home') {
                 const hero = cat.items[0];
                 container.innerHTML = `
                     <div class="page active">
                         <div class="hero">
-                            <img src="${hero.images[0]}">
+                            <img src="${hero.images[0]}" onerror="this.style.display='none'">
                             <div class="hero-content">
                                 <h1 style="font-size:2.5rem;line-height:1;font-weight:700;">${hero.name}</h1>
                                 <p style="color:var(--primary);margin-top:5px;">${hero.description}</p>
@@ -178,10 +213,10 @@
                 return;
             }
 
-            // STANDARD GRID
+            // --- LAYOUT: STANDARD GRID (Shops/Restaurants) ---
             const itemsHTML = cat.items.map(item => `
                 <div class="item-card glass p-4">
-                    ${item.images && item.images.length && item.images[0] ? `<img src="${item.images[0]}" class="item-img">` : ''}
+                    ${item.images && item.images.length ? `<img src="${item.images[0]}" class="item-img" onerror="this.style.display='none'">` : ''}
                     <h2 class="text-xl font-bold">${item.name}</h2>
                     <p class="text-sm text-dim mt-1">${item.description || ''}</p>
                     
@@ -204,7 +239,7 @@
             
             if(item.subListType === 'catalog') {
                 return `<div class="sub-list-title">Catalog</div><div class="catalog-grid">
-                    ${item.subList.map(s => `<div class="catalog-item">${s.image?`<img src="${s.image}">`:''}<div class="text-sm font-medium">${s.title}</div><span class="price">${s.price}</span></div>`).join('')}
+                    ${item.subList.map(s => `<div class="catalog-item">${s.image?`<img src="${s.image}" onerror="this.style.display='none'">`:''}<div class="text-sm font-medium">${s.title}</div><span class="price">${s.price}</span></div>`).join('')}
                    </div>`;
             } else {
                 return `<div class="sub-list-title">Menu / Info</div><div class="menu-list">
@@ -213,23 +248,30 @@
             }
         }
 
-        // --- LIVE SHIP DATA ---
         async function updateLiveStats() {
             try {
                 const res = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
-                const ship = (await res.json()).find(v => v.vesselName.toUpperCase() === 'NORRONA');
+                if(!res.ok) return;
+                const data = await res.json();
+                const ship = data.find(v => v.vesselName && v.vesselName.toUpperCase() === 'NORRONA');
                 if(ship) {
                     const spd = ship.position.speed;
                     if(document.getElementById('stat-speed')) document.getElementById('stat-speed').innerText = spd;
                     if(document.getElementById('home-speed')) document.getElementById('home-speed').innerText = spd + " kn";
                 }
-            } catch(e) {}
+            } catch(e) { console.log("Live data unavailable"); }
         }
 
         function initMap() {
-            if(map) map.remove();
+            if(map) { map.remove(); map = null; }
+            const mapEl = document.getElementById('map');
+            if(!mapEl) return;
+            
             map = L.map('map', {zoomControl:false, attributionControl:false}).setView([62.00, -6.76], 6);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+            
+            // Simple Ship Marker
+            L.marker([62.00, -6.76]).addTo(map).bindPopup("Norröna");
         }
     });
     </script>
