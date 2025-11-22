@@ -1,6 +1,6 @@
 {
   "settings": {
-    "logoUrl": "",
+    "logoUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNTAiPjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMHA5RTAiIGxldHRlci1zcGFjaW5nPSI0Ij5TTVlSSUwgTElORTwvdGV4dD48L3N2Zz4=",
     "shipName": "M/S Norröna",
     "timezone": "Atlantic/Faroe"
   },
@@ -12,64 +12,117 @@
       "type": "home",
       "items": [
         {
-          "id": "hero",
+          "id": "hero-main",
           "name": "Welcome Aboard",
-          "description": "Experience the North Atlantic",
-          "images": ["https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1000&q=80"],
-          "link": { "text": "View Safety Video", "url": "#" }
+          "description": "Your journey across the North Atlantic starts here.",
+          "images": ["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Norr%C3%B6na_in_T%C3%B3rshavn.jpg/1200px-Norr%C3%B6na_in_T%C3%B3rshavn.jpg"],
+          "link": { "text": "Safety Information", "url": "#" }
         }
       ]
     },
     {
-      "id": "voyage",
-      "title": "Live Map",
-      "icon": "public",
-      "type": "voyage",
-      "items": []
-    },
-    {
-      "id": "shopping",
-      "title": "Tax Free Shop",
-      "icon": "shopping_bag",
+      "id": "outlets",
+      "title": "Outlets",
+      "icon": "storefront",
       "type": "grid",
       "items": [
         {
-          "name": "Sky Shop",
-          "description": "Perfume, Cosmetics, and Fashion at tax-free prices.",
+          "name": "Tax Free Shop",
           "location": "Deck 5",
+          "description": "Perfume, fashion, sweets and souvenirs.",
           "images": ["https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80"],
           "openingHours": [
-            { "day": "Sea Days", "time": "09:00 - 22:00" },
-            { "day": "Port Days", "time": "Closed" }
+            { "day": "At Sea", "time": "09:00 - 22:00" },
+            { "day": "In Port", "time": "Closed" }
           ],
           "catalogs": [
-            { "name": "Perfume Deals", "url": "https://example.com/perfume.pdf" },
-            { "name": "Fashion Catalog", "url": "https://example.com/fashion.pdf" }
+            { "name": "Special Offers", "url": "#" }
+          ]
+        },
+        {
+          "name": "The Diner",
+          "location": "Deck 6",
+          "description": "Family friendly dining with burgers and pizza.",
+          "images": ["https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80"],
+          "menu": [
+            { "name": "Bacon Cheeseburger", "price": "145 DKK" },
+            { "name": "Pepperoni Pizza", "price": "125 DKK" }
+          ]
+        },
+        {
+          "name": "Gourmet Restaurant",
+          "location": "Deck 6",
+          "description": "Fine dining with a view of the Atlantic.",
+          "images": ["https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80"],
+          "link": { "text": "Book Table", "url": "#" }
+        }
+      ]
+    },
+    {
+      "id": "entertainment",
+      "title": "Entertainment",
+      "icon": "movie",
+      "type": "grid",
+      "items": [
+        {
+          "name": "Cinema",
+          "location": "Deck 5",
+          "description": "Watch the latest movies.",
+          "images": ["https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80"],
+          "catalogs": [
+            { "name": "Movie Schedule", "url": "#" }
+          ]
+        },
+        {
+          "name": "Naust Bar",
+          "location": "Deck 5",
+          "description": "Live music and cold drinks.",
+          "images": ["https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80"]
+        },
+        {
+          "name": "Hot Tubs",
+          "location": "Deck 7 (Outside)",
+          "description": "Relax in the warm water while sailing.",
+          "images": ["https://images.unsplash.com/photo-1573045737928-764495724715?auto=format&fit=crop&w=800&q=80"],
+          "openingHours": [
+            { "day": "Daily", "time": "10:00 - 20:00" }
           ]
         }
       ]
     },
     {
-      "id": "dining",
-      "title": "Restaurants",
-      "icon": "restaurant",
+      "id": "hours",
+      "title": "Opening Hours",
+      "icon": "schedule",
       "type": "grid",
       "items": [
         {
-          "name": "Munkastova",
-          "description": "Gourmet dining with the best view on the ship.",
-          "location": "Deck 6",
-          "images": ["https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80"],
+          "name": "Reception",
+          "location": "Deck 5",
+          "description": "Information, currency exchange and upgrades.",
+          "images": [],
           "openingHours": [
-            { "day": "Dinner", "time": "18:00 - 22:00" }
-          ],
-          "menu": [
-            { "name": "North Atlantic Cod", "description": "Served with potatoes", "price": "245 DKK" },
-            { "name": "Lamb Chops", "description": "Faroe Islands speciality", "price": "295 DKK" }
-          ],
-          "link": { "text": "Book Table", "url": "#" }
+            { "day": "Daily", "time": "24 Hours" }
+          ]
+        },
+        {
+          "name": "Medical Center",
+          "location": "Deck 4",
+          "description": "For emergencies dial 911 from ship phone.",
+          "images": [],
+          "openingHours": [
+            { "day": "Consultation", "time": "10:00 - 11:00" },
+            { "day": "Emergency", "time": "24/7" }
+          ]
         }
       ]
+    },
+    {
+      "id": "voyage",
+      "title": "Live Data",
+      "icon": "public",
+      "type": "voyage",
+      "items": []
     }
   ]
 }
