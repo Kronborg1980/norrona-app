@@ -7,152 +7,151 @@
     <style>
         :root {
             --neon-cyan: #00f3ff;
-            --neon-blue: #0066ff;
-            --bg-dark: #030b14;
-            --glass-panel: rgba(10, 25, 45, 0.65);
-            --glass-border: rgba(0, 243, 255, 0.2);
+            --neon-purple: #bc13fe;
+            --bg-dark: #050b14;
+            --glass-panel: rgba(12, 28, 48, 0.75);
+            --glass-border: rgba(0, 243, 255, 0.3);
             --text-bright: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.5);
-            --border-radius: 20px;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --border-radius: 24px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Outfit', sans-serif;
             background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 0%, #0a1f35 0%, var(--bg-dark) 70%);
+            background-image: radial-gradient(circle at 50% 0%, #11253a 0%, var(--bg-dark) 80%);
             color: var(--text-bright);
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
         
-        /* --- Glass & Neon Utilities --- */
+        /* --- Neon Glass UI --- */
         .glass-card {
             background: var(--glass-panel);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.05), inset 0 0 20px rgba(0,0,0,0.2);
             border-radius: var(--border-radius);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
         .neon-text {
             color: var(--neon-cyan);
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+            text-shadow: 0 0 12px rgba(0, 243, 255, 0.6);
         }
-        .neon-border {
-            border: 1px solid var(--neon-cyan);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-        }
-
-        #app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 85px; }
+        
+        #app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 90px; }
         
         /* --- Header --- */
         .main-header {
             position: sticky; top: 0; z-index: 1000;
-            background: rgba(3, 11, 20, 0.8);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--glass-border);
+            background: rgba(5, 11, 20, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+            padding-top: env(safe-area-inset-top);
         }
-        .navbar { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 24px; }
-        .navbar .logo img { height: 28px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5)); }
-        .onboard-time { font-weight: 700; font-size: 1rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .navbar { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 24px; }
+        .navbar .logo img { height: 26px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
+        .onboard-time { font-family: 'Outfit', monospace; color: var(--neon-cyan); font-weight: 600; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0, 243, 255, 0.4); }
 
         /* --- Content --- */
         main { flex-grow: 1; }
-        .page { padding: 24px; display: none; animation: fadeIn 0.5s ease; }
+        .page { padding: 24px; display: none; animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Cards --- */
+        /* --- Item Cards --- */
         .item-card {
             background: var(--glass-panel);
             border: 1px solid var(--glass-border);
             border-radius: var(--border-radius);
             overflow: hidden; margin-bottom: 24px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            transition: transform 0.3s;
         }
-        .item-card:active { transform: scale(0.98); }
-        .image-container { width: 100%; height: 220px; background: #05101a; position: relative; }
-        .item-card-image { width: 100%; height: 100%; object-fit: cover; }
-        .item-info { padding: 24px; }
-        .item-info h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: white; }
-        .item-info p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.5; }
+        .image-container { width: 100%; height: 220px; background: #02060a; position: relative; }
+        .item-info { padding: 24px; position: relative; }
+        .item-info h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: white; letter-spacing: 0.5px; }
+        .item-info p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; }
         
-        .fields { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
-        .field { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
-        .field strong { color: var(--neon-cyan); }
+        .fields { margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .field { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+        .field strong { color: var(--neon-cyan); opacity: 0.9; }
 
-        .item-link-button {
-            display: block; margin-top: 20px; padding: 14px;
-            background: linear-gradient(90deg, rgba(0,243,255,0.1), rgba(0,102,255,0.1));
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            text-align: center; border-radius: 12px;
-            text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-            transition: all 0.3s;
+        /* --- Map --- */
+        #map { 
+            width: 100%; height: 50vh; 
+            border-radius: var(--border-radius); 
+            border: 1px solid var(--glass-border); 
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+            margin-bottom: 24px;
+            background: #050b14;
         }
-        .item-link-button:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px rgba(0,243,255,0.4); }
+        /* This animates the route line to look like data flowing */
+        .flowing-dash {
+            animation: dash-anim 30s linear infinite;
+        }
+        @keyframes dash-anim {
+            to { stroke-dashoffset: -1000; }
+        }
 
-        /* --- Map & Voyage --- */
-        #map { width: 100%; height: 45vh; border-radius: var(--border-radius); border: 1px solid var(--glass-border); box-shadow: 0 0 20px rgba(0,0,0,0.3); margin-bottom: 24px; }
-        .leaflet-container { background-color: #050b14 !important; }
-        
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
         .grid-item {
             background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; padding: 20px 15px; text-align: center;
-            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 24px 15px; text-align: center;
+            backdrop-filter: blur(10px);
         }
-        .grid-item .label { font-size: 0.75rem; color: var(--neon-cyan); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; }
-        .grid-item .value { font-size: 1.5rem; font-weight: 700; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-dim); margin-top: 4px; }
+        .grid-item .label { font-size: 0.7rem; color: var(--neon-cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; opacity: 0.8; }
+        .grid-item .value { font-size: 1.6rem; font-weight: 700; color: white; text-shadow: 0 0 15px rgba(255,255,255,0.15); }
+        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-dim); margin-top: 5px; }
 
         .weather-panel {
-            background: linear-gradient(135deg, rgba(0,243,255,0.05), rgba(0,0,0,0));
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(0,0,0,0));
             border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius); padding: 20px;
-            display: flex; align-items: center; gap: 20px;
+            border-radius: var(--border-radius); padding: 24px;
+            display: flex; align-items: center; gap: 24px;
         }
-        
-        /* --- Home Hero --- */
-        .home-hero {
-            height: 55vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 30px; position: relative;
-            margin: -24px -24px 24px -24px;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .home-hero::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to top, var(--bg-dark) 0%, rgba(3,11,20,0.4) 100%);
-            z-index: 1;
-        }
-        .home-hero-content { position: relative; z-index: 2; }
-        .home-hero h1 { font-size: 2.8rem; margin-bottom: 10px; text-shadow: 0 0 20px rgba(0,0,0,0.8); }
         
         /* --- Bottom Nav --- */
         .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 460px; height: 75px;
-            background: rgba(10, 25, 45, 0.9);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border-radius: 24px;
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 460px; height: 80px;
+            background: rgba(8, 20, 35, 0.85);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            border-radius: 30px;
             display: flex; justify-content: space-around; align-items: center; z-index: 1000;
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
-            color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.7rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255,255,255,0.35); text-decoration: none; font-size: 0.7rem; font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 10px;
         }
-        .nav-item .material-icons { font-size: 26px; margin-bottom: 4px; transition: transform 0.3s; }
-        .nav-item.active { color: var(--neon-cyan); }
-        .nav-item.active .material-icons { transform: translateY(-3px); text-shadow: 0 0 15px var(--neon-cyan); }
+        .nav-item .material-icons { font-size: 28px; margin-bottom: 4px; transition: transform 0.3s; }
+        .nav-item.active { color: var(--neon-cyan); text-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
+        .nav-item.active .material-icons { transform: translateY(-4px); }
 
-        /* --- Map Pulse Animation --- */
+        /* --- Ship Marker Animation --- */
         .ship-pulse-icon { position: relative; display: flex; justify-content: center; align-items: center; }
-        .ship-dot { width: 12px; height: 12px; background: var(--neon-cyan); border-radius: 50%; box-shadow: 0 0 10px var(--neon-cyan); z-index: 2; }
-        .ship-ring { position: absolute; width: 40px; height: 40px; border: 2px solid var(--neon-cyan); border-radius: 50%; opacity: 0; animation: pulse 2s infinite; z-index: 1; }
-        @keyframes pulse { 0% { transform: scale(0.1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+        /* The Ship */
+        .ship-body { 
+            width: 0; height: 0; 
+            border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 20px solid var(--neon-cyan);
+            filter: drop-shadow(0 0 8px var(--neon-cyan));
+            z-index: 2; position: relative;
+        }
+        /* The Radar Rings */
+        .ship-ring { 
+            position: absolute; border: 1px solid var(--neon-cyan); border-radius: 50%; 
+            opacity: 0; animation: radar-ping 2.5s infinite ease-out; z-index: 1; 
+        }
+        .ship-ring:nth-child(2) { animation-delay: 0.8s; }
+        @keyframes radar-ping { 0% { width: 10px; height: 10px; opacity: 0.8; border-width: 3px; } 100% { width: 120px; height: 120px; opacity: 0; border-width: 0px; } }
+        
+        .leaflet-pane { z-index: 10; }
+        .leaflet-bottom { z-index: 5; }
     </style>
 </head>
 <body>
@@ -174,35 +173,34 @@
             let appData = {};
             let map;
 
-            /* --- 1. REALISTIC ROUTE DATA --- */
-            // These waypoints curve around land to create a realistic sailing path
+            /* --- ROBUST ROUTING DATA --- */
+            // We define "safe" waypoints around land masses.
+            // The code will dynamically snap the line to the ship's LIVE position between these points.
             
-            // Route: Hirtshals (DK) to Tórshavn (FO) - Goes north of Scotland/Shetland
-            const routeDenmarkToFaroe = [
-                [57.5915, 9.9725], // Hirtshals
-                [57.65, 9.80],     // Leaving port
-                [57.90, 8.50],     // Skagerrak
-                [58.20, 7.00],     // North Sea Open
-                [58.80, 4.00],     // Deep North Sea
-                [59.50, 1.50],     // Approaching UK/Norwegian divide
-                [60.20, -0.50],    // East of Shetlands
-                [61.00, -0.80],    // North of Shetlands (The turn)
-                [61.40, -2.50],    // Heading West to Faroes
-                [61.70, -4.50],    // Approaching Faroes
-                [61.90, -6.00],    // Nolsory fjord entrance
-                [62.0085, -6.7665] // Tórshavn
+            // 1. The "North of Shetland" Waypoints (Safe for large vessels)
+            // Used for Denmark <-> Faroe
+            const waypointsDenmarkFaroe = [
+                { lat: 57.5915, lon: 9.9725 }, // Hirtshals (Port)
+                { lat: 57.70, lon: 9.50 },     // Skagerrak Exit
+                { lat: 58.00, lon: 8.00 },     // North Sea Open
+                { lat: 59.00, lon: 4.00 },     // Deep North Sea
+                { lat: 60.00, lon: 1.00 },     // East of Shetland
+                { lat: 61.10, lon: -0.60 },    // Muckle Flugga (Turn point North of Shetland)
+                { lat: 61.40, lon: -3.00 },    // Faroese Channel
+                { lat: 61.80, lon: -5.50 },    // Approach
+                { lat: 62.0085, lon: -6.7665 } // Tórshavn (Port)
             ];
 
-            // Route: Tórshavn (FO) to Seyðisfjörður (IS)
-            const routeFaroeToIceland = [
-                [62.0085, -6.7665], // Tórshavn
-                [62.15, -6.50],     // Leaving Fjord
-                [62.50, -7.50],     // North West passage
-                [63.20, -9.00],     // Open Atlantic
-                [63.80, -10.50],    // Midpoint
-                [64.50, -12.00],    // Approaching Iceland
-                [65.10, -13.40],    // Entering Fjord
-                [65.2598, -13.9975] // Seyðisfjörður
+            // 2. The "Iceland Approach" Waypoints
+            // Used for Faroe <-> Iceland
+            const waypointsFaroeIceland = [
+                { lat: 62.0085, lon: -6.7665 }, // Tórshavn
+                { lat: 62.20, lon: -7.00 },     // Leave Fjord
+                { lat: 62.80, lon: -8.50 },     // North West
+                { lat: 63.50, lon: -10.00 },    // Deep Atlantic
+                { lat: 64.50, lon: -12.00 },    // Iceland Shelf
+                { lat: 65.15, lon: -13.50 },    // Fjord Entrance
+                { lat: 65.2598, lon: -13.9975 } // Seyðisfjörður
             ];
 
             const dockLocations = { 
@@ -211,33 +209,28 @@
                 seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.2598, lon: -13.9975 } 
             };
 
-            // Custom pulsing icon for the ship
-            const shipPulseIcon = L.divIcon({
+            // Icon definitions
+            const shipIcon = L.divIcon({
                 className: 'ship-pulse-icon',
-                html: '<div class="ship-dot"></div><div class="ship-ring"></div>',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20]
+                html: '<div class="ship-body"></div><div class="ship-ring"></div><div class="ship-ring"></div>',
+                iconSize: [60, 60],
+                iconAnchor: [30, 30] // Center of the pulse
             });
 
-            // Simple marker for destinations
             const destIcon = L.divIcon({
                 className: 'dest-marker',
-                html: '<div style="width:8px;height:8px;background:rgba(255,255,255,0.5);border-radius:50%;"></div>',
-                iconSize: [8, 8],
-                iconAnchor: [4, 4]
+                html: '<div style="width:12px;height:12px;background:var(--neon-cyan);border-radius:50%;box-shadow:0 0 10px var(--neon-cyan);"></div>',
+                iconSize: [12, 12],
+                iconAnchor: [6, 6]
             });
 
-            // Helper Functions
+            // --- Logic ---
             function normalizeDest(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversine(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-            function formatETA(e) { if(!e)return{day:"--",time:"--:--"};try{const t=new Date(e);return{day:t.toLocaleDateString("en-GB",{weekday:"long",timeZone:"Atlantic/Faroe"}),time:t.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hour12:!1,timeZone:"Atlantic/Faroe"})}}catch(e){return{day:"Error",time:""}}}
-            function createImageArea(images) { 
-                if (!images?.length) return '';
-                const img = images[0];
-                return `<div class="image-container" style="background-image: url('${img}'); background-size: cover; background-position: center;"></div>`;
-            }
+            function formatETA(e) { if(!e)return{day:"--",time:"--:--"};try{const t=new Date(e);return{day:t.toLocaleDateString("en-GB",{weekday:"short",timeZone:"Atlantic/Faroe"}),time:t.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hour12:!1,timeZone:"Atlantic/Faroe"})}}catch(e){return{day:"",time:""}}}
+            function createImageArea(images) { return images && images.length ? `<div class="image-container" style="background-image: url('${images[0]}'); background-size: cover; background-position: center;"></div>` : ''; }
 
-            // Navigation & Rendering
+            // --- Page Rendering ---
             function renderPage(pageId) {
                 const page = appData.categories.find(cat => cat.id === pageId);
                 if (!page) return;
@@ -247,40 +240,42 @@
                 let html = '';
                 if (page.type === 'home') {
                     html = `<div class="page active" style="padding: 24px;">
-                        <div class="home-hero" style="background-image: url('${page.items[0].images[0]}'); background-size: cover; border-radius: 24px; overflow: hidden;">
-                            <div class="home-hero-content">
-                                <h1>Welcome Aboard</h1>
-                                <p style="font-size: 1.1rem; color: rgba(255,255,255,0.8);">M/S Norröna</p>
-                            </div>
+                        <div class="item-card" style="height: 55vh; position: relative; border: none; background: transparent; box-shadow: none;">
+                           <div style="position: absolute; inset: 0; background-image: url('${page.items[0].images[0]}'); background-size: cover; background-position: center; border-radius: 24px; opacity: 0.8;"></div>
+                           <div style="position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-dark), transparent); border-radius: 24px;"></div>
+                           <div style="position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; padding: 30px;">
+                                <h1 style="font-size: 3rem; text-shadow: 0 0 30px rgba(0,0,0,0.8);">Norröna</h1>
+                                <p style="font-size: 1.2rem; color: var(--neon-cyan); margin-bottom: 20px;">Live Guide</p>
+                           </div>
                         </div>
                         <div class="voyage-grid">
-                            <div class="grid-item"><div class="label">Destination</div><div class="value neon-text" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div>
-                            <div class="grid-item"><div class="label">Speed</div><div class="value neon-text" id="speed-knots-home">--</div><div class="sub-value" id="speed-kmh-home">-- km/h</div></div>
+                            <div class="grid-item"><div class="label">Heading To</div><div class="value neon-text" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div>
+                            <div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots-home">--</div><div class="sub-value" id="speed-kmh-home">--</div></div>
                         </div>
                     </div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
                     html = `<div class="page active voyage-page">
-                        <div class="section-header"><h2 class="neon-text">Live Position</h2></div>
+                        <div class="section-header"><h2 class="neon-text" style="text-align:center; margin-bottom:20px;">Live Tracking</h2></div>
                         <div id="map"></div>
                         <div class="voyage-grid">
-                            <div class="grid-item"><div class="label">Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">-- km/h</div></div>
-                            <div class="grid-item"><div class="label">Ship Time</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Faroe Time</div></div>
+                            <div class="grid-item"><div class="label">Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">--</div></div>
+                            <div class="grid-item"><div class="label">Time (Ship)</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Time</div></div>
                             <div class="grid-item"><div class="label">Distance Left</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">km</div></div>
-                            <div class="grid-item"><div class="label">Arrival</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div>
+                            <div class="grid-item"><div class="label">Destination</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div>
                         </div>
                         <div class="weather-panel">
-                            <img id="weather-icon" src="" alt="" style="width:50px; filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));">
+                            <img id="weather-icon" src="" alt="" style="width:60px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));">
                             <div class="weather-info">
-                                <div class="label">Weather at Destination</div>
-                                <div class="value"><span id="weather-temp" class="neon-text">--°C</span> <span id="weather-description" style="font-size: 0.9rem; color: var(--text-dim); display: block;">--</span></div>
+                                <div class="label">Destination Weather</div>
+                                <div class="value"><span id="weather-temp" class="neon-text">--°C</span> <span id="weather-description" style="font-size: 0.9rem; color: var(--text-dim); margin-left: 10px;">--</span></div>
                             </div>
                         </div>
                     </div>`;
                     setTimeout(initializeVoyagePage, 100);
                 } else {
                     html = `<div class="page active">
-                        <div class="section-header"><h2 class="neon-text">${page.title}</h2></div>
+                        <div class="section-header"><h2 class="neon-text" style="text-align:center; margin-bottom:20px;">${page.title}</h2></div>
                         <div class="content-grid">
                             ${page.items.map(item => `
                                 <div class="item-card">
@@ -289,7 +284,7 @@
                                         <h3>${item.name}</h3>
                                         ${item.description ? `<p>${item.description}</p>` : ''}
                                         ${item.fields ? `<div class="fields">${item.fields.map(f => `<div class="field"><strong>${f.label}</strong><span>${f.value}</span></div>`).join('')}</div>` : ''}
-                                        ${item.menu ? `<div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">${item.menu.map(m => `<div style="display:flex;justify-content:space-between;margin-bottom:5px;"><span>${m.name}</span><span style="color:var(--neon-cyan)">${m.price}</span></div>`).join('')}</div>` : ''}
+                                        ${item.menu ? `<div style="margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">${item.menu.map(m => `<div style="display:flex;justify-content:space-between;margin-bottom:5px; font-size:0.9rem;"><span>${m.name}</span><span style="color:var(--neon-cyan)">${m.price}</span></div>`).join('')}</div>` : ''}
                                     </div>
                                 </div>
                             `).join('')}
@@ -297,22 +292,9 @@
                     </div>`;
                 }
                 contentContainer.innerHTML = html;
-                animateItems();
             }
 
-            function animateItems() {
-                const cards = document.querySelectorAll('.item-card');
-                cards.forEach((card, index) => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, index * 100);
-                });
-            }
-
-            // Weather & Data
+            // --- Weather ---
             async function fetchWeather(lat, lon) {
                 try {
                     const res = await fetch(`https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI&location.latitude=${lat}&location.longitude=${lon}`);
@@ -320,10 +302,11 @@
                     const t = data.temperature?.degrees;
                     if(document.getElementById("weather-temp")) document.getElementById("weather-temp").textContent = t ? `${Math.round(t)}°C` : '--';
                     if(document.getElementById("weather-description")) document.getElementById("weather-description").textContent = data.weatherCondition?.description?.text || "Clear";
-                    if(document.getElementById("weather-icon")) document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/02d@2x.png`; // simplified
+                    if(document.getElementById("weather-icon")) document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/02d@2x.png`;
                 } catch(e){ console.log("Weather fail", e) }
             }
 
+            // --- Main Data Loop ---
             async function updateShipData(isHome = false) {
                 try {
                     const res = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
@@ -337,24 +320,28 @@
                     const destData = dockLocations[destKey] || dockLocations.torshavn;
                     const eta = formatETA(ship.etaFromAIS);
 
+                    // Update Text Data
                     if (isHome) {
                         document.getElementById('speed-knots-home').textContent = `${speed} kn`;
                         document.getElementById('speed-kmh-home').textContent = `${(speed * 1.852).toFixed(1)} km/h`;
                         document.getElementById('destination-home').textContent = destData.name;
-                        document.getElementById('eta-home').textContent = `ETA: ${eta.day} ${eta.time}`;
+                        document.getElementById('eta-home').textContent = `${eta.day} ${eta.time}`;
                     } else {
                         if(document.querySelector('.voyage-page')) {
                             document.getElementById('speed-knots').textContent = `${speed} kn`;
                             document.getElementById('speed-kmh').textContent = `${(speed * 1.852).toFixed(1)} km/h`;
                             document.getElementById('destination-voyage').textContent = destData.name;
                             document.getElementById('eta-voyage').textContent = `${eta.day} ${eta.time}`;
+                            
                             const dist = haversine(lat, lon, destData.lat, destData.lon);
                             document.getElementById('distance').textContent = Math.round(dist);
+                            document.getElementById('distance-unit').textContent = dist < 2 ? "Arrived" : "km";
                             
                             if(document.getElementById('onboard-time')) {
                                 document.getElementById('onboard-time').textContent = new Date().toLocaleTimeString('en-GB', {timeZone: 'Atlantic/Faroe', hour:'2-digit', minute:'2-digit'});
                             }
 
+                            // Trigger Map Update
                             updateMap(lat, lon, destData);
                             fetchWeather(destData.lat, destData.lon);
                         }
@@ -362,39 +349,98 @@
                 } catch (e) { console.error(e); }
             }
 
-            function updateMap(lat, lon, destData) {
+            // --- DYNAMIC MAP ROUTING ---
+            function updateMap(shipLat, shipLon, destData) {
                 if (!map) return;
                 
-                const shipPos = [lat, lon];
+                const shipPos = [shipLat, shipLon];
+                
+                // 1. Update Markers
                 if (!map.shipMarker) {
-                    map.shipMarker = L.marker(shipPos, { icon: shipPulseIcon, zIndexOffset: 1000 }).addTo(map);
+                    map.shipMarker = L.marker(shipPos, { icon: shipIcon, zIndexOffset: 1000 }).addTo(map);
                 } else {
                     map.shipMarker.setLatLng(shipPos);
+                    // Rotate ship icon based on heading if available? (Optional complexity)
                 }
 
-                // DETERMINE WHICH REALISTIC ROUTE TO SHOW
-                // Logic: If ship is North of Latitude 62.5, show Iceland route. Otherwise show Denmark route.
-                const isNorthRoute = lat > 62.5 || (destData.name === 'Seyðisfjörður');
-                const routePoints = isNorthRoute ? routeFaroeToIceland : routeDenmarkToFaroe;
+                if (!map.destMarker) {
+                     map.destMarker = L.marker([destData.lat, destData.lon], { icon: destIcon }).addTo(map);
+                } else {
+                    map.destMarker.setLatLng([destData.lat, destData.lon]);
+                }
 
-                // Draw the "Sea Lane" (The path we have sailed and are sailing)
-                if (map.seaLane) map.removeLayer(map.seaLane);
+                // 2. GENERATE DYNAMIC ROUTE
+                // This is the fix: We construct a line that includes the ship's CURRENT position
+                // as a mandatory waypoint.
                 
-                map.seaLane = L.polyline(routePoints, {
+                let baseRoute = [];
+                let finalRoute = [];
+
+                // Determine which "sea lane" we are in based on Latitude/Dest
+                // North of 62.5 OR heading to Iceland = Iceland Route
+                // Otherwise = Denmark Route
+                const isNorthRoute = shipLat > 62.5 || destData.name === 'Seyðisfjörður';
+                baseRoute = isNorthRoute ? waypointsFaroeIceland : waypointsDenmarkFaroe;
+
+                // Logic: We filter the base route.
+                // We find the longitude of the ship.
+                // Since routes are primarily East-West, we can filter points that are "behind" us vs "ahead" of us.
+                
+                // Sort baseRoute by Longitude (East to West) for consistent processing
+                baseRoute.sort((a, b) => b.lon - a.lon); 
+
+                // Are we moving West (to Tórshavn/Iceland) or East (to Denmark)?
+                // Tórshavn(approx -6) is West of Hirtshals(approx 9)
+                const isMovingWest = (destData.name === 'Tórshavn' && shipLon > -5) || destData.name === 'Seyðisfjörður';
+                
+                if (isMovingWest) {
+                    // We keep points with Longitude > Ship Longitude (Behind us)
+                    // Then add Ship
+                    // Then add points with Longitude < Ship Longitude (Ahead of us)
+                    const pointsBehind = baseRoute.filter(p => p.lon > shipLon);
+                    const pointsAhead = baseRoute.filter(p => p.lon < shipLon);
+                    finalRoute = [...pointsBehind, {lat: shipLat, lon: shipLon}, ...pointsAhead];
+                } else {
+                    // Moving East.
+                    // Keep points with Longitude < Ship Longitude (Behind us - e.g. Iceland/Faroe)
+                    // Then add Ship
+                    // Then add points with Longitude > Ship Longitude (Ahead - e.g. Denmark)
+                    const pointsBehind = baseRoute.filter(p => p.lon < shipLon); // This logic depends on array order.
+                    const pointsAhead = baseRoute.filter(p => p.lon > shipLon);
+                    
+                    // Since we sorted East->West (9...-6), if we are moving East, we go -6...9.
+                    // So we actually want the array reversed.
+                    baseRoute.reverse(); // Now sorted West -> East (-6 ... 9)
+                    
+                    const pBehind = baseRoute.filter(p => p.lon < shipLon);
+                    const pAhead = baseRoute.filter(p => p.lon > shipLon);
+                    finalRoute = [...pBehind, {lat: shipLat, lon: shipLon}, ...pAhead];
+                }
+
+                // Convert objects to arrays for Leaflet
+                const polylinePoints = finalRoute.map(p => [p.lat, p.lon]);
+
+                // Draw the Neon Line
+                if (map.routeLine) map.removeLayer(map.routeLine);
+                
+                map.routeLine = L.polyline(polylinePoints, {
                     color: '#00f3ff', // Neon Cyan
-                    weight: 3,
-                    opacity: 0.6,
+                    weight: 4,
+                    opacity: 0.8,
+                    className: 'flowing-dash', // CSS Animation
+                    dashArray: '10, 20',
                     lineCap: 'round',
-                    lineJoin: 'round',
-                    dashArray: '1, 10' // Dotted "Radar" look
+                    lineJoin: 'round'
                 }).addTo(map);
-                
-                // Add a subtle "Glow" line underneath
+
+                // Add a "Glow" underlay
                 if (map.glowLine) map.removeLayer(map.glowLine);
-                map.glowLine = L.polyline(routePoints, {
+                map.glowLine = L.polyline(polylinePoints, {
                     color: '#00f3ff',
-                    weight: 10,
-                    opacity: 0.15,
+                    weight: 15,
+                    opacity: 0.2,
+                    lineCap: 'round',
+                    lineJoin: 'round'
                 }).addTo(map);
 
                 map.setView(shipPos, 6);
@@ -404,7 +450,7 @@
                 if (map) { map.remove(); map = null; }
                 map = L.map("map", { zoomControl: false, attributionControl: false, renderer: L.canvas() });
                 
-                // Dark Matter Map Tiles (Premium Look)
+                // Dark Matter Tiles
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                     subdomains: 'abcd',
                     maxZoom: 10
@@ -413,7 +459,7 @@
                 updateShipData();
             }
 
-            // Init
+            // --- Init ---
             async function init() {
                 try {
                     const res = await fetch("data.json?v=" + Date.now());
@@ -435,7 +481,6 @@
 
                     renderPage(window.location.hash.substring(1) || appData.categories[0].id);
                     
-                    // Start Clocks
                     setInterval(() => {
                         const t = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' });
                         document.getElementById('onboard-time-header').textContent = t;
