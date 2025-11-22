@@ -7,7 +7,7 @@
     <style>
         :root { --primary: #00f3ff; --bg: #050b14; --panel: rgba(16, 30, 48, 0.9); --text: #fff; --dim: rgba(255,255,255,0.6); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 80px; overflow-x: hidden; }
         
         /* Utilities */
         .neon { color: var(--primary); text-shadow: 0 0 12px rgba(0, 243, 255, 0.4); }
@@ -25,31 +25,31 @@
         .page.active { display: block; }
         @keyframes fade { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         
-        .hero { height: 40vh; position: relative; border-radius: 24px; overflow: hidden; margin-bottom: 24px; }
+        .hero { height: 45vh; position: relative; border-radius: 24px; overflow: hidden; margin-bottom: 24px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .hero img { width: 100%; height: 100%; object-fit: cover; }
         .hero-content { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, #000); padding: 24px; }
 
         /* Items */
         .item-card { margin-bottom: 30px; overflow: hidden; }
-        .item-img { height: 180px; width: 100%; object-fit: cover; border-radius: 16px; margin-bottom: 12px; display: block; }
+        .item-img { height: 200px; width: 100%; object-fit: cover; border-radius: 16px; margin-bottom: 12px; display: block; }
         .meta-row { display: flex; gap: 15px; margin: 10px 0; font-size: 0.9rem; color: var(--dim); }
         .meta-item { display: flex; align-items: center; gap: 5px; }
         
         /* Sub Lists (Menu vs Catalog) */
         .sub-list-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin: 20px 0 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
         
-        .menu-list .menu-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .menu-list .menu-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .menu-item .info { flex: 1; }
         .menu-item .title { font-weight: 500; font-size: 1rem; }
-        .menu-item .sub { font-size: 0.85rem; color: var(--dim); }
-        .menu-item .price { font-weight: 700; color: var(--primary); margin-left: 10px; }
+        .menu-item .sub { font-size: 0.85rem; color: var(--dim); margin-top:2px;}
+        .menu-item .price { font-weight: 700; color: var(--primary); margin-left: 10px; white-space: nowrap; }
 
-        .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .catalog-item { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px; text-align: center; }
-        .catalog-item img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 8px; }
+        .catalog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .catalog-item { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; text-align: center; }
+        .catalog-item img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 8px; mix-blend-mode: lighten; }
         .catalog-item .price { display: block; color: var(--primary); font-weight: 700; margin-top: 4px; }
 
-        .action-btn { display: block; width: 100%; background: var(--primary); color: #000; text-align: center; padding: 12px; border-radius: 12px; font-weight: 700; text-decoration: none; margin-top: 15px; }
+        .action-btn { display: block; width: 100%; background: var(--primary); color: #000; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; text-decoration: none; margin-top: 15px; }
 
         /* Map & Stats */
         #map { height: 50vh; width: 100%; border-radius: 24px; margin-bottom: 20px; background: #111; }
@@ -65,21 +65,62 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
+    // --- 1. THE FALLBACK DATA (This makes it work offline) ---
+    const DEFAULT_DATA = {
+      "settings": { "shipName": "Norröna", "accentColor": "#00f3ff" },
+      "categories": [
+        {
+          "id": "home", "title": "Dashboard", "icon": "home", "type": "home",
+          "items": [{ "id": "h1", "name": "Welcome Aboard", "description": "Your journey starts here.", "images": ["https://www.smyrilline.com/media/11293/norrona_ship_smyrilline_ferry.jpg"] }]
+        },
+        { "id": "voyage", "title": "Map", "icon": "public", "type": "voyage", "items": [] },
+        {
+          "id": "dining", "title": "Restaurants", "icon": "restaurant", "type": "grid",
+          "items": [
+            {
+              "id": "simmer", "name": "Simmer Dim", "description": "Gourmet steakhouse on Deck 6.",
+              "images": ["https://www.smyrilline.com/media/12462/simmer-dim-restaurant.jpg"],
+              "location": "Deck 6", "openingHours": ["18:00 - 22:00"],
+              "subListType": "menu",
+              "subList": [{ "title": "Ribeye Steak", "subtitle": "300g w/ Fries", "price": "295 DKK" }, { "title": "Salmon", "subtitle": "Grilled Fresh", "price": "245 DKK" }]
+            }
+          ]
+        },
+        {
+          "id": "shop", "title": "Tax Free", "icon": "shopping_bag", "type": "grid",
+          "items": [
+            {
+              "id": "taxfree", "name": "Duty Free Shop", "description": "Perfumes, Fashion & Sweets.",
+              "images": ["https://www.smyrilline.com/media/10821/tax-free-shop.jpg"],
+              "location": "Deck 5", "openingHours": ["09:00 - 22:00"],
+              "subListType": "catalog",
+              "subList": [{ "title": "Boss Bottled", "price": "399 DKK", "image": "https://m.media-amazon.com/images/I/51-12XbS32L._SX522_.jpg" }, { "title": "RayBan", "price": "899 DKK", "image": "https://m.media-amazon.com/images/I/612Y0H4VzFL._AC_UY1000_.jpg" }]
+            }
+          ]
+        }
+      ]
+    };
+
     document.addEventListener("DOMContentLoaded", async () => {
         let appData = {}, map = null;
         
-        // --- Init ---
+        // --- 2. LOAD DATA (Try Fetch, Fail to Default) ---
         try {
+            // Attempt to load from file/server
             const res = await fetch("data.json?v=" + Date.now());
-            if(!res.ok) throw new Error("No Data");
+            if(!res.ok) throw new Error("Fetch Failed");
             appData = await res.json();
-            initApp();
+            console.log("Loaded from data.json");
         } catch(e) {
-            document.body.innerHTML = `<div style="padding:40px;text-align:center;color:red">App Data missing. Please Connect GitHub in Admin.</div>`;
+            // If failed (local file or missing), use default
+            console.warn("Using Default Data (Offline Mode)");
+            appData = DEFAULT_DATA;
         }
 
+        initApp();
+
         function initApp() {
-            // 1. Build Nav
+            // Build Nav
             const navHTML = appData.categories.map(cat => 
                 `<a href="#${cat.id}" class="nav-btn" data-id="${cat.id}" onclick="renderPage('${cat.id}')">
                     <span class="material-icons">${cat.icon}</span>${cat.title}
@@ -87,23 +128,21 @@
             ).join('');
             document.getElementById('nav-container').innerHTML = navHTML;
             
-            // 2. Load initial page
+            // Load page
             const hash = window.location.hash.replace('#','') || appData.categories[0].id;
             renderPage(hash);
-            setInterval(updateLiveStats, 30000); // Live ship updates
+            setInterval(updateLiveStats, 30000);
         }
 
-        // --- Rendering System ---
+        // --- 3. RENDER LOGIC ---
         window.renderPage = (pageId) => {
             const cat = appData.categories.find(c => c.id === pageId);
             if(!cat) return;
 
-            // Active Nav State
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.id === pageId));
-
             const container = document.getElementById('app-container');
             
-            // A. Voyage Layout
+            // VOYAGE
             if(cat.type === 'voyage') {
                 container.innerHTML = `
                     <div class="page active">
@@ -112,14 +151,13 @@
                         <div class="stat-grid">
                             <div class="stat-box"><div class="stat-val neon" id="stat-speed">--</div><div class="stat-lbl">Knots</div></div>
                             <div class="stat-box"><div class="stat-val" id="stat-dist">--</div><div class="stat-lbl">Dist (km)</div></div>
-                            <div class="stat-box" style="grid-column:span 2"><div class="stat-val" id="stat-eta">--</div><div class="stat-lbl">Next Stop</div></div>
                         </div>
                     </div>`;
                 setTimeout(initMap, 100);
                 return;
             }
 
-            // B. Home Layout
+            // HOME
             if(cat.type === 'home') {
                 const hero = cat.items[0];
                 container.innerHTML = `
@@ -127,20 +165,20 @@
                         <div class="hero">
                             <img src="${hero.images[0]}">
                             <div class="hero-content">
-                                <h1 style="font-size:2.5rem;line-height:1">${hero.name}</h1>
-                                <p style="color:var(--primary)">${hero.description}</p>
+                                <h1 style="font-size:2.5rem;line-height:1;font-weight:700;">${hero.name}</h1>
+                                <p style="color:var(--primary);margin-top:5px;">${hero.description}</p>
                             </div>
                         </div>
                         <div class="stat-grid">
-                            <div class="stat-box"><div class="stat-val neon" id="home-speed">--</div><div class="stat-lbl">Speed</div></div>
-                            <div class="stat-box"><div class="stat-val" id="home-temp">--°</div><div class="stat-lbl">Outside</div></div>
+                            <div class="stat-box"><div class="stat-val neon" id="home-speed">--</div><div class="stat-lbl">Ship Speed</div></div>
+                            <div class="stat-box"><div class="stat-val">6°C</div><div class="stat-lbl">Outside</div></div>
                         </div>
                     </div>`;
                 updateLiveStats();
                 return;
             }
 
-            // C. Standard Grid (The "Everything Thinkable" Render)
+            // STANDARD GRID
             const itemsHTML = cat.items.map(item => `
                 <div class="item-card glass p-4">
                     ${item.images && item.images.length && item.images[0] ? `<img src="${item.images[0]}" class="item-img">` : ''}
@@ -148,8 +186,8 @@
                     <p class="text-sm text-dim mt-1">${item.description || ''}</p>
                     
                     <div class="meta-row">
-                        ${item.location ? `<div class="meta-item"><span class="material-icons text-sm">place</span>${item.location}</div>` : ''}
-                        ${item.openingHours && item.openingHours.length ? `<div class="meta-item"><span class="material-icons text-sm">schedule</span>${item.openingHours[0].split(':')[0]}...</div>` : ''}
+                        ${item.location ? `<div class="meta-item"><span class="material-icons text-sm text-cyan-400">place</span>${item.location}</div>` : ''}
+                        ${item.openingHours && item.openingHours.length ? `<div class="meta-item"><span class="material-icons text-sm text-cyan-400">schedule</span>${item.openingHours[0]}</div>` : ''}
                     </div>
 
                     ${renderSubList(item)}
@@ -158,33 +196,32 @@
                 </div>
             `).join('');
 
-            container.innerHTML = `<div class="page active"><h1 class="text-2xl font-bold mb-4 px-2">${cat.title}</h1>${itemsHTML}</div>`;
+            container.innerHTML = `<div class="page active"><h1 class="text-2xl font-bold mb-4 px-2" style="padding-top:10px;">${cat.title}</h1>${itemsHTML}</div>`;
         };
 
         function renderSubList(item) {
             if(!item.subList || !item.subList.length) return '';
             
-            const html = item.subListType === 'catalog' 
-                // 1. Catalog Grid (Images + Price)
-                ? `<div class="sub-list-title">Catalog</div><div class="catalog-grid">
+            if(item.subListType === 'catalog') {
+                return `<div class="sub-list-title">Catalog</div><div class="catalog-grid">
                     ${item.subList.map(s => `<div class="catalog-item">${s.image?`<img src="${s.image}">`:''}<div class="text-sm font-medium">${s.title}</div><span class="price">${s.price}</span></div>`).join('')}
-                   </div>`
-                // 2. Menu List (Text + Price)
-                : `<div class="sub-list-title">Menu / Info</div><div class="menu-list">
+                   </div>`;
+            } else {
+                return `<div class="sub-list-title">Menu / Info</div><div class="menu-list">
                     ${item.subList.map(s => `<div class="menu-item"><div class="info"><div class="title">${s.title}</div><div class="sub">${s.subtitle||''}</div></div><div class="price">${s.price||''}</div></div>`).join('')}
                    </div>`;
-            return html;
+            }
         }
 
-        // --- Live Data Logic (Same as before, abbreviated for brevity) ---
+        // --- LIVE SHIP DATA ---
         async function updateLiveStats() {
             try {
                 const res = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
                 const ship = (await res.json()).find(v => v.vesselName.toUpperCase() === 'NORRONA');
                 if(ship) {
-                    if(document.getElementById('stat-speed')) document.getElementById('stat-speed').innerText = ship.position.speed;
-                    if(document.getElementById('home-speed')) document.getElementById('home-speed').innerText = ship.position.speed;
-                    // More API mapping here...
+                    const spd = ship.position.speed;
+                    if(document.getElementById('stat-speed')) document.getElementById('stat-speed').innerText = spd;
+                    if(document.getElementById('home-speed')) document.getElementById('home-speed').innerText = spd + " kn";
                 }
             } catch(e) {}
         }
@@ -193,7 +230,6 @@
             if(map) map.remove();
             map = L.map('map', {zoomControl:false, attributionControl:false}).setView([62.00, -6.76], 6);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-            // Add Ship marker logic here...
         }
     });
     </script>
