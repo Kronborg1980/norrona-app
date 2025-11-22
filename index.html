@@ -86,14 +86,10 @@
             margin-bottom: 24px;
             background: #050b14;
         }
-        /* This animates the route line to look like data flowing */
-        .flowing-dash {
-            animation: dash-anim 30s linear infinite;
-        }
-        @keyframes dash-anim {
-            to { stroke-dashoffset: -1000; }
-        }
+        .flowing-dash { animation: dash-anim 30s linear infinite; }
+        @keyframes dash-anim { to { stroke-dashoffset: -1000; } }
 
+        /* --- Grids & Widgets --- */
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
         .grid-item {
             background: rgba(255,255,255,0.03);
@@ -102,8 +98,20 @@
             backdrop-filter: blur(10px);
         }
         .grid-item .label { font-size: 0.7rem; color: var(--neon-cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; opacity: 0.8; }
+        
+        /* Flex layout for Speed/Course widget */
+        .value-wrapper { display: flex; justify-content: center; align-items: center; gap: 10px; }
         .grid-item .value { font-size: 1.6rem; font-weight: 700; color: white; text-shadow: 0 0 15px rgba(255,255,255,0.15); }
         .grid-item .sub-value { font-size: 0.8rem; color: var(--text-dim); margin-top: 5px; }
+
+        /* Course Arrow Animation */
+        .course-arrow {
+            font-size: 24px;
+            color: var(--neon-cyan);
+            filter: drop-shadow(0 0 5px var(--neon-cyan));
+            transition: transform 1s ease-out; /* Smooth rotation */
+            display: inline-block;
+        }
 
         .weather-panel {
             background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(0,0,0,0));
@@ -133,25 +141,20 @@
         .nav-item.active { color: var(--neon-cyan); text-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
         .nav-item.active .material-icons { transform: translateY(-4px); }
 
-        /* --- Ship Marker Animation --- */
+        /* --- Ship Marker --- */
         .ship-pulse-icon { position: relative; display: flex; justify-content: center; align-items: center; }
-        /* The Ship */
         .ship-body { 
             width: 0; height: 0; 
             border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 20px solid var(--neon-cyan);
             filter: drop-shadow(0 0 8px var(--neon-cyan));
             z-index: 2; position: relative;
         }
-        /* The Radar Rings */
         .ship-ring { 
             position: absolute; border: 1px solid var(--neon-cyan); border-radius: 50%; 
             opacity: 0; animation: radar-ping 2.5s infinite ease-out; z-index: 1; 
         }
         .ship-ring:nth-child(2) { animation-delay: 0.8s; }
         @keyframes radar-ping { 0% { width: 10px; height: 10px; opacity: 0.8; border-width: 3px; } 100% { width: 120px; height: 120px; opacity: 0; border-width: 0px; } }
-        
-        .leaflet-pane { z-index: 10; }
-        .leaflet-bottom { z-index: 5; }
     </style>
 </head>
 <body>
@@ -173,68 +176,40 @@
             let appData = {};
             let map;
 
-            /* --- ROBUST ROUTING DATA --- */
-            // We define "safe" waypoints around land masses.
-            // The code will dynamically snap the line to the ship's LIVE position between these points.
-            
-            // 1. The "North of Shetland" Waypoints (Safe for large vessels)
-            // Used for Denmark <-> Faroe
+            // --- Routing Data ---
             const waypointsDenmarkFaroe = [
-                { lat: 57.5915, lon: 9.9725 }, // Hirtshals (Port)
-                { lat: 57.70, lon: 9.50 },     // Skagerrak Exit
-                { lat: 58.00, lon: 8.00 },     // North Sea Open
-                { lat: 59.00, lon: 4.00 },     // Deep North Sea
-                { lat: 60.00, lon: 1.00 },     // East of Shetland
-                { lat: 61.10, lon: -0.60 },    // Muckle Flugga (Turn point North of Shetland)
-                { lat: 61.40, lon: -3.00 },    // Faroese Channel
-                { lat: 61.80, lon: -5.50 },    // Approach
-                { lat: 62.0085, lon: -6.7665 } // Tórshavn (Port)
+                { lat: 57.5915, lon: 9.9725 }, { lat: 57.70, lon: 9.50 }, { lat: 58.00, lon: 8.00 }, 
+                { lat: 59.00, lon: 4.00 }, { lat: 60.00, lon: 1.00 }, { lat: 61.10, lon: -0.60 }, 
+                { lat: 61.40, lon: -3.00 }, { lat: 61.80, lon: -5.50 }, { lat: 62.0085, lon: -6.7665 }
             ];
-
-            // 2. The "Iceland Approach" Waypoints
-            // Used for Faroe <-> Iceland
             const waypointsFaroeIceland = [
-                { lat: 62.0085, lon: -6.7665 }, // Tórshavn
-                { lat: 62.20, lon: -7.00 },     // Leave Fjord
-                { lat: 62.80, lon: -8.50 },     // North West
-                { lat: 63.50, lon: -10.00 },    // Deep Atlantic
-                { lat: 64.50, lon: -12.00 },    // Iceland Shelf
-                { lat: 65.15, lon: -13.50 },    // Fjord Entrance
-                { lat: 65.2598, lon: -13.9975 } // Seyðisfjörður
+                { lat: 62.0085, lon: -6.7665 }, { lat: 62.20, lon: -7.00 }, { lat: 62.80, lon: -8.50 }, 
+                { lat: 63.50, lon: -10.00 }, { lat: 64.50, lon: -12.00 }, { lat: 65.15, lon: -13.50 }, 
+                { lat: 65.2598, lon: -13.9975 }
             ];
-
             const dockLocations = { 
                 torshavn: { name: "Tórshavn", country: "Faroe Islands", lat: 62.0085, lon: -6.7665 }, 
                 hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.5915, lon: 9.9725 }, 
                 seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.2598, lon: -13.9975 } 
             };
 
-            // Icon definitions
-            const shipIcon = L.divIcon({
-                className: 'ship-pulse-icon',
-                html: '<div class="ship-body"></div><div class="ship-ring"></div><div class="ship-ring"></div>',
-                iconSize: [60, 60],
-                iconAnchor: [30, 30] // Center of the pulse
-            });
+            const shipIcon = L.divIcon({ className: 'ship-pulse-icon', html: '<div class="ship-body"></div><div class="ship-ring"></div><div class="ship-ring"></div>', iconSize: [60, 60], iconAnchor: [30, 30] });
+            const destIcon = L.divIcon({ className: 'dest-marker', html: '<div style="width:12px;height:12px;background:var(--neon-cyan);border-radius:50%;box-shadow:0 0 10px var(--neon-cyan);"></div>', iconSize: [12, 12], iconAnchor: [6, 6] });
 
-            const destIcon = L.divIcon({
-                className: 'dest-marker',
-                html: '<div style="width:12px;height:12px;background:var(--neon-cyan);border-radius:50%;box-shadow:0 0 10px var(--neon-cyan);"></div>',
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
-            });
-
-            // --- Logic ---
             function normalizeDest(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversine(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
             function formatETA(e) { if(!e)return{day:"--",time:"--:--"};try{const t=new Date(e);return{day:t.toLocaleDateString("en-GB",{weekday:"short",timeZone:"Atlantic/Faroe"}),time:t.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hour12:!1,timeZone:"Atlantic/Faroe"})}}catch(e){return{day:"",time:""}}}
             function createImageArea(images) { return images && images.length ? `<div class="image-container" style="background-image: url('${images[0]}'); background-size: cover; background-position: center;"></div>` : ''; }
+            
+            // New Helper for Compass Direction
+            function getCardinal(angle) {
+                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                return directions[Math.round(angle / 45) % 8];
+            }
 
-            // --- Page Rendering ---
             function renderPage(pageId) {
                 const page = appData.categories.find(cat => cat.id === pageId);
                 if (!page) return;
-
                 document.querySelectorAll('.nav-item').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
                 
                 let html = '';
@@ -250,7 +225,15 @@
                         </div>
                         <div class="voyage-grid">
                             <div class="grid-item"><div class="label">Heading To</div><div class="value neon-text" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div>
-                            <div class="grid-item"><div class="label">Current Speed</div><div class="value" id="speed-knots-home">--</div><div class="sub-value" id="speed-kmh-home">--</div></div>
+                            
+                            <div class="grid-item">
+                                <div class="label">Speed & Course</div>
+                                <div class="value-wrapper">
+                                    <span class="material-icons course-arrow" id="course-arrow-home">navigation</span>
+                                    <span class="value" id="speed-knots-home">--</span>
+                                </div>
+                                <div class="sub-value" id="speed-details-home">--</div>
+                            </div>
                         </div>
                     </div>`;
                     updateShipData(true);
@@ -259,7 +242,16 @@
                         <div class="section-header"><h2 class="neon-text" style="text-align:center; margin-bottom:20px;">Live Tracking</h2></div>
                         <div id="map"></div>
                         <div class="voyage-grid">
-                            <div class="grid-item"><div class="label">Speed</div><div class="value" id="speed-knots">--</div><div class="sub-value" id="speed-kmh">--</div></div>
+                            
+                            <div class="grid-item">
+                                <div class="label">Speed & Course</div>
+                                <div class="value-wrapper">
+                                    <span class="material-icons course-arrow" id="course-arrow-voyage">navigation</span>
+                                    <span class="value" id="speed-knots">--</span>
+                                </div>
+                                <div class="sub-value" id="speed-details-voyage">--</div>
+                            </div>
+
                             <div class="grid-item"><div class="label">Time (Ship)</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Time</div></div>
                             <div class="grid-item"><div class="label">Distance Left</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">km</div></div>
                             <div class="grid-item"><div class="label">Destination</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div>
@@ -294,19 +286,16 @@
                 contentContainer.innerHTML = html;
             }
 
-            // --- Weather ---
             async function fetchWeather(lat, lon) {
                 try {
                     const res = await fetch(`https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI&location.latitude=${lat}&location.longitude=${lon}`);
                     const data = await res.json();
-                    const t = data.temperature?.degrees;
-                    if(document.getElementById("weather-temp")) document.getElementById("weather-temp").textContent = t ? `${Math.round(t)}°C` : '--';
+                    if(document.getElementById("weather-temp")) document.getElementById("weather-temp").textContent = data.temperature?.degrees ? `${Math.round(data.temperature.degrees)}°C` : '--';
                     if(document.getElementById("weather-description")) document.getElementById("weather-description").textContent = data.weatherCondition?.description?.text || "Clear";
                     if(document.getElementById("weather-icon")) document.getElementById("weather-icon").src = `https://openweathermap.org/img/wn/02d@2x.png`;
                 } catch(e){ console.log("Weather fail", e) }
             }
 
-            // --- Main Data Loop ---
             async function updateShipData(isHome = false) {
                 try {
                     const res = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
@@ -316,23 +305,39 @@
                     const lat = ship.position.latitude;
                     const lon = ship.position.longitude;
                     const speed = ship.position.speed;
+                    const course = ship.position.course || 0; // Get Course
                     const destKey = normalizeDest(ship.destinationFromAIS.split(",")[0]);
                     const destData = dockLocations[destKey] || dockLocations.torshavn;
                     const eta = formatETA(ship.etaFromAIS);
 
-                    // Update Text Data
+                    // --- UPDATE WIDGETS (SPEED & COURSE) ---
+                    const compassDir = getCardinal(course);
+                    const courseString = `${course}° ${compassDir}`;
+                    
                     if (isHome) {
-                        document.getElementById('speed-knots-home').textContent = `${speed} kn`;
-                        document.getElementById('speed-kmh-home').textContent = `${(speed * 1.852).toFixed(1)} km/h`;
                         document.getElementById('destination-home').textContent = destData.name;
                         document.getElementById('eta-home').textContent = `${eta.day} ${eta.time}`;
+                        
+                        // Speed
+                        document.getElementById('speed-knots-home').textContent = `${speed} kn`;
+                        // Subtext now shows KMH and Course Text
+                        document.getElementById('speed-details-home').textContent = `${(speed * 1.852).toFixed(1)} km/h • ${courseString}`;
+                        // Rotate Arrow
+                        const arrow = document.getElementById('course-arrow-home');
+                        if(arrow) arrow.style.transform = `rotate(${course}deg)`;
+
                     } else {
                         if(document.querySelector('.voyage-page')) {
-                            document.getElementById('speed-knots').textContent = `${speed} kn`;
-                            document.getElementById('speed-kmh').textContent = `${(speed * 1.852).toFixed(1)} km/h`;
                             document.getElementById('destination-voyage').textContent = destData.name;
                             document.getElementById('eta-voyage').textContent = `${eta.day} ${eta.time}`;
                             
+                            // Speed
+                            document.getElementById('speed-knots').textContent = `${speed} kn`;
+                            document.getElementById('speed-details-voyage').textContent = `${(speed * 1.852).toFixed(1)} km/h • ${courseString}`;
+                            // Rotate Arrow
+                            const arrow = document.getElementById('course-arrow-voyage');
+                            if(arrow) arrow.style.transform = `rotate(${course}deg)`;
+
                             const dist = haversine(lat, lon, destData.lat, destData.lon);
                             document.getElementById('distance').textContent = Math.round(dist);
                             document.getElementById('distance-unit').textContent = dist < 2 ? "Arrived" : "km";
@@ -340,8 +345,6 @@
                             if(document.getElementById('onboard-time')) {
                                 document.getElementById('onboard-time').textContent = new Date().toLocaleTimeString('en-GB', {timeZone: 'Atlantic/Faroe', hour:'2-digit', minute:'2-digit'});
                             }
-
-                            // Trigger Map Update
                             updateMap(lat, lon, destData);
                             fetchWeather(destData.lat, destData.lon);
                         }
@@ -349,18 +352,16 @@
                 } catch (e) { console.error(e); }
             }
 
-            // --- DYNAMIC MAP ROUTING ---
             function updateMap(shipLat, shipLon, destData) {
                 if (!map) return;
-                
                 const shipPos = [shipLat, shipLon];
                 
-                // 1. Update Markers
                 if (!map.shipMarker) {
                     map.shipMarker = L.marker(shipPos, { icon: shipIcon, zIndexOffset: 1000 }).addTo(map);
                 } else {
                     map.shipMarker.setLatLng(shipPos);
-                    // Rotate ship icon based on heading if available? (Optional complexity)
+                    // Optional: Rotate ship icon body on map too if desired
+                    // document.querySelector('.ship-body').style.transform = `rotate(${shipHeading}deg)`;
                 }
 
                 if (!map.destMarker) {
@@ -369,79 +370,29 @@
                     map.destMarker.setLatLng([destData.lat, destData.lon]);
                 }
 
-                // 2. GENERATE DYNAMIC ROUTE
-                // This is the fix: We construct a line that includes the ship's CURRENT position
-                // as a mandatory waypoint.
-                
                 let baseRoute = [];
                 let finalRoute = [];
-
-                // Determine which "sea lane" we are in based on Latitude/Dest
-                // North of 62.5 OR heading to Iceland = Iceland Route
-                // Otherwise = Denmark Route
                 const isNorthRoute = shipLat > 62.5 || destData.name === 'Seyðisfjörður';
                 baseRoute = isNorthRoute ? waypointsFaroeIceland : waypointsDenmarkFaroe;
-
-                // Logic: We filter the base route.
-                // We find the longitude of the ship.
-                // Since routes are primarily East-West, we can filter points that are "behind" us vs "ahead" of us.
-                
-                // Sort baseRoute by Longitude (East to West) for consistent processing
                 baseRoute.sort((a, b) => b.lon - a.lon); 
 
-                // Are we moving West (to Tórshavn/Iceland) or East (to Denmark)?
-                // Tórshavn(approx -6) is West of Hirtshals(approx 9)
                 const isMovingWest = (destData.name === 'Tórshavn' && shipLon > -5) || destData.name === 'Seyðisfjörður';
-                
                 if (isMovingWest) {
-                    // We keep points with Longitude > Ship Longitude (Behind us)
-                    // Then add Ship
-                    // Then add points with Longitude < Ship Longitude (Ahead of us)
                     const pointsBehind = baseRoute.filter(p => p.lon > shipLon);
                     const pointsAhead = baseRoute.filter(p => p.lon < shipLon);
                     finalRoute = [...pointsBehind, {lat: shipLat, lon: shipLon}, ...pointsAhead];
                 } else {
-                    // Moving East.
-                    // Keep points with Longitude < Ship Longitude (Behind us - e.g. Iceland/Faroe)
-                    // Then add Ship
-                    // Then add points with Longitude > Ship Longitude (Ahead - e.g. Denmark)
-                    const pointsBehind = baseRoute.filter(p => p.lon < shipLon); // This logic depends on array order.
-                    const pointsAhead = baseRoute.filter(p => p.lon > shipLon);
-                    
-                    // Since we sorted East->West (9...-6), if we are moving East, we go -6...9.
-                    // So we actually want the array reversed.
-                    baseRoute.reverse(); // Now sorted West -> East (-6 ... 9)
-                    
+                    baseRoute.reverse();
                     const pBehind = baseRoute.filter(p => p.lon < shipLon);
                     const pAhead = baseRoute.filter(p => p.lon > shipLon);
                     finalRoute = [...pBehind, {lat: shipLat, lon: shipLon}, ...pAhead];
                 }
 
-                // Convert objects to arrays for Leaflet
                 const polylinePoints = finalRoute.map(p => [p.lat, p.lon]);
-
-                // Draw the Neon Line
                 if (map.routeLine) map.removeLayer(map.routeLine);
-                
-                map.routeLine = L.polyline(polylinePoints, {
-                    color: '#00f3ff', // Neon Cyan
-                    weight: 4,
-                    opacity: 0.8,
-                    className: 'flowing-dash', // CSS Animation
-                    dashArray: '10, 20',
-                    lineCap: 'round',
-                    lineJoin: 'round'
-                }).addTo(map);
-
-                // Add a "Glow" underlay
+                map.routeLine = L.polyline(polylinePoints, { color: '#00f3ff', weight: 4, opacity: 0.8, className: 'flowing-dash', dashArray: '10, 20', lineCap: 'round', lineJoin: 'round' }).addTo(map);
                 if (map.glowLine) map.removeLayer(map.glowLine);
-                map.glowLine = L.polyline(polylinePoints, {
-                    color: '#00f3ff',
-                    weight: 15,
-                    opacity: 0.2,
-                    lineCap: 'round',
-                    lineJoin: 'round'
-                }).addTo(map);
+                map.glowLine = L.polyline(polylinePoints, { color: '#00f3ff', weight: 15, opacity: 0.2, lineCap: 'round', lineJoin: 'round' }).addTo(map);
 
                 map.setView(shipPos, 6);
             }
@@ -449,49 +400,27 @@
             function initializeVoyagePage() {
                 if (map) { map.remove(); map = null; }
                 map = L.map("map", { zoomControl: false, attributionControl: false, renderer: L.canvas() });
-                
-                // Dark Matter Tiles
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                    subdomains: 'abcd',
-                    maxZoom: 10
-                }).addTo(map);
-
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 10 }).addTo(map);
                 updateShipData();
             }
 
-            // --- Init ---
             async function init() {
                 try {
                     const res = await fetch("data.json?v=" + Date.now());
                     appData = await res.json();
                     document.getElementById("header-logo").src = appData.settings.logoUrl;
-                    
-                    const navHtml = appData.categories.map(cat => 
-                        `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}">
-                            <span class="material-icons">${cat.icon}</span>
-                            ${cat.title}
-                        </a>`
-                    ).join('');
+                    const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join('');
                     document.getElementById("bottom-nav").innerHTML = navHtml;
-                    
-                    document.querySelectorAll('.nav-item').forEach(l => l.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        renderPage(e.currentTarget.dataset.id);
-                    }));
-
+                    document.querySelectorAll('.nav-item').forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }));
                     renderPage(window.location.hash.substring(1) || appData.categories[0].id);
-                    
                     setInterval(() => {
                         const t = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' });
                         document.getElementById('onboard-time-header').textContent = t;
                         if(document.getElementById('onboard-time')) document.getElementById('onboard-time').textContent = t;
                     }, 1000);
-
                     setInterval(updateShipData, 60000);
-
                 } catch (e) { contentContainer.innerHTML = "Error loading app."; }
             }
-
             init();
         });
     </script>
