@@ -16,7 +16,6 @@
             --deep-bg: #020b14;
             --glass-surface: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-highlight: rgba(255, 255, 255, 0.08);
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.5);
             --card-radius: 24px;
@@ -44,96 +43,46 @@
             overflow-x: hidden;
         }
 
-        /* --- Neon Glass Header --- */
+        /* --- Header --- */
         .main-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: sticky; top: 0; z-index: 100;
             background: rgba(2, 11, 20, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
             padding-top: env(safe-area-inset-top);
         }
+        .navbar { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 24px; }
+        /* Updated Logo Style */
+        .navbar .logo img { height: 40px; width: auto; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
+        .onboard-time { font-weight: 700; font-size: 0.95rem; letter-spacing: 1px; text-shadow: 0 0 10px var(--neon-cyan); color: var(--neon-cyan); }
 
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 60px;
-            padding: 0 24px;
-        }
-
-        .navbar .logo img { height: 28px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.3)); }
-        .onboard-time { 
-            font-weight: 700; 
-            font-size: 0.95rem; 
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            color: var(--neon-cyan);
-        }
-
-        /* --- Content Layout --- */
+        /* --- Layout --- */
         .page { padding: 24px; display: none; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-header { margin-bottom: 24px; }
+        .section-header h2 { font-size: 2rem; font-weight: 700; background: linear-gradient(to right, #fff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .section-header { margin-bottom: 24px; text-align: left; }
-        .section-header h2 { 
-            font-size: 2rem; 
-            font-weight: 700; 
-            background: linear-gradient(to right, #fff, #a5b4fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* --- Glass Cards --- */
+        /* --- Cards --- */
         .item-card {
-            background: var(--glass-surface);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--card-radius);
-            overflow: hidden;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: var(--glass-surface); border: 1px solid var(--glass-border); border-radius: var(--card-radius);
+            overflow: hidden; margin-bottom: 24px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px);
         }
-        
-        .item-card:active { transform: scale(0.98); }
-
         .image-container { width: 100%; height: 220px; background: #000; position: relative; }
         .item-card-image { width: 100%; height: 100%; object-fit: cover; }
-
         .item-info { padding: 24px; }
         .item-info h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; color: #fff; }
         .item-info p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; }
-
         .fields { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-top: 16px; display: grid; gap: 12px; }
         .field { display: flex; justify-content: space-between; font-size: 0.9rem; }
         .field strong { color: var(--neon-cyan); font-weight: 500; }
         .field span { color: #fff; }
-
         .item-link-button {
-            display: block;
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
-            color: #000;
-            text-align: center;
-            padding: 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 700;
-            margin-top: 24px;
+            display: block; background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan)); color: #000;
+            text-align: center; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: 700; margin-top: 24px;
             box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-            transition: 0.3s;
         }
         
-        .menu { margin-top: 24px; border-top: 1px solid var(--glass-border); padding-top: 24px; }
-        .menu h4 { color: var(--neon-cyan); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
-        .menu-item { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .menu-item:last-child { border-bottom: none; }
-        .menu-item-header { display: flex; justify-content: space-between; font-weight: 600; color: #fff; margin-bottom: 4px;}
-        .menu-item-desc { font-size: 0.85rem; color: var(--text-muted); }
-
         /* --- Slideshow --- */
         .slideshow { position: relative; width: 100%; height: 100%; }
         .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s; }
@@ -142,78 +91,40 @@
         .slideshow-dots { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; }
         .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 50%; }
         .dot.active { background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); }
-        .slideshow-nav button { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 8px; cursor: pointer; z-index: 10; }
-        .slideshow-nav .prev { left: 10px; } .slideshow-nav .next { right: 10px; }
 
-        /* --- Home Hero & Grid --- */
+        /* --- Home & Voyage --- */
         .home-hero {
-            height: 55vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 30px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            border-radius: 0 0 30px 30px;
-            overflow: hidden;
+            height: 55vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 30px;
+            background-size: cover; background-position: center; position: relative; border-radius: 0 0 30px 30px; overflow: hidden;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .home-hero::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to top, var(--deep-bg) 0%, rgba(2,11,20,0.2) 50%, transparent 100%);
-        }
+        .home-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--deep-bg) 0%, rgba(2,11,20,0.2) 50%, transparent 100%); }
         .home-hero-content { position: relative; z-index: 2; }
         .home-hero h1 { font-size: 3rem; line-height: 1; font-weight: 700; margin-bottom: 10px; text-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .home-hero p { font-size: 1.1rem; color: rgba(255,255,255,0.8); max-width: 80%; }
-
-        /* --- Stats Grid (Voyage & Home) --- */
+        
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
-        .grid-item {
-            background: var(--glass-surface);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-        }
+        .grid-item { background: var(--glass-surface); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: left; }
         .grid-item .label { font-size: 0.75rem; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-        
-        /* New Value Styling for Speed Row */
-        .grid-item .value { font-size: 1.4rem; font-weight: 600; line-height: 1.1; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); display: flex; align-items: baseline; gap: 6px; }
+        .grid-item .value { font-size: 1.4rem; font-weight: 600; line-height: 1.1; color: #fff; display: flex; align-items: baseline; gap: 6px; }
         .grid-item .value .unit { font-size: 0.7em; opacity: 0.7; font-weight: 400; }
-        
         .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
         
-        /* --- Map & Weather --- */
         #map { width: 100%; height: 45vh; border-radius: 0 0 24px 24px; margin-bottom: 20px; box-shadow: inset 0 -20px 40px var(--deep-bg); }
         .weather-panel {
             background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-top: 10px;
+            border: 1px solid var(--glass-border); border-radius: 24px; padding: 20px;
+            display: flex; align-items: center; gap: 20px; margin-top: 10px;
         }
         .weather-panel img { width: 50px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)); }
 
         /* --- Bottom Nav --- */
         .bottom-nav {
-            position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 440px; margin: 0 auto;
-            height: 70px;
-            background: rgba(10, 20, 35, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 35px;
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 440px; margin: 0 auto; height: 70px;
+            background: rgba(10, 20, 35, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 35px;
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; transition: 0.3s; position: relative; width: 60px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; transition: 0.3s; width: 60px; }
         .nav-item .material-icons { font-size: 24px; margin-bottom: 4px; transition: 0.3s; }
         .nav-item.active { color: #fff; }
         .nav-item.active .material-icons { color: var(--neon-cyan); text-shadow: 0 0 15px var(--neon-cyan); transform: translateY(-5px); }
@@ -237,8 +148,8 @@
             const contentContainer = document.getElementById("content-container");
             let appData = {};
             let map;
+            let liveRouteLine = null; // Variable to store the dynamic line
             
-            // Define destination marker icon
             const destIcon = L.icon({
                 iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
                 iconSize: [12, 20], iconAnchor: [6, 20]
@@ -420,7 +331,6 @@
                     const norrona = (await response.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
                     if (!norrona) return;
                     const speedKnots = norrona.position?.speed || 0;
-                    // New: Get Course
                     const course = Math.round(norrona.position?.course || 0);
                     
                     const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
@@ -430,13 +340,11 @@
                     if (isHomePage) {
                         document.getElementById('destination-home').textContent = currentDestInfo.name;
                         document.getElementById('eta-home').textContent = `${day}, ${time}`;
-                        // Combined Speed & Course for Home
                         document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`;
                         document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                         document.getElementById('course-home').textContent = `Course: ${course}°`;
                     } else {
                          const page = document.querySelector('.voyage-page'); if(!page) return;
-                         // Combined Speed & Course for Voyage Page
                          document.getElementById("speed-knots").textContent = `${speedKnots} kn`;
                          document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                          document.getElementById("course-voyage").textContent = `Course: ${course}°`;
@@ -450,11 +358,25 @@
                          if (map) {
                             const shipPos = [norrona.position.latitude, norrona.position.longitude];
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
+                            
+                            // Draw Markers
                             if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
                             if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
                             
-                            // Keep map centered on ship but view surrounding area
-                            map.panTo(shipPos);
+                            // *** LOGIC TO DRAW LINE FROM SHIP TO DESTINATION ***
+                            // Remove old dynamic line if it exists
+                            if (liveRouteLine) { map.removeLayer(liveRouteLine); }
+                            
+                            // Create new line from Ship GPS -> Destination GPS
+                            liveRouteLine = L.polyline([shipPos, destPos], {
+                                color: '#00f2ff', // Neon Cyan color for the active line
+                                weight: 3,
+                                dashArray: '10, 10',
+                                opacity: 0.9
+                            }).addTo(map);
+
+                            // Center map to show both points
+                            map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
                          }
                          fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon);
                     }
@@ -466,27 +388,14 @@
                 map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() }).setView([60.0, -2.0], 5);
                 L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
                 
-                // Updated Route: More detailed waypoints following actual shipping lanes
-                // Hirtshals -> Around Norway -> North of Shetland -> Faroe -> East Iceland
+                // Keep the background route for context, but make it fainter
                 const detailedRoute = [
-                    [57.59, 9.96], // Hirtshals
-                    [57.80, 8.90], // Skagerrak Exit
-                    [58.20, 5.50], // North Sea
-                    [59.50, 2.00], // Heading NW
-                    [60.85, -0.83], // North of Shetland (Muckle Flugga)
-                    [61.50, -3.50], // Approaching Faroe
-                    [62.01, -6.77], // Torshavn
-                    [62.50, -8.00], // Leaving Faroe NW
-                    [64.00, -11.50], // Open Ocean
-                    [65.10, -13.00], // Approach Iceland
-                    [65.26, -14.01]  // Seydisfjordur
+                    [57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],
+                    [60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],
+                    [64.00, -11.50], [65.10, -13.00], [65.26, -14.01]
                 ];
-
                 L.polyline(detailedRoute, {
-                    color: '#00A9E0',
-                    weight: 2,
-                    dashArray: '5, 10',
-                    opacity: 0.7
+                    color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2
                 }).addTo(map);
                 
                 updateShipData();
