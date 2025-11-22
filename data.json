@@ -83,16 +83,27 @@
           "images": [
             "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
           ],
-          "trailerUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          "trailerUrl": "",
           "fields": [
-            { "label": "Deck", "value": "5" },
-            { "label": "Show 1", "value": "14:00 (Kids)" },
-            { "label": "Show 2", "value": "20:00 (Action)" }
+            { "label": "Deck", "value": "5" }
           ],
           "offers": [],
-          "menu": [],
+          "menu": [
+            { 
+              "name": "Kung Fu Panda 4", 
+              "price": "14:00", 
+              "description": "Animation | 1h 34m", 
+              "trailerUrl": "https://www.youtube.com/watch?v=_inKs4eeHiI" 
+            },
+            { 
+              "name": "Dune: Part Two", 
+              "price": "20:00", 
+              "description": "Sci-Fi/Adventure | 2h 46m", 
+              "trailerUrl": "https://www.youtube.com/watch?v=Way9Dexny3w" 
+            }
+          ],
           "link": { "text": "", "url": "" },
-          "secondaryLink": { "text": "See Schedule", "url": "#" }
+          "secondaryLink": { "text": "Full Schedule", "url": "#" }
         },
         {
           "id": "item-hottubs",
