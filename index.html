@@ -1,217 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>Norröna Experience</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"><title>Norröna Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700;800&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
     <style>
         :root {
-            --brand-cyan: #00f3ff;
-            --brand-blue: #0066ff;
-            --bg-deep: #020408;
-            --glass-surface: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-highlight: rgba(255, 255, 255, 0.15);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
+            --neon-blue: #00f3ff;
+            --deep-space: #050b14;
+            --glass-bg: rgba(16, 24, 39, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-white: #ffffff;
+            --text-gray: #94a3b8;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
             font-family: 'Manrope', sans-serif;
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            padding-bottom: 100px;
+            background-color: var(--deep-space);
+            background-image: radial-gradient(circle at 50% 0%, #1a2c42 0%, var(--deep-space) 80%);
+            color: var(--text-white);
             min-height: 100vh;
-            position: relative;
+            padding-bottom: 100px; /* Space for bottom nav */
         }
 
-        /* --- BACKGROUND AMBIENCE (The Aurora Effect) --- */
-        body::before {
-            content: ''; position: fixed; top: -20%; left: -20%; width: 140%; height: 140%;
-            background: radial-gradient(circle at 50% 0%, rgba(0, 100, 255, 0.15), transparent 60%),
-                        radial-gradient(circle at 80% 20%, rgba(0, 243, 255, 0.08), transparent 40%);
-            z-index: -1; animation: aurora 15s infinite alternate ease-in-out; pointer-events: none;
-        }
-        @keyframes aurora { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
-
-        #app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; position: relative; }
-        .page { padding: 24px; display: none; animation: slideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- PREMIUM HEADER --- */
+        /* --- HEADER --- */
         .main-header {
-            position: sticky; top: 0; z-index: 1000;
-            padding: 15px 24px 10px 24px;
+            position: sticky; top: 0; z-index: 5000;
             display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(to bottom, var(--bg-deep) 0%, rgba(2,4,8,0.8) 80%, transparent 100%);
-            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            background: rgba(5, 11, 20, 0.8);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .logo-img { height: 42px; filter: drop-shadow(0 0 15px rgba(0,243,255,0.3)); }
+        .logo-img { height: 32px; width: auto; display: block; filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3)); }
         .onboard-time {
-            font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; color: var(--brand-cyan);
-            background: rgba(0, 243, 255, 0.08); border: 1px solid rgba(0, 243, 255, 0.2);
-            padding: 6px 14px; border-radius: 100px;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+            font-weight: 700; font-size: 0.9rem; letter-spacing: 0.5px;
+            color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            padding: 6px 12px; border-radius: 8px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
         }
 
-        /* --- HERO PORTAL (The Ship) --- */
-        .hero-portal {
-            position: relative; height: 55vh; width: 100%;
-            border-radius: 0 0 40px 40px;
-            overflow: hidden; margin: -24px -24px 30px -24px; /* Break out of padding */
-            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.8);
-            border-bottom: 1px solid var(--glass-border);
+        /* --- LAYOUT & ANIMATION --- */
+        #app-shell { max-width: 500px; margin: 0 auto; }
+        .page { display: none; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
+        .page.active { display: block; opacity: 1; }
+
+        /* --- HERO CARD (The Ship) --- */
+        .hero-card {
+            position: relative; height: 50vh; border-radius: 24px; overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.7);
+            border: 1px solid var(--glass-border);
         }
-        .hero-portal::after { /* Vignette */
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(to bottom, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0) 50%, var(--bg-deep) 100%);
-            z-index: 2;
-        }
-        .hero-image {
+        .hero-img {
             width: 100%; height: 100%; object-fit: cover;
-            animation: slowPan 30s infinite alternate ease-in-out;
+            transform: scale(1.05); /* Subtle zoom */
         }
-        @keyframes slowPan { from { transform: scale(1.0); } to { transform: scale(1.15); } }
-        
-        .hero-content {
-            position: absolute; bottom: 30px; left: 24px; right: 24px; z-index: 3;
+        .hero-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, #050b14 0%, transparent 100%);
+            padding: 40px 20px 20px 20px;
         }
-        .hero-title {
-            font-size: 3.5rem; font-weight: 800; line-height: 0.9;
-            background: linear-gradient(to right, #fff, #a5f3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-            margin-bottom: 5px;
-        }
-        .hero-subtitle {
-            font-size: 1.1rem; color: var(--brand-cyan); text-transform: uppercase; letter-spacing: 2px; font-weight: 600;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .hero-subtitle::before { content:''; width: 30px; height: 2px; background: var(--brand-cyan); box-shadow: 0 0 10px var(--brand-cyan); }
+        .hero-title { font-size: 2.5rem; font-weight: 800; line-height: 1; margin-bottom: 5px; }
+        .hero-sub { color: var(--neon-blue); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
 
-        /* --- GLASS WIDGETS --- */
-        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 30px; }
+        /* --- WIDGETS --- */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
         
-        .glass-widget {
-            background: var(--glass-surface);
+        .glass-box {
+            background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 24px; padding: 20px;
-            position: relative; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: space-between;
-            transition: transform 0.2s;
+            border-radius: 16px; padding: 16px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
-        .glass-widget:active { transform: scale(0.98); }
-        /* Shine effect on widgets */
-        .glass-widget::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
-        }
-
-        .widget-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 10px; }
-        .widget-value-lg { font-size: 1.8rem; font-weight: 800; color: white; letter-spacing: -0.5px; }
-        .widget-value-sub { font-size: 0.85rem; color: var(--brand-cyan); font-weight: 500; margin-top: 2px; }
+        .label { font-size: 0.7rem; color: var(--text-gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+        .value-lg { font-size: 1.5rem; font-weight: 700; color: white; }
+        .value-sm { font-size: 0.8rem; color: var(--text-gray); }
         
-        /* Speed Widget Specifics */
-        .speed-meter { display: flex; align-items: baseline; gap: 4px; }
-        .speed-unit { font-size: 0.9rem; color: var(--text-muted); font-weight: 400; }
-        .course-indicator { display: flex; align-items: center; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .nav-arrow { color: var(--brand-cyan); font-size: 18px; transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        /* Speed Widget Details */
+        .speed-wrap { display: flex; align-items: baseline; gap: 4px; }
+        .unit { font-size: 0.8rem; color: var(--neon-blue); }
+        .course-wrap { display: flex; align-items: center; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); width: 100%; justify-content: center; }
+        .nav-arrow { color: var(--neon-blue); font-size: 16px; transition: transform 1s ease; }
 
-        /* --- ITEM LIST CARDS --- */
-        .list-card {
-            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+        /* --- MAP --- */
+        #map { 
+            width: 100%; height: 50vh; 
+            border-radius: 24px; 
             border: 1px solid var(--glass-border);
-            border-radius: 20px; overflow: hidden; margin-bottom: 20px;
+            background: #050b14; 
+            z-index: 1;
+            margin-bottom: 20px;
         }
-        .card-img-area { height: 180px; width: 100%; background: #000; position: relative; }
-        .card-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+        /* Fix for Leaflet grey box */
+        .leaflet-container { background: #050b14; font-family: 'Manrope', sans-serif; }
+
+        /* --- LIST ITEMS (Shops/Dining) --- */
+        .content-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px; overflow: hidden; margin-bottom: 20px;
+        }
+        .card-img-box { height: 160px; position: relative; }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
         .card-badge {
-            position: absolute; top: 15px; right: 15px;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border); color: white;
-            font-size: 0.7rem; font-weight: 700; padding: 6px 12px; border-radius: 100px;
-            text-transform: uppercase; letter-spacing: 1px;
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+            color: var(--neon-blue); border: 1px solid var(--neon-blue);
+            padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
         }
-        .card-body { padding: 20px; }
-        .card-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: white; }
-        .card-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+        .card-body { padding: 16px; }
+        .card-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+        .card-text { font-size: 0.9rem; color: var(--text-gray); line-height: 1.5; margin-bottom: 12px; }
+        
+        .info-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-gray); }
+        .info-val { font-weight: 600; color: white; }
 
-        /* Action Buttons */
-        .action-group { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .btn-glass {
+        .btn-action {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            color: white; padding: 12px; border-radius: 12px;
-            font-size: 0.9rem; font-weight: 600; text-decoration: none;
-            transition: 0.2s;
+            padding: 12px; border-radius: 10px; width: 100%;
+            color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            margin-top: 10px; transition: 0.2s;
         }
-        .btn-glass:hover { background: rgba(255,255,255,0.1); border-color: var(--brand-cyan); }
-        .btn-primary {
-            background: var(--brand-cyan); color: #000; border: none;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
-        }
+        .btn-action.primary { background: var(--neon-blue); color: #000; border: none; }
 
-        /* Map */
-        #map { height: 50vh; width: 100%; border-radius: 24px; border: 1px solid var(--glass-border); filter: grayscale(0.2) contrast(1.1); margin-bottom: 24px; }
-        
-        /* --- FLOATING NAVIGATION --- */
+        /* --- NAVIGATION --- */
         .floating-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 400px; height: 70px;
-            background: rgba(15, 23, 35, 0.9);
+            width: 95%; max-width: 450px; height: 65px;
+            background: rgba(10, 20, 35, 0.95);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 35px;
-            display: flex; justify-content: space-around; align-items: center;
-            z-index: 5000;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            display: flex; justify-content: space-between; align-items: center;
             padding: 0 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            z-index: 9000;
         }
         .nav-btn {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: rgba(255,255,255,0.4); text-decoration: none;
-            width: 60px; height: 100%; position: relative;
-            transition: 0.3s;
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-gray); text-decoration: none; height: 100%;
+            transition: all 0.3s ease;
         }
-        .nav-icon { font-size: 24px; margin-bottom: 4px; transition: 0.3s; }
-        .nav-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.5px; opacity: 0; transform: translateY(10px); transition: 0.3s; position: absolute; bottom: 8px; }
-        
-        /* Active State Animation */
-        .nav-btn.active { color: var(--brand-cyan); }
-        .nav-btn.active .nav-icon { transform: translateY(-8px); text-shadow: 0 0 15px var(--brand-cyan); }
-        .nav-btn.active .nav-label { opacity: 1; transform: translateY(0); }
-        .nav-btn.active::after {
-            content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            width: 40px; height: 2px; background: var(--brand-cyan);
-            box-shadow: 0 0 10px var(--brand-cyan);
-            border-radius: 0 0 4px 4px;
-        }
+        .nav-icon { font-size: 24px; margin-bottom: 2px; }
+        .nav-text { font-size: 0.65rem; font-weight: 600; }
+        .nav-btn.active { color: var(--neon-blue); transform: translateY(-2px); }
+        .nav-btn.active .nav-icon { text-shadow: 0 0 10px rgba(0,243,255,0.6); }
 
-        /* Markers */
+        /* Ship Marker */
         .ship-pulse-icon .ship-body { 
             width: 0; height: 0; 
-            border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 30px solid var(--brand-cyan);
-            filter: drop-shadow(0 0 10px var(--brand-cyan));
+            border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 26px solid var(--neon-blue);
+            filter: drop-shadow(0 0 8px var(--neon-blue));
             transition: transform 1s ease; transform-origin: center bottom;
         }
+        .ship-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid var(--neon-blue); border-radius: 50%; opacity: 0; animation: ping 2.5s infinite; width: 60px; height: 60px; }
+        @keyframes ping { 0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
     </style>
 </head>
 <body>
     <div id="app-shell">
         <header class="main-header">
-            <div class="header-left">
+            <div class="logo">
                 <img class="logo-img" src="https://www.smyrilline.dk/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line">
             </div>
-            <div class="header-right">
-                <div class="onboard-time" id="onboard-time-header">--:--</div>
-            </div>
+            <div class="onboard-time" id="onboard-time-header">--:--</div>
         </header>
+        
         <main id="content-container"></main>
     </div>
-    
+
     <nav class="floating-nav" id="bottom-nav"></nav>
     
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -221,205 +186,241 @@
             let appData = {};
             let map;
 
-            // Data & Logic
-            const waypointsDenmarkFaroe = [{ lat: 57.5915, lon: 9.9725 }, { lat: 57.70, lon: 9.50 }, { lat: 58.00, lon: 8.00 }, { lat: 59.00, lon: 4.00 }, { lat: 60.00, lon: 1.00 }, { lat: 61.10, lon: -0.60 }, { lat: 61.40, lon: -3.00 }, { lat: 61.80, lon: -5.50 }, { lat: 62.0085, lon: -6.7665 }];
-            const waypointsFaroeIceland = [{ lat: 62.0085, lon: -6.7665 }, { lat: 62.20, lon: -7.00 }, { lat: 62.80, lon: -8.50 }, { lat: 63.50, lon: -10.00 }, { lat: 64.50, lon: -12.00 }, { lat: 65.15, lon: -13.50 }, { lat: 65.2598, lon: -13.9975 }];
-            const dockLocations = { torshavn: { name: "Tórshavn", country: "Faroe Islands", lat: 62.0085, lon: -6.7665 }, hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.5915, lon: 9.9725 }, seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.2598, lon: -13.9975 } };
+            // --- Constants ---
+            const waypoints = [[57.59, 9.97], [57.70, 9.50], [58.00, 8.00], [59.00, 4.00], [60.00, 1.00], [61.10, -0.60], [61.40, -3.00], [61.80, -5.50], [62.01, -6.77], [62.20, -7.00], [62.80, -8.50], [63.50, -10.00], [64.50, -12.00], [65.15, -13.50], [65.26, -14.00]];
+            const docks = { 
+                torshavn: { name: "Tórshavn", country: "Faroe Is.", lat: 62.0085, lon: -6.7665 }, 
+                hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.5915, lon: 9.9725 }, 
+                seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.2598, lon: -13.9975 } 
+            };
+            const shipIcon = L.divIcon({ className: 'ship-pulse-icon', html: '<div class="ship-body"></div><div class="ship-ring"></div>', iconSize: [60, 60], iconAnchor: [30, 45] });
+            const destIcon = L.divIcon({ html: '<div style="width:10px;height:10px;background:#00f3ff;border-radius:50%;box-shadow:0 0 10px #00f3ff;"></div>', iconSize: [10, 10], iconAnchor: [5, 5] });
 
-            const shipIcon = L.divIcon({ className: 'ship-pulse-icon', html: '<div class="ship-body"></div>', iconSize: [60, 60], iconAnchor: [30, 45] });
-            const destIcon = L.divIcon({ className: 'dest-marker', html: '<div style="width:12px;height:12px;background:#00f3ff;border-radius:50%;box-shadow:0 0 15px #00f3ff;border:2px solid white;"></div>', iconSize: [12, 12], iconAnchor: [6, 6] });
+            // --- Helpers ---
+            function normalize(s) { return s ? s.toLowerCase().replace(/[^a-z]/g, "") : ""; }
+            function getDist(lat1, lon1, lat2, lon2) { 
+                const R=6371, dLat=(lat2-lat1)*Math.PI/180, dLon=(lon2-lon1)*Math.PI/180;
+                const a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+                return Math.round(2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+            }
+            function getDir(deg) { const d=['N','NE','E','SE','S','SW','W','NW']; return d[Math.round(deg/45)%8]; }
 
-            function normalizeDest(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
-            function haversine(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-            function formatETA(e) { if(!e)return{day:"--",time:"--:--"};try{const t=new Date(e);return{day:t.toLocaleDateString("en-GB",{weekday:"short",timeZone:"Atlantic/Faroe"}),time:t.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hour12:!1,timeZone:"Atlantic/Faroe"})}}catch(e){return{day:"",time:""}}}
-            function getCardinal(angle) { const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']; return directions[Math.round(angle / 45) % 8]; }
-            function createImageArea(images) { return images && images.length ? `<div class="card-img-area"><img src="${images[0]}" class="card-img"></div>` : ''; }
-
+            // --- Render Logic ---
             function renderPage(pageId) {
                 const page = appData.categories.find(cat => cat.id === pageId);
                 if (!page) return;
-                document.querySelectorAll('.nav-btn').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
-                
-                const speedWidgetHtml = `
-                    <div class="glass-widget">
-                        <div class="widget-label">Speed & Course</div>
-                        <div class="speed-meter">
-                            <span class="widget-value-lg" id="speed-knots-display">--</span>
-                            <span class="speed-unit">kn</span>
+
+                // Update Nav Active State
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === pageId);
+                });
+
+                // Common Widgets
+                const speedWidget = `
+                    <div class="glass-box">
+                        <div class="label">Speed & Course</div>
+                        <div class="speed-wrap">
+                            <span class="value-lg" id="spd-kn">--</span><span class="unit">kn</span>
                             <span style="color:#555">|</span>
-                            <span class="widget-value-sub" id="speed-kmh-display" style="color:white; opacity:0.7;">--</span>
-                            <span class="speed-unit">km/h</span>
+                            <span class="value-sm" id="spd-km">-- km/h</span>
                         </div>
-                        <div class="course-indicator">
-                            <span class="material-icons nav-arrow" id="course-arrow-display">navigation</span>
-                            <span id="course-text-display" style="font-size:0.8rem; font-weight:600;">--°</span>
+                        <div class="course-wrap">
+                            <span class="material-icons nav-arrow" id="nav-arrow">navigation</span>
+                            <span class="value-sm" id="nav-dir">--</span>
                         </div>
                     </div>`;
 
                 let html = '';
+
                 if (page.type === 'home') {
-                    html = `<div class="page active" style="padding: 24px;">
-                        <div class="hero-portal">
-                           <img src="${page.items[0]?.images[0] || 'https://www.smyrilline.com/wp-content/uploads/2025/03/Norrona_Djupini_DSC6900-copy-2.jpg'}" class="hero-image">
-                           <div class="hero-content">
+                    // HERO IMAGE - Fixed to use the specific ship image requested
+                    const heroImg = "https://www.smyrilline.com/wp-content/uploads/2025/03/Norrona_Djupini_DSC6900-copy-2.jpg";
+                    
+                    html = `
+                    <div class="page active">
+                        <div class="hero-card">
+                            <img src="${heroImg}" class="hero-img">
+                            <div class="hero-overlay">
                                 <h1 class="hero-title">Norröna</h1>
-                                <div class="hero-subtitle">Live Guide</div>
-                           </div>
-                        </div>
-                        
-                        <div class="voyage-grid">
-                            <div class="glass-widget">
-                                <div class="widget-label">Next Port</div>
-                                <div class="widget-value-lg" id="destination-home" style="font-size:1.6rem;">--</div>
-                                <div class="widget-value-sub" id="eta-home">--</div>
+                                <div class="hero-sub">Live Onboard Guide</div>
                             </div>
-                            ${speedWidgetHtml}
+                        </div>
+                        <div class="stats-grid">
+                            <div class="glass-box">
+                                <div class="label">Heading To</div>
+                                <div class="value-lg" id="dest-home">--</div>
+                                <div class="value-sm" id="eta-home" style="color:var(--neon-blue)">--</div>
+                            </div>
+                            ${speedWidget}
                         </div>
                     </div>`;
-                    updateShipData(true);
+                    updateData(); // Start data fetch
+
                 } else if (page.type === 'voyage') {
-                    html = `<div class="page active" style="padding-bottom: 100px;">
-                        <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:15px; padding-left:5px;">Live Tracking</h2>
+                    html = `
+                    <div class="page active">
+                        <div style="padding-bottom:10px"><h2 style="font-size:1.5rem; font-weight:800;">Live Tracking</h2></div>
                         <div id="map"></div>
-                        <div class="voyage-grid">
-                            ${speedWidgetHtml}
-                            <div class="glass-widget">
-                                <div class="widget-label">Distance</div>
-                                <div class="widget-value-lg" id="distance">--</div>
-                                <div class="widget-value-sub" id="distance-unit">Kilometers</div>
+                        <div class="stats-grid">
+                            ${speedWidget}
+                            <div class="glass-box">
+                                <div class="label">Distance Left</div>
+                                <div class="value-lg" id="dist">--</div>
+                                <div class="unit">Kilometers</div>
                             </div>
-                            <div class="glass-widget" style="grid-column: span 2;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <div>
-                                        <div class="widget-label">Destination</div>
-                                        <div class="widget-value-lg" id="destination-voyage">--</div>
-                                        <div class="widget-value-sub" id="eta-voyage">--</div>
-                                    </div>
-                                    <div style="text-align:right;">
-                                        <div class="widget-label">Weather</div>
-                                        <div class="widget-value-lg" id="weather-temp">--°</div>
-                                        <div class="widget-value-sub" id="weather-description">--</div>
-                                    </div>
+                            <div class="glass-box" style="grid-column:span 2; flex-direction:row; justify-content:space-between; text-align:left;">
+                                <div>
+                                    <div class="label">Destination</div>
+                                    <div class="value-lg" id="dest-map" style="font-size:1.2rem">--</div>
+                                    <div class="value-sm" id="eta-map">--</div>
+                                </div>
+                                <div style="text-align:right">
+                                    <div class="label">Weather</div>
+                                    <div class="value-lg" id="wx-temp">--°</div>
+                                    <div class="value-sm" id="wx-desc">--</div>
                                 </div>
                             </div>
                         </div>
                     </div>`;
-                    setTimeout(initializeVoyagePage, 100);
+                    
+                    // Critical Map Fix: Wait for DOM, then init
+                    setTimeout(() => initMap(), 100);
+
                 } else {
+                    // Generic Grid Pages (Shops, Food, etc)
                     html = `<div class="page active">
-                        <h2 style="font-size:2rem; font-weight:800; margin-bottom:20px; padding-left:5px;">${page.title}</h2>
-                        <div class="content-grid">${page.items.map(item => `
-                        <div class="list-card">
-                            ${createImageArea(item.images)}
-                            ${item.location ? `<div class="card-badge">${item.location}</div>` : ''}
-                            <div class="card-body">
-                                <div class="card-title">${item.name}</div>
-                                ${item.description ? `<p class="card-desc">${item.description}</p>` : ''}
-                                
-                                <div class="action-group">
-                                    ${item.openingHours && item.openingHours.length ? item.openingHours.map(h => 
-                                        `<div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:8px; background:rgba(255,255,255,0.03); border-radius:8px;"><span style="color:#94a3b8">${h.day}</span><span style="font-weight:600">${h.time}</span></div>`
-                                    ).join('') : ''}
-                                    
-                                    ${item.menu && item.menu.length ? item.menu.map(m => 
-                                        `<div style="display:flex; justify-content:space-between; font-size:0.9rem; padding:8px 0; border-bottom:1px dashed rgba(255,255,255,0.1);"><span>${m.name}</span><span style="color:var(--brand-cyan)">${m.price}</span></div>`
-                                    ).join('') : ''}
-
-                                    ${item.catalogs && item.catalogs.length ? item.catalogs.map(c => 
-                                        `<a href="${c.url}" target="_blank" class="btn-glass"><span class="material-icons">menu_book</span> ${c.name}</a>`
-                                    ).join('') : ''}
-
-                                    ${item.link && item.link.url ? `<a href="${item.link.url}" target="_blank" class="btn-glass btn-primary">${item.link.text || 'View Details'} <span class="material-icons" style="font-size:16px">arrow_forward</span></a>` : ''}
+                        <div style="padding-bottom:20px"><h2 style="font-size:2rem; font-weight:800;">${page.title}</h2></div>
+                        <div class="grid-content">
+                            ${page.items.map(item => `
+                                <div class="content-card">
+                                    ${item.images && item.images.length ? `<div class="card-img-box"><img src="${item.images[0]}" class="card-img">
+                                    ${item.location ? `<div class="card-badge">${item.location}</div>` : ''}</div>` : ''}
+                                    <div class="card-body">
+                                        <div class="card-title">${item.name}</div>
+                                        ${item.description ? `<p class="card-text">${item.description}</p>` : ''}
+                                        
+                                        ${item.openingHours ? item.openingHours.map(h=>`<div class="info-row"><span class="info-label">${h.day}</span><span class="info-val">${h.time}</span></div>`).join('') : ''}
+                                        ${item.menu ? item.menu.map(m=>`<div class="info-row"><span class="info-val">${m.name}</span><span style="color:var(--neon-blue)">${m.price}</span></div>`).join('') : ''}
+                                        ${item.catalogs ? item.catalogs.map(c=>`<a href="${c.url}" target="_blank" class="btn-action"><span class="material-icons">menu_book</span> ${c.name}</a>`).join('') : ''}
+                                        ${item.link && item.link.url ? `<a href="${item.link.url}" target="_blank" class="btn-action primary">${item.link.text || 'View Details'}</a>` : ''}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>`).join('')}</div></div>`;
+                            `).join('')}
+                        </div>
+                    </div>`;
                 }
                 contentContainer.innerHTML = html;
             }
 
-            // Ship Data Logic
+            // --- MAP FUNCTIONS ---
+            function initMap() {
+                if(map) { map.remove(); map = null; }
+                const mapDiv = document.getElementById('map');
+                if(!mapDiv) return;
+
+                map = L.map("map", { zoomControl: false, attributionControl: false, renderer: L.canvas() });
+                // Dark Matter Tiles
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 10 }).addTo(map);
+                
+                // Draw Route Line
+                L.polyline(waypoints, { color: '#00f3ff', weight: 3, opacity: 0.6, dashArray: '5, 10', className: 'flowing-dash' }).addTo(map);
+                
+                // Force resize to prevent grey box
+                setTimeout(() => map.invalidateSize(), 200);
+                updateData(); // Fetch ship pos immediately
+            }
+
+            // --- DATA FETCH ---
+            async function updateData() {
+                try {
+                    // Ship Data
+                    const res = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
+                    const ship = (await res.json()).find(v => v.vesselName === 'NORRONA');
+                    if(!ship) return;
+
+                    // Extract
+                    const lat = ship.position.latitude, lon = ship.position.longitude, speed = ship.position.speed, course = ship.position.course;
+                    const dk = normalize(ship.destinationFromAIS.split(',')[0]);
+                    const dest = docks[dk] || docks.torshavn;
+                    const etaDate = new Date(ship.etaFromAIS);
+                    const etaStr = `${etaDate.toLocaleDateString('en-GB',{weekday:'short'})} ${etaDate.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+
+                    // Update Text Elements (Safe check ids)
+                    const setTxt = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
+                    
+                    setTxt('spd-kn', speed);
+                    setTxt('spd-km', (speed*1.852).toFixed(0));
+                    setTxt('nav-dir', `${course}° ${getDir(course)}`);
+                    setTxt('destination-home', dest.name);
+                    setTxt('eta-home', etaStr);
+                    setTxt('dest-map', dest.name);
+                    setTxt('eta-map', etaStr);
+                    
+                    // Distance
+                    const d = getDist(lat, lon, dest.lat, dest.lon);
+                    setTxt('dist', d);
+
+                    // Rotate Arrow
+                    const arrow = document.getElementById('nav-arrow');
+                    if(arrow) arrow.style.transform = `rotate(${course}deg)`;
+
+                    // Map Update
+                    if(map) {
+                        const shipPos = [lat, lon];
+                        if(!map.ship) map.ship = L.marker(shipPos, {icon: shipIcon, zIndexOffset:1000}).addTo(map);
+                        else { map.ship.setLatLng(shipPos); map.ship.getElement().querySelector('.ship-body').style.transform = `rotate(${course}deg)`; }
+                        
+                        if(!map.dest) map.dest = L.marker([dest.lat, dest.lon], {icon: destIcon}).addTo(map);
+                        else map.dest.setLatLng([dest.lat, dest.lon]);
+                        
+                        map.setView(shipPos, 6);
+                        
+                        // Weather (Lazy load)
+                        fetchWeather(dest.lat, dest.lon);
+                    }
+
+                } catch(e) { console.log("Data fetch error", e); }
+            }
+
             async function fetchWeather(lat, lon) {
                 try {
-                    const res = await fetch(`https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI&location.latitude=${lat}&location.longitude=${lon}`);
-                    const data = await res.json();
-                    if(document.getElementById("weather-temp")) document.getElementById("weather-temp").textContent = data.temperature?.degrees ? `${Math.round(data.temperature.degrees)}°` : '--';
-                    if(document.getElementById("weather-description")) document.getElementById("weather-description").textContent = data.weatherCondition?.description?.text || "";
+                    const r = await fetch(`https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI&location.latitude=${lat}&location.longitude=${lon}`);
+                    const d = await r.json();
+                    const elT = document.getElementById('wx-temp'), elD = document.getElementById('wx-desc');
+                    if(elT && d.temperature) elT.innerText = Math.round(d.temperature.degrees) + "°";
+                    if(elD && d.weatherCondition) elD.innerText = d.weatherCondition.description;
                 } catch(e){}
             }
 
-            async function updateShipData(isHome = false) {
-                try {
-                    const res = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
-                    const ship = (await res.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
-                    if (!ship) return;
-
-                    const lat = ship.position.latitude; const lon = ship.position.longitude; const speed = ship.position.speed; const course = ship.position.course || 0;
-                    const destKey = normalizeDest(ship.destinationFromAIS.split(",")[0]);
-                    const destData = dockLocations[destKey] || dockLocations.torshavn;
-                    const eta = formatETA(ship.etaFromAIS);
-
-                    const knotsEl = document.getElementById('speed-knots-display'); if(knotsEl) knotsEl.textContent = speed;
-                    const kmhEl = document.getElementById('speed-kmh-display'); if(kmhEl) kmhEl.textContent = (speed * 1.852).toFixed(0);
-                    const courseTextEl = document.getElementById('course-text-display'); if(courseTextEl) courseTextEl.textContent = `${course}° ${getCardinal(course)}`;
-                    const arrowEl = document.getElementById('course-arrow-display'); if(arrowEl) arrowEl.style.transform = `rotate(${course}deg)`;
-
-                    if (isHome) {
-                        document.getElementById('destination-home').textContent = destData.name;
-                        document.getElementById('eta-home').textContent = `${eta.day} ${eta.time}`;
-                    } else {
-                        if(document.querySelector('.voyage-page')) {
-                            document.getElementById('destination-voyage').textContent = destData.name;
-                            document.getElementById('eta-voyage').textContent = `${eta.day} ${eta.time}`;
-                            const dist = haversine(lat, lon, destData.lat, destData.lon);
-                            document.getElementById('distance').textContent = Math.round(dist);
-                            document.getElementById('distance-unit').textContent = dist < 2 ? "Arrived" : "km";
-                            if(document.getElementById('onboard-time')) document.getElementById('onboard-time').textContent = new Date().toLocaleTimeString('en-GB', {timeZone: 'Atlantic/Faroe', hour:'2-digit', minute:'2-digit'});
-                            updateMap(lat, lon, destData, course);
-                            fetchWeather(destData.lat, destData.lon);
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            function updateMap(shipLat, shipLon, destData, shipCourse) {
-                if (!map) return;
-                const shipPos = [shipLat, shipLon];
-                if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: shipIcon, zIndexOffset: 1000 }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); const markerEl = map.shipMarker.getElement(); if(markerEl) { const body = markerEl.querySelector('.ship-body'); if(body) body.style.transform = `rotate(${shipCourse}deg)`; } }
-                if (!map.destMarker) { map.destMarker = L.marker([destData.lat, destData.lon], { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng([destData.lat, destData.lon]); }
-                
-                let baseRoute = []; let finalRoute = [];
-                const isNorthRoute = shipLat > 62.5 || destData.name === 'Seyðisfjörður';
-                baseRoute = isNorthRoute ? waypointsFaroeIceland : waypointsDenmarkFaroe;
-                baseRoute.sort((a, b) => b.lon - a.lon); 
-                const isMovingWest = (destData.name === 'Tórshavn' && shipLon > -5) || destData.name === 'Seyðisfjörður';
-                if (isMovingWest) { const pointsBehind = baseRoute.filter(p => p.lon > shipLon); const pointsAhead = baseRoute.filter(p => p.lon < shipLon); finalRoute = [...pointsBehind, {lat: shipLat, lon: shipLon}, ...pointsAhead]; } else { baseRoute.reverse(); const pBehind = baseRoute.filter(p => p.lon < shipLon); const pAhead = baseRoute.filter(p => p.lon > shipLon); finalRoute = [...pBehind, {lat: shipLat, lon: shipLon}, ...pAhead]; }
-                const polylinePoints = finalRoute.map(p => [p.lat, p.lon]);
-                if (map.routeLine) map.removeLayer(map.routeLine);
-                map.routeLine = L.polyline(polylinePoints, { color: '#00f3ff', weight: 4, opacity: 0.8, className: 'flowing-dash', dashArray: '10, 20', lineCap: 'round', lineJoin: 'round' }).addTo(map);
-                if (map.glowLine) map.removeLayer(map.glowLine);
-                map.glowLine = L.polyline(polylinePoints, { color: '#00f3ff', weight: 15, opacity: 0.2, lineCap: 'round', lineJoin: 'round' }).addTo(map);
-                map.setView(shipPos, 6);
-            }
-
-            function initializeVoyagePage() {
-                if (map) { map.remove(); map = null; }
-                map = L.map("map", { zoomControl: false, attributionControl: false, renderer: L.canvas() });
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains: 'abcd', maxZoom: 10 }).addTo(map);
-                updateShipData();
-            }
-
+            // --- INIT ---
             async function init() {
                 try {
-                    const res = await fetch("data.json?v=" + Date.now());
-                    appData = await res.json();
-                    const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-btn" data-id="${cat.id}"><span class="material-icons nav-icon">${cat.icon}</span><span class="nav-label">${cat.title}</span></a>`).join('');
-                    document.getElementById("bottom-nav").innerHTML = navHtml;
-                    document.querySelectorAll('.nav-btn').forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }));
+                    const r = await fetch("data.json?v=" + Date.now());
+                    appData = await r.json();
+                    
+                    // Render Bottom Nav
+                    const navEl = document.getElementById('bottom-nav');
+                    navEl.innerHTML = appData.categories.map(c => 
+                        `<a href="#${c.id}" class="nav-btn" data-id="${c.id}"><span class="material-icons nav-icon">${c.icon}</span><span class="nav-text">${c.title}</span></a>`
+                    ).join('');
+                    
+                    document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', (e) => {
+                        e.preventDefault(); renderPage(e.currentTarget.dataset.id);
+                    }));
+
+                    // Start
                     renderPage(window.location.hash.substring(1) || appData.categories[0].id);
-                    setInterval(() => { const t = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); document.getElementById('onboard-time-header').textContent = t; if(document.getElementById('onboard-time')) document.getElementById('onboard-time').textContent = t; }, 1000);
-                    setInterval(updateShipData, 60000);
-                } catch (e) { contentContainer.innerHTML = "Error loading app."; }
+                    
+                    // Clock & Data Loop
+                    setInterval(() => {
+                        const t = new Date().toLocaleTimeString('en-GB', {timeZone:'Atlantic/Faroe', hour:'2-digit', minute:'2-digit'});
+                        document.getElementById('onboard-time-header').innerText = t;
+                    }, 1000);
+                    setInterval(updateData, 30000);
+
+                } catch(e) { contentContainer.innerHTML = `<div style="text-align:center; margin-top:50px;">Error loading content.<br>${e}</div>`; }
             }
+
             init();
         });
     </script>
