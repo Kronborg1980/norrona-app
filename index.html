@@ -65,7 +65,14 @@
             }
             function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
             const sailingRoute = ['hirtshals', 'torshavn', 'seydisfjord', 'torshavn'];
-            const destinationMap = { torshavn: { name: "Tórshavn", country: "Faroe Islands", lat: 62.01, lon: -6.771 }, hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.594, lon: 9.965 }, seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.262, lon: -14.012 } };
+            
+            // UPDATE 1: Exact Dock Coordinates
+            const destinationMap = { 
+                torshavn: { name: "Tórshavn", country: "Faroe Islands", lat: 62.0085, lon: -6.7665 }, 
+                hirtshals: { name: "Hirtshals", country: "Denmark", lat: 57.5915, lon: 9.9725 }, 
+                seydisfjord: { name: "Seyðisfjörður", country: "Iceland", lat: 65.2598, lon: -13.9975 } 
+            };
+            
             const conditionMap = { 'CLEAR': '01d', 'CLEAR_DAY': '01d', 'CLEAR_NIGHT': '01n', 'CLOUDY': '04d', 'CLOUDY_DAY': '04d', 'CLOUDY_NIGHT': '04n', 'PARTLY_CLOUDY': '03d', 'PARTLY_CLOUDY_DAY': '03d', 'PARTLY_CLOUDY_NIGHT': '03n', 'MOSTLY_CLOUDY': '04d', 'FOG': '50d', 'HAZE': '50d', 'MIST': '50d', 'RAIN': '10d', 'HEAVY_RAIN': '10d', 'SHOWERS': '09d', 'RAIN_SHOWERS': '09d', 'THUNDERSTORM': '11d', 'SNOW': '13d', 'SNOW_SHOWERS': '13d', 'SLEET': '13d', 'SUNNY': '01d', 'MOSTLY_SUNNY': '02d', 'PARTLY_SUNNY': '03d', 'UNKNOWN': '50d' };
             function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
@@ -74,43 +81,23 @@
                 try {
                     const apiKey = 'AIzaSyAAXsfnLWGjbcz4RGlERJwo3Y0Soe56ryI';
                     const url = `https://weather.googleapis.com/v1/currentConditions:lookup?key=${apiKey}&location.latitude=${lat}&location.longitude=${lon}`;
-                    console.log("Fetching weather data from:", url);
                     const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`Weather API fetch failed: ${response.status} ${response.statusText}`);
-                    }
+                    if (!response.ok) throw new Error(`Weather API fetch failed`);
                     const data = await response.json();
-                    console.log("Weather API response:", JSON.stringify(data, null, 2));
                     const tempEl = document.getElementById("weather-temp");
-                    if (tempEl) {
-                        tempEl.textContent = data.temperature?.degrees != null 
-                            ? `${Math.round(data.temperature.degrees)}°C` 
-                            : '--°C';
-                    } else {
-                        console.warn("Element #weather-temp not found");
-                    }
+                    if (tempEl) tempEl.textContent = data.temperature?.degrees != null ? `${Math.round(data.temperature.degrees)}°C` : '--°C';
                     const descEl = document.getElementById("weather-description");
-                    if (descEl) {
-                        descEl.textContent = data.weatherCondition?.description?.text || data.weatherCondition?.description || "N/A";
-                    } else {
-                        console.warn("Element #weather-description not found");
-                    }
+                    if (descEl) descEl.textContent = data.weatherCondition?.description?.text || data.weatherCondition?.description || "N/A";
                     const weatherIconEl = document.getElementById("weather-icon");
                     if (weatherIconEl) {
                         const conditionType = data.weatherCondition?.type?.toUpperCase() || data.weatherCondition?.condition?.toUpperCase() || 'UNKNOWN';
                         const iconCode = conditionMap[conditionType] || '50d';
                         weatherIconEl.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-                    } else {
-                        console.warn("Element #weather-icon not found");
                     }
                 } catch (error) {
                     console.error("Weather fetch failed:", error.message);
                     const weatherDescEl = document.getElementById("weather-description");
                     if (weatherDescEl) weatherDescEl.textContent = 'Unavailable';
-                    const weatherTempEl = document.getElementById("weather-temp");
-                    if (weatherTempEl) weatherTempEl.textContent = '--°C';
-                    const weatherIconEl = document.getElementById("weather-icon");
-                    if (weatherIconEl) weatherIconEl.src = '';
                 }
             }
             async function updateShipData(isHomePage = false) {
@@ -158,11 +145,28 @@
                         document.getElementById("eta-voyage").textContent = hasArrived ? `Arrived ${day} at ${time}` : `Arriving ${day} at ${time}`;
                         const onboardTimeEl = document.getElementById('onboard-time');
                         if (onboardTimeEl) onboardTimeEl.textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
+                        
                         if (map) {
                             const shipPos = [norrona.position.latitude, norrona.position.longitude];
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
+                            
                             if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
                             if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
+                            
+                            // UPDATE 2: Dynamic Route Line
+                            // This draws a line from the CURRENT ship position to the destination
+                            // replacing the static predetermined line
+                            if (!map.routeLine) {
+                                map.routeLine = L.polyline([shipPos, destPos], {
+                                    color: '#00A9E0',
+                                    weight: 2,
+                                    dashArray: '5, 10',
+                                    opacity: 0.7
+                                }).addTo(map);
+                            } else {
+                                map.routeLine.setLatLngs([shipPos, destPos]);
+                            }
+
                             map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
                         }
                         setTimeout(() => fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon), 0);
@@ -173,20 +177,9 @@
                 if (map) { map.remove(); map = null; }
                 map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() });
                 L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
-                // Add dotted route line
-                const routeCoordinates = [
-                    [57.594, 9.965], // Hirtshals
-                    [59.5, 2.0],    // Waypoint to avoid Norway
-                    [62.01, -6.771], // Tórshavn
-                    [65.262, -14.012], // Seyðisfjörður
-                    [62.01, -6.771]  // Tórshavn
-                ];
-                L.polyline(routeCoordinates, {
-                    color: '#00A9E0',
-                    weight: 2,
-                    dashArray: '5, 10',
-                    opacity: 0.7
-                }).addTo(map);
+                
+                // Removed static route line code here
+                
                 updateShipData();
             }
             setInterval(updateShipData, 120000);
