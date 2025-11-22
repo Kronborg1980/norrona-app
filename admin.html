@@ -2,66 +2,256 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Norröna CMS</title>
-    <script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>body{font-family:'Poppins',sans-serif;background-color:#f3f4f6}.input-field{width:100%;padding:.75rem;border:1px solid #d1d5db;border-radius:.5rem;transition:border-color .2s,box-shadow .2s}.input-field:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.4)}.label{display:block;font-weight:600;color:#374151;margin-bottom:.5rem}.hidden{display:none}#notification{transition:opacity .5s,transform .5s}</style>
+    <script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>body{font-family:'Inter',sans-serif;background:#f1f5f9}.input-field{width:100%;padding:.5rem;border:1px solid #cbd5e1;border-radius:.375rem;font-size:0.9rem;transition:0.2s}.input-field:focus{border-color:#3b82f6;outline:none;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}.section-box{background:white;padding:1.5rem;border-radius:0.75rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);margin-bottom:1.5rem;border:1px solid #e2e8f0}.btn{padding:0.5rem 1rem;border-radius:0.5rem;font-weight:600;display:inline-flex;align-items:center;gap:0.5rem;cursor:pointer;transition:0.2s}.btn-primary{background:#0f172a;color:white}.btn-primary:hover{background:#1e293b}.btn-danger{color:#ef4444}.btn-danger:hover{background:#fee2e2}.btn-sm{padding:0.25rem 0.5rem;font-size:0.75rem}</style>
 </head>
 <body>
-    <div id="notification" class="hidden fixed top-5 right-5 bg-green-600 text-white py-3 px-5 rounded-lg shadow-lg z-[3000]"><p id="notification-message"></p></div>
-    <div id="pat-screen" class="min-h-screen flex items-center justify-center bg-gray-800">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">Connect to GitHub</h2>
-            <p class="text-center text-gray-500 mb-6">Provide your repository details and Personal Access Token to begin. The token is used for this session only.</p>
+    <div id="notification" class="hidden fixed top-5 right-5 bg-emerald-500 text-white py-3 px-6 rounded-lg shadow-xl z-50 font-bold"></div>
+    
+    <div id="pat-screen" class="min-h-screen flex items-center justify-center bg-slate-900 p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+            <div class="text-center mb-8"><span class="material-icons text-5xl text-slate-800">admin_panel_settings</span><h2 class="text-2xl font-bold text-slate-800 mt-2">Norröna CMS</h2></div>
             <div class="space-y-4">
-                <div><label for="repo-name" class="label">GitHub Repo (e.g., YourUsername/repo-name)</label><input type="text" id="repo-name" class="input-field" value="Kronborg1980/smyril-app"></div>
-                <div><label for="pat-input" class="label">Personal Access Token (Classic, with 'repo' scope)</label><input type="password" id="pat-input" class="input-field"></div>
-                <button id="connect-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition flex items-center justify-center gap-2"><span class="material-icons">login</span> Connect & Load Data</button>
-                <p id="connect-error" class="text-red-500 text-sm text-center pt-2"></p>
+                <div><label class="text-xs font-bold text-slate-500 uppercase">GitHub Repository</label><input type="text" id="repo-name" class="input-field" value="Kronborg1980/smyril-app" placeholder="User/Repo"></div>
+                <div><label class="text-xs font-bold text-slate-500 uppercase">Access Token</label><input type="password" id="pat-input" class="input-field" placeholder="ghp_..."></div>
+                <button id="connect-btn" class="w-full btn btn-primary justify-center py-3 text-lg">Connect</button>
+                <p id="connect-error" class="text-red-500 text-xs text-center min-h-[20px]"></p>
             </div>
         </div>
     </div>
-    <div id="admin-panel" class="hidden">
-        <header class="bg-gray-800 text-white shadow-lg"><div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4"><h1 class="text-2xl font-bold">Norröna Content Management</h1></div></header>
-        <main id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-            <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">General Settings</h2><div class="bg-white p-6 rounded-lg shadow-md"><div><label class="label">Header Logo Image</label><div class="flex items-center gap-4"><img id="logo-preview" class="h-10 border p-1 rounded-md bg-gray-800"><input type="file" class="input-field" data-key="logoUrl" accept="image/*"></div></div></div></section>
-            <section><h2 class="text-3xl font-bold text-gray-900 border-b pb-4 mb-6">Menu Categories</h2><div id="categories-container" class="space-y-6"></div><button id="add-category" class="mt-6 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition"><span class="material-icons">add</span>Add New Menu Category</button></section>
+
+    <div id="admin-panel" class="hidden pb-32">
+        <header class="bg-slate-900 text-white py-4 sticky top-0 z-40 shadow-lg">
+            <div class="max-w-5xl mx-auto px-4 flex justify-between items-center">
+                <h1 class="font-bold text-lg flex items-center gap-2"><span class="material-icons">directions_boat</span> Content Manager</h1>
+                <button id="save-button" class="btn bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"><span class="material-icons">save</span> Save Changes</button>
+            </div>
+        </header>
+
+        <main id="app" class="max-w-5xl mx-auto px-4 py-8">
+            <div class="section-box">
+                <h2 class="text-lg font-bold border-b pb-4 mb-4 flex items-center gap-2"><span class="material-icons text-slate-400">settings</span> Global Settings</h2>
+                <div class="flex items-center gap-6">
+                    <div class="relative w-24 h-24 bg-slate-100 rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer">
+                        <img id="logo-preview" class="absolute inset-0 w-full h-full object-contain p-2">
+                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" data-key="logoUrl" accept="image/*">
+                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white text-xs text-center">Change<br>Logo</div>
+                    </div>
+                    <div class="flex-1"><p class="text-sm text-slate-500">Upload a transparent PNG or SVG for the best results on the dark app background.</p></div>
+                </div>
+            </div>
+
+            <div id="categories-container" class="space-y-6"></div>
+            
+            <button onclick="addCategory()" class="w-full btn bg-white text-slate-500 border-2 border-dashed border-slate-300 hover:border-blue-500 hover:text-blue-500 py-6 justify-center mt-8 transition-all">
+                <span class="material-icons">add_circle_outline</span> Add New Category Section
+            </button>
         </main>
-        <div class="sticky bottom-0 bg-white/80 backdrop-blur-sm p-4 border-t shadow-inner">
-            <div class="max-w-7xl mx-auto"><button id="save-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg text-lg flex items-center justify-center gap-3"><span class="material-icons">save</span>Save Changes to GitHub</button></div>
-        </div>
     </div>
+
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        let GITHUB_USERNAME, GITHUB_REPO, GITHUB_PAT;
-        let appData = {};
-        const patScreen = document.getElementById("pat-screen"), adminPanel = document.getElementById("admin-panel"), connectBtn = document.getElementById("connect-btn"), connectError = document.getElementById("connect-error");
+    let appData={}; let GITHUB={};
+    const dom={patScreen:document.getElementById('pat-screen'),admin:document.getElementById('admin-panel'),app:document.getElementById('app')};
 
-        connectBtn.addEventListener('click', async () => {
-            const repoFullName = document.getElementById('repo-name').value.trim(), pat = document.getElementById('pat-input').value.trim();
-            connectError.textContent = ''; connectBtn.disabled = true; connectBtn.innerHTML = 'Connecting...';
-            if (!repoFullName || !pat || !repoFullName.includes('/')) { connectError.textContent = 'Repo name and PAT are required.'; connectBtn.disabled = false; connectBtn.innerHTML = '<span class="material-icons">login</span> Connect'; return; }
-            [GITHUB_USERNAME, GITHUB_REPO] = repoFullName.split('/'); GITHUB_PAT = pat;
-            try {
-                const response = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { headers: { 'Authorization': `token ${GITHUB_PAT}` }, cache: 'no-cache' });
-                if (!response.ok) throw new Error(`Connection failed (Status: ${response.status}). Check Repo & PAT.`);
-                appData = JSON.parse(decodeURIComponent(escape(atob((await response.json()).content))));
-                patScreen.classList.add('hidden'); adminPanel.classList.remove('hidden'); render();
-            } catch (error) { connectError.textContent = error.message;
-            } finally { connectBtn.disabled = false; connectBtn.innerHTML = '<span class="material-icons">login</span> Connect & Load Data'; }
-        });
+    // --- GITHUB LOGIC ---
+    document.getElementById('connect-btn').addEventListener('click', async()=>{
+        const repo=document.getElementById('repo-name').value, pat=document.getElementById('pat-input').value;
+        if(!repo||!pat) return document.getElementById('connect-error').innerText = "Please fill in all fields.";
+        document.getElementById('connect-btn').innerText="Loading Data...";
+        try{
+            const res=await fetch(`https://api.github.com/repos/${repo}/contents/data.json`,{headers:{'Authorization':`token ${pat}`}});
+            if(!res.ok) throw new Error("Connection failed. Check token permissions.");
+            const json=await res.json();
+            appData=JSON.parse(decodeURIComponent(escape(atob(json.content))));
+            GITHUB={user:repo.split('/')[0],repo:repo.split('/')[1],pat:pat,sha:json.sha};
+            dom.patScreen.classList.add('hidden'); dom.admin.classList.remove('hidden'); render();
+        }catch(e){document.getElementById('connect-error').innerText=e.message; document.getElementById('connect-btn').innerText="Connect";}
+    });
 
-        const notification = document.getElementById("notification"), notificationMessage = document.getElementById("notification-message");
-        function showNotification(message, isError = false) { notificationMessage.textContent = message; notification.classList.remove('hidden', 'bg-green-600', 'bg-red-600'); notification.classList.add(isError ? 'bg-red-600' : 'bg-green-600'); setTimeout(() => { notification.classList.add('hidden'); }, 4000); }
-        async function updateGitHubFile(filePath, content, commitMessage) { try { const getFileResponse = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${filePath}`, { headers: { 'Authorization': `token ${GITHUB_PAT}` } }); const fileSha = getFileResponse.ok ? (await getFileResponse.json()).sha : undefined; const updateResponse = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${filePath}`, { method: 'PUT', headers: { 'Authorization': `token ${GITHUB_PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: commitMessage, content: btoa(unescape(encodeURIComponent(content))), sha: fileSha }) }); if (!updateResponse.ok) throw new Error(`Update failed: ${(await updateResponse.json()).message}`); return true; } catch (error) { showNotification(`Error saving: ${error.message}`, true); return false; } }
-        document.getElementById('save-button').addEventListener('click', async (e) => { const button = e.currentTarget; button.disabled = true; button.innerHTML = 'Saving...'; const success = await updateGitHubFile('data.json', JSON.stringify(appData, null, 2), "Update content from admin panel"); if (success) { showNotification("Saved to GitHub!"); button.innerHTML = `<span class="material-icons">check_circle</span> Saved!`; } else { button.innerHTML = `<span class="material-icons">error</span> Save Failed`; } setTimeout(() => { button.disabled = false; button.innerHTML = `<span class="material-icons">save</span>Save Changes to GitHub`; }, 3000); });
+    document.getElementById('save-button').addEventListener('click', async()=>{
+        const btn=document.getElementById('save-button'); const oldHtml=btn.innerHTML; btn.innerHTML=`<span class="material-icons animate-spin">sync</span> Saving...`;
+        try{
+            const getRes=await fetch(`https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/data.json`,{headers:{'Authorization':`token ${GITHUB.pat}`}});
+            const sha=(await getRes.json()).sha;
+            const res=await fetch(`https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/data.json`,{
+                method:'PUT', headers:{'Authorization':`token ${GITHUB.pat}`, 'Content-Type':'application/json'},
+                body:JSON.stringify({message:"CMS Update via Admin", content:btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2)))), sha:sha})
+            });
+            if(!res.ok) throw new Error("Save failed");
+            showNotify("Changes saved successfully!");
+        }catch(e){alert(e.message);} finally { btn.innerHTML=oldHtml; }
+    });
+
+    function showNotify(msg){ const n=document.getElementById('notification'); n.innerText=msg; n.classList.remove('hidden'); setTimeout(()=>n.classList.add('hidden'),3000); }
+
+    // --- RENDERING ---
+    function render(){
+        document.getElementById('logo-preview').src=appData.settings.logoUrl||'';
+        const container=document.getElementById('categories-container'); container.innerHTML='';
         
-        function render() {
-            document.getElementById("logo-preview").src = appData.settings.logoUrl;
-            document.getElementById("categories-container").innerHTML = appData.categories.map((cat, catIndex) => `<div class="bg-white rounded-lg shadow-md"><div class="p-4 bg-gray-50 border-b flex justify-between items-center"><input type="text" class="text-xl font-bold text-gray-800 bg-transparent w-full" value="${cat.title}" placeholder="Category Title" data-cat-index="${catIndex}" data-key="title"><div class="flex items-center gap-4"><input type="text" class="input-field text-sm w-32" value="${cat.icon}" placeholder="Icon Name" data-cat-index="${catIndex}" data-key="icon"><select class="input-field text-sm w-48" data-cat-index="${catIndex}" data-key="type"><option value="grid" ${cat.type==='grid'?'selected':''}>Grid Layout</option><option value="home" ${cat.type==='home'?'selected':''}>Home Page Layout</option><option value="voyage" ${cat.type==='voyage'?'selected':''}>Voyage Map Layout</option></select><button class="remove-category text-red-500 hover:text-red-700" data-cat-index="${catIndex}"><span class="material-icons">delete_forever</span></button></div></div><div class="p-6 space-y-4">${cat.items.map((item, itemIndex) => `<div class="border rounded-md p-4 bg-gray-50"><div class="flex justify-between items-center mb-4"><input type="text" class="text-lg font-semibold bg-transparent w-full" value="${item.name}" placeholder="Item Name" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-key="name"><button class="remove-item text-red-500 hover:text-red-700 ml-2" data-cat-index="${catIndex}" data-item-index="${itemIndex}"><span class="material-icons">delete</span></button></div><div class="space-y-4"><div><label class="label text-sm">Description</label><textarea class="input-field text-sm" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-key="description">${item.description}</textarea></div><div><label class="label text-sm">Images</label><input type="file" class="input-field" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-key="images" accept="image/*" multiple><div class="flex flex-wrap gap-2 mt-2">${(Array.isArray(item.images)?item.images:[]).map((img,imgIndex)=>`<div class="relative"><img src="${img}" class="h-16 w-16 object-cover border rounded-md"><button class="remove-image absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-img-index="${imgIndex}"><span class="material-icons text-base">close</span></button></div>`).join('')}</div></div><div><h4 class="label text-sm">Link Button</h4><div class="grid grid-cols-2 gap-2"><input type="text" class="input-field text-sm" placeholder="Link Text" value="${item.link?.text||''}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-key="linkText"><input type="text" class="input-field text-sm" placeholder="Full URL" value="${item.link?.url||''}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-key="linkUrl"></div></div><div><h4 class="label text-sm">Custom Fields</h4><div class="space-y-2">${(item.fields||[]).map((field,fieldIndex)=>`<div class="flex items-center gap-2"><input type="text" class="input-field text-sm" placeholder="Label" value="${field.label}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field-index="${fieldIndex}" data-key="label"><input type="text" class="input-field text-sm" placeholder="Value" value="${field.value}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field-index="${fieldIndex}" data-key="value"><button class="remove-field text-red-500" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field-index="${fieldIndex}"><span class="material-icons text-base">remove_circle</span></button></div>`).join('')}</div><button class="add-field mt-2 text-xs font-semibold text-blue-600" data-cat-index="${catIndex}" data-item-index="${itemIndex}">+ Add Field</button></div><div><h4 class="label text-sm">Menu</h4><div class="space-y-2">${(item.menu||[]).map((menuItem,menuIndex)=>`<div class="grid grid-cols-3 gap-2 border-t pt-2"><input type="text" class="input-field text-sm col-span-2" placeholder="Item Name" value="${menuItem.name}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-menu-index="${menuIndex}" data-key="name"><div class="flex items-center gap-2"><input type="text" class="input-field text-sm" placeholder="Price" value="${menuItem.price}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-menu-index="${menuIndex}" data-key="price"><button class="remove-menu-item text-red-500" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-menu-index="${menuIndex}"><span class="material-icons text-base">remove_circle</span></button></div><textarea class="input-field text-sm col-span-3 mt-1" placeholder="Description" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-menu-index="${menuIndex}" data-key="description">${menuItem.description}</textarea></div>`).join('')}</div><button class="add-menu-item mt-2 text-xs font-semibold text-blue-600" data-cat-index="${catIndex}" data-item-index="${itemIndex}">+ Add Menu Item</button></div></div></div>`).join('')}<button class="add-item mt-4 w-full text-blue-600 font-semibold py-2 rounded-md hover:bg-blue-50" data-cat-index="${catIndex}">+ Add New Item to ${cat.title}</button></div></div>`).join('');
-        }
-        const appContainer = document.getElementById('app');
-        appContainer.addEventListener('input', e => { const target = e.target; if (target.matches('input, textarea, select')) { const { catIndex, itemIndex, fieldIndex, menuIndex, key } = target.dataset; if (catIndex === undefined) return; const value = target.value; const item = appData.categories[catIndex].items[itemIndex]; if (itemIndex === undefined) { appData.categories[catIndex][key] = value; render(); } else if (key === 'linkText' || key === 'linkUrl') { if (!item.link) item.link = {text:'', url:''}; item.link[key === 'linkText' ? 'text':'url'] = value; } else if (menuIndex !== undefined) { item.menu[menuIndex][key] = value; } else if (fieldIndex === undefined) { item[key] = value; } else { item.fields[fieldIndex][key] = value; } } });
-        appContainer.addEventListener('change', e => { if (e.target.matches('input[type="file"]')) { const files = e.target.files; if (!files.length) return; const { catIndex, itemIndex } = e.target.dataset; if (catIndex === undefined) { const reader = new FileReader(); reader.onload = (event) => { appData.settings.logoUrl = event.target.result; render(); }; reader.readAsDataURL(files[0]); } else { const item = appData.categories[catIndex].items[itemIndex]; if(!Array.isArray(item.images)) item.images = []; Array.from(files).forEach(file => { const reader = new FileReader(); reader.onload = (event) => { item.images.push(event.target.result); render(); }; reader.readAsDataURL(file); }); } } });
-        appContainer.addEventListener('click', e => { const target = e.target.closest('button'); if (!target) return; const { catIndex, itemIndex, fieldIndex, menuIndex, imgIndex } = target.dataset; if (target.matches('#add-category')) { appData.categories.push({ id: `category-${Date.now()}`, title: 'New Category', icon:'article', type:'grid', items: [] }); } else if (target.matches('.remove-category')) { if (confirm('Are you sure?')) appData.categories.splice(catIndex, 1); } else if (target.matches('.add-item')) { appData.categories[catIndex].items.push({ id: `item-${Date.now()}`, name: 'New Item', description: '', images: [], fields: [], menu: [], link: {text:'', url:''} }); } else if (target.matches('.remove-item')) { appData.categories[catIndex].items.splice(itemIndex, 1); } else if (target.matches('.add-field')) { if(!appData.categories[catIndex].items[itemIndex].fields) appData.categories[catIndex].items[itemIndex].fields = []; appData.categories[catIndex].items[itemIndex].fields.push({ label: '', value: '' }); } else if (target.matches('.remove-field')) { appData.categories[catIndex].items[itemIndex].fields.splice(fieldIndex, 1); } else if (target.matches('.remove-image')) { appData.categories[catIndex].items[itemIndex].images.splice(imgIndex, 1); } else if (target.matches('.add-menu-item')) { if (!appData.categories[catIndex].items[itemIndex].menu) appData.categories[catIndex].items[itemIndex].menu = []; appData.categories[catIndex].items[itemIndex].menu.push({ name: '', description: '', price: '' }); } else if (target.matches('.remove-menu-item')) appData.categories[catIndex].items[itemIndex].menu.splice(menuIndex, 1); render(); });
+        appData.categories.forEach((cat, cIdx)=>{
+            const catHTML = document.createElement('div'); catHTML.className='section-box border-l-4 border-slate-800';
+            catHTML.innerHTML = `
+                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex gap-3 items-center flex-1">
+                        <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-slate-500"><span class="material-icons">${cat.icon}</span></div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Section Title</label>
+                            <input type="text" class="font-bold text-xl w-full bg-transparent focus:outline-none focus:text-blue-600" value="${cat.title}" onchange="updateCat(${cIdx}, 'title', this.value)">
+                        </div>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Layout</label>
+                            <select class="input-field py-1 text-sm bg-slate-50" onchange="updateCat(${cIdx}, 'type', this.value)">
+                                <option value="grid" ${cat.type==='grid'?'selected':''}>Grid (Menu)</option>
+                                <option value="home" ${cat.type==='home'?'selected':''}>Dashboard (Home)</option>
+                                <option value="voyage" ${cat.type==='voyage'?'selected':''}>Map (Voyage)</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Icon Code</label>
+                            <input type="text" class="input-field py-1 w-20 text-sm" value="${cat.icon}" onchange="updateCat(${cIdx}, 'icon', this.value)">
+                        </div>
+                        <button class="btn btn-danger ml-4 p-2 rounded-full" onclick="deleteCat(${cIdx})" title="Delete Section"><span class="material-icons text-lg">delete</span></button>
+                    </div>
+                </div>
+                <div class="space-y-4" id="items-${cIdx}"></div>
+                <button class="w-full py-3 border-2 border-dashed border-slate-200 rounded-lg text-slate-400 hover:border-blue-400 hover:text-blue-500 mt-4 transition font-semibold text-sm" onclick="addItem(${cIdx})">+ Add New Item</button>
+            `;
+            container.appendChild(catHTML);
+            
+            const itemsCont = catHTML.querySelector(`#items-${cIdx}`);
+            cat.items.forEach((item, iIdx)=>{
+                const itemDiv=document.createElement('div'); itemDiv.className='border border-slate-200 rounded-lg p-5 bg-slate-50 relative hover:shadow-md transition duration-200';
+                itemDiv.innerHTML=`
+                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition" onclick="deleteItem(${cIdx},${iIdx})"><span class="material-icons">close</span></button>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div class="md:col-span-8 space-y-3">
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="col-span-2">
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Item Name</label>
+                                    <input type="text" class="input-field font-bold text-slate-800" value="${item.name}" onchange="updateItem(${cIdx},${iIdx},'name',this.value)">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Location / Deck</label>
+                                    <input type="text" class="input-field" value="${item.location||''}" placeholder="e.g. Deck 5" onchange="updateItem(${cIdx},${iIdx},'location',this.value)">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Description</label>
+                                <textarea class="input-field h-20 resize-none" onchange="updateItem(${cIdx},${iIdx},'description',this.value)">${item.description||''}</textarea>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Main Link Button (Optional)</label>
+                                <div class="flex gap-2">
+                                    <input type="text" class="input-field w-1/3 text-sm" placeholder="Button Text" value="${item.link?.text||''}" onchange="updateItemLink(${cIdx},${iIdx},'text',this.value)">
+                                    <input type="text" class="input-field flex-1 text-sm" placeholder="URL (https://...)" value="${item.link?.url||''}" onchange="updateItemLink(${cIdx},${iIdx},'url',this.value)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-4">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Cover Image</label>
+                            <div class="border-2 border-dashed border-slate-300 rounded-lg h-40 flex flex-col items-center justify-center bg-white cursor-pointer relative overflow-hidden group">
+                                ${item.images && item.images.length ? `<img src="${item.images[0]}" class="absolute inset-0 w-full h-full object-cover">` : `<span class="material-icons text-slate-300 text-3xl">add_photo_alternate</span><span class="text-xs text-slate-400 mt-1">Upload</span>`}
+                                <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="uploadImg(${cIdx},${iIdx},this)">
+                                ${item.images && item.images.length ? `<button class="absolute top-1 right-1 bg-white rounded-full p-1 z-20 shadow opacity-0 group-hover:opacity-100" onclick="removeImg(${cIdx},${iIdx},0)"><span class="material-icons text-sm text-red-500">delete</span></button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 border-t border-slate-200 pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        
+                        <div class="bg-white border rounded p-3">
+                            <div class="flex justify-between items-center mb-2"><h4 class="text-xs font-bold text-slate-600 uppercase">Opening Hours</h4><button class="text-emerald-500 text-xs font-bold" onclick="addHour(${cIdx},${iIdx})">+ Add</button></div>
+                            <div id="hours-${cIdx}-${iIdx}" class="space-y-2"></div>
+                        </div>
+
+                        <div class="bg-white border rounded p-3">
+                            <div class="flex justify-between items-center mb-2"><h4 class="text-xs font-bold text-slate-600 uppercase">Menu / Prices</h4><button class="text-emerald-500 text-xs font-bold" onclick="addMenu(${cIdx},${iIdx})">+ Add</button></div>
+                            <div id="menu-${cIdx}-${iIdx}" class="space-y-2"></div>
+                        </div>
+
+                        <div class="bg-white border rounded p-3">
+                            <div class="flex justify-between items-center mb-2"><h4 class="text-xs font-bold text-slate-600 uppercase">Catalogs / PDFs</h4><button class="text-emerald-500 text-xs font-bold" onclick="addCatalog(${cIdx},${iIdx})">+ Add</button></div>
+                            <div id="cats-${cIdx}-${iIdx}" class="space-y-2"></div>
+                        </div>
+
+                    </div>
+                `;
+                itemsCont.appendChild(itemDiv);
+                renderSubItems(cIdx, iIdx);
+            });
+        });
+    }
+
+    function renderSubItems(c, i) {
+        const item = appData.categories[c].items[i];
+        
+        // Render Hours
+        document.getElementById(`hours-${c}-${i}`).innerHTML = (item.openingHours||[]).map((h,x)=>`
+            <div class="flex gap-1 group">
+                <input class="input-field text-xs p-1 w-1/3" value="${h.day}" placeholder="Day" onchange="updateSub(${c},${i},'openingHours',${x},'day',this.value)">
+                <input class="input-field text-xs p-1 flex-1" value="${h.time}" placeholder="Time" onchange="updateSub(${c},${i},'openingHours',${x},'time',this.value)">
+                <button onclick="removeSub(${c},${i},'openingHours',${x})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><span class="material-icons text-sm">close</span></button>
+            </div>
+        `).join('') || '<p class="text-[10px] text-slate-300 italic">No hours added</p>';
+
+        // Render Menu
+        document.getElementById(`menu-${c}-${i}`).innerHTML = (item.menu||[]).map((m,x)=>`
+            <div class="flex flex-col gap-1 border-b border-slate-100 pb-1 mb-1 group relative">
+                <button onclick="removeSub(${c},${i},'menu',${x})" class="absolute top-0 right-0 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><span class="material-icons text-sm">close</span></button>
+                <div class="flex gap-1">
+                    <input class="input-field text-xs p-1 font-bold flex-1" value="${m.name}" placeholder="Item Name" onchange="updateSub(${c},${i},'menu',${x},'name',this.value)">
+                    <input class="input-field text-xs p-1 w-16 text-right" value="${m.price}" placeholder="Price" onchange="updateSub(${c},${i},'menu',${x},'price',this.value)">
+                </div>
+                <input class="input-field text-[10px] p-1 text-slate-500" value="${m.description||''}" placeholder="Description (optional)" onchange="updateSub(${c},${i},'menu',${x},'description',this.value)">
+            </div>
+        `).join('') || '<p class="text-[10px] text-slate-300 italic">No items added</p>';
+
+        // Render Catalogs
+        document.getElementById(`cats-${c}-${i}`).innerHTML = (item.catalogs||[]).map((k,x)=>`
+            <div class="flex gap-1 group">
+                <input class="input-field text-xs p-1 w-1/3" value="${k.name}" placeholder="Title" onchange="updateSub(${c},${i},'catalogs',${x},'name',this.value)">
+                <input class="input-field text-xs p-1 flex-1" value="${k.url}" placeholder="URL" onchange="updateSub(${c},${i},'catalogs',${x},'url',this.value)">
+                <button onclick="removeSub(${c},${i},'catalogs',${x})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><span class="material-icons text-sm">close</span></button>
+            </div>
+        `).join('') || '<p class="text-[10px] text-slate-300 italic">No catalogs added</p>';
+    }
+
+    // --- DATA HELPERS ---
+    window.updateCat = (i, k, v) => appData.categories[i][k]=v;
+    window.deleteCat = (i) => { if(confirm("Delete this entire section?")) { appData.categories.splice(i,1); render(); }};
+    window.addCategory = () => { appData.categories.push({id:`cat-${Date.now()}`, title:"New Section", icon:"article", type:"grid", items:[]}); render(); };
+    
+    window.addItem = (c) => { appData.categories[c].items.push({id:`item-${Date.now()}`, name:"", description:"", images:[]}); render(); };
+    window.deleteItem = (c,i) => { if(confirm("Delete this item?")) { appData.categories[c].items.splice(i,1); render(); }};
+    window.updateItem = (c,i,k,v) => { appData.categories[c].items[i][k]=v; };
+    window.updateItemLink = (c,i,k,v) => { if(!appData.categories[c].items[i].link) appData.categories[c].items[i].link={text:'',url:''}; appData.categories[c].items[i].link[k]=v; };
+
+    window.addHour = (c,i) => { if(!appData.categories[c].items[i].openingHours) appData.categories[c].items[i].openingHours=[]; appData.categories[c].items[i].openingHours.push({day:"",time:""}); renderSubItems(c,i); };
+    window.addMenu = (c,i) => { if(!appData.categories[c].items[i].menu) appData.categories[c].items[i].menu=[]; appData.categories[c].items[i].menu.push({name:"",price:"",description:""}); renderSubItems(c,i); };
+    window.addCatalog = (c,i) => { if(!appData.categories[c].items[i].catalogs) appData.categories[c].items[i].catalogs=[]; appData.categories[c].items[i].catalogs.push({name:"",url:""}); renderSubItems(c,i); };
+    
+    window.updateSub = (c,i,arr,idx,key,val) => { appData.categories[c].items[i][arr][idx][key]=val; };
+    window.removeSub = (c,i,arr,idx) => { appData.categories[c].items[i][arr].splice(idx,1); renderSubItems(c,i); };
+
+    window.uploadImg = (c,i,input) => {
+        const file = input.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = e => { 
+            appData.categories[c].items[i].images = [e.target.result]; // Replaces existing image to save space
+            render(); 
+        };
+        reader.readAsDataURL(file);
+    };
+    window.removeImg = (c,i,x) => { appData.categories[c].items[i].images = []; render(); };
+    
+    document.querySelector('input[data-key="logoUrl"]').addEventListener('change', function(){
+        const file=this.files[0]; if(!file) return;
+        const reader=new FileReader(); reader.onload=e=>{ appData.settings.logoUrl=e.target.result; render(); }; reader.readAsDataURL(file);
     });
     </script>
 </body>
