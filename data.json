@@ -1,178 +1,96 @@
 {
   "settings": {
-    "logoUrl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgNTAiPjx0ZXh0IHg9IjUwJSIgeT0iNjAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMEE5RTAiIGxldHRlci1zcGFjaW5nPSI0Ij5TTVlSSUwgTElORTwvdGV4dD48L3N2Zz4=",
-    "shipName": "M/S Norröna",
-    "timezone": "Atlantic/Faroe"
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Smyril_Line_Logo.svg/2560px-Smyril_Line_Logo.svg.png",
+    "shipName": "Norröna",
+    "accentColor": "#00f3ff"
   },
   "categories": [
     {
       "id": "home",
       "title": "Dashboard",
-      "icon": "dashboard",
+      "icon": "home",
       "type": "home",
       "items": [
         {
-          "id": "hero-main",
-          "name": "Norröna",
-          "description": "Live Guide",
-          "images": [
-            "https://www.smyrilline.com/wp-content/uploads/2025/03/Norrona_Djupini_DSC6900-copy-2.jpg"
-          ],
-          "link": {
-            "text": "Safety Information",
-            "url": "#"
-          }
-        }
-      ]
-    },
-    {
-      "id": "outlets",
-      "title": "Outlets",
-      "icon": "storefront",
-      "type": "grid",
-      "items": [
-        {
-          "name": "Tax Free Shop",
-          "location": "Deck 5",
-          "description": "Perfume, fashion, sweets and souvenirs.",
-          "images": [
-            "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=800&q=80"
-          ],
-          "openingHours": [
-            {
-              "day": "At Sea",
-              "time": "09:00 - 22:00"
-            },
-            {
-              "day": "In Port",
-              "time": "Closed"
-            }
-          ],
-          "catalogs": [
-            {
-              "name": "Special Offers",
-              "url": "#"
-            }
-          ]
-        },
-        {
-          "name": "The Diner",
-          "location": "Deck 6",
-          "description": "Family friendly dining with burgers and pizza.",
-          "images": [
-            "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80"
-          ],
-          "menu": [
-            {
-              "name": "Bacon Cheeseburger",
-              "price": "145 DKK"
-            },
-            {
-              "name": "Pepperoni Pizza",
-              "price": "125 DKK"
-            }
-          ]
-        },
-        {
-          "name": "Gourmet Restaurant",
-          "location": "Deck 6",
-          "description": "Fine dining with a view of the Atlantic.",
-          "images": [
-            "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800&q=80"
-          ],
-          "link": {
-            "text": "Book Table",
-            "url": "#"
-          }
-        }
-      ]
-    },
-    {
-      "id": "entertainment",
-      "title": "Entertainment",
-      "icon": "movie",
-      "type": "grid",
-      "items": [
-        {
-          "name": "Cinema",
-          "location": "Deck 5",
-          "description": "Watch the latest movies.",
-          "images": [
-            "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80"
-          ],
-          "catalogs": [
-            {
-              "name": "Movie Schedule",
-              "url": "#"
-            }
-          ]
-        },
-        {
-          "name": "Naust Bar",
-          "location": "Deck 5",
-          "description": "Live music and cold drinks.",
-          "images": [
-            "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80"
-          ]
-        },
-        {
-          "name": "Hot Tubs",
-          "location": "Deck 7 (Outside)",
-          "description": "Relax in the warm water while sailing.",
-          "images": [
-            "https://images.unsplash.com/photo-1573045737928-764495724715?auto=format&fit=crop&w=800&q=80"
-          ],
-          "openingHours": [
-            {
-              "day": "Daily",
-              "time": "10:00 - 20:00"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "hours",
-      "title": "Opening Hours",
-      "icon": "schedule",
-      "type": "grid",
-      "items": [
-        {
-          "name": "Reception",
-          "location": "Deck 5",
-          "description": "Information, currency exchange and upgrades.",
-          "images": [],
-          "openingHours": [
-            {
-              "day": "Daily",
-              "time": "24 Hours"
-            }
-          ]
-        },
-        {
-          "name": "Medical Center",
-          "location": "Deck 4",
-          "description": "For emergencies dial 911 from ship phone.",
-          "images": [],
-          "openingHours": [
-            {
-              "day": "Consultation",
-              "time": "10:00 - 11:00"
-            },
-            {
-              "day": "Emergency",
-              "time": "24/7"
-            }
-          ]
+          "id": "hero-1",
+          "name": "Welcome Aboard",
+          "description": "Experience the North Atlantic",
+          "images": ["https://www.smyrilline.com/media/11293/norrona_ship_smyrilline_ferry.jpg"]
         }
       ]
     },
     {
       "id": "voyage",
-      "title": "Live Data",
+      "title": "Live Map",
       "icon": "public",
       "type": "voyage",
       "items": []
+    },
+    {
+      "id": "dining",
+      "title": "Restaurants & Bars",
+      "icon": "restaurant",
+      "type": "grid",
+      "items": [
+        {
+          "id": "item-simmerdim",
+          "name": "Simmer Dim Steakhouse",
+          "description": "Premium steaks and Faroese specialties with a view.",
+          "images": ["https://www.smyrilline.com/media/12462/simmer-dim-restaurant.jpg"],
+          "location": "Deck 6",
+          "openingHours": [
+            "Lunch: 12:00 - 14:00",
+            "Dinner: 18:00 - 22:00"
+          ],
+          "actionButton": { "text": "Book Table", "url": "https://booking.smyrilline.com" },
+          "subListType": "menu",
+          "subList": [
+             { "title": "Ribeye Steak", "subtitle": "300g with bearnaise", "price": "295 DKK" },
+             { "title": "Faroese Salmon", "subtitle": "Grilled with asparagus", "price": "245 DKK" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shopping",
+      "title": "Tax Free Shop",
+      "icon": "shopping_bag",
+      "type": "grid",
+      "items": [
+        {
+          "id": "item-shop",
+          "name": "Duty Free Market",
+          "description": "Save up to 50% on perfume, fashion, and sweets.",
+          "images": ["https://www.smyrilline.com/media/10821/tax-free-shop.jpg"],
+          "location": "Deck 5",
+          "openingHours": ["Daily: 09:00 - 22:00"],
+          "subListType": "catalog",
+          "subList": [
+             { "title": "Chanel No. 5", "price": "650 DKK", "image": "https://m.media-amazon.com/images/I/51+3-D8RzjL._SL1000_.jpg" },
+             { "title": "RayBan Aviator", "price": "999 DKK", "image": "https://m.media-amazon.com/images/I/612Y0H4VzFL._AC_UY1000_.jpg" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "info",
+      "title": "Ship Info",
+      "icon": "info",
+      "type": "grid",
+      "items": [
+        {
+          "id": "wifi",
+          "name": "Wi-Fi Access",
+          "description": "Connect to 'Norrona-Guest'. Purchase vouchers at reception.",
+          "location": "All Decks",
+          "images": [],
+          "subListType": "info",
+          "subList": [
+            { "title": "1 Hour Surf", "price": "29 DKK" },
+            { "title": "Full Trip Premium", "price": "199 DKK" }
+          ]
+        }
+      ]
     }
   ]
 }
