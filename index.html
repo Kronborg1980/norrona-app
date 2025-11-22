@@ -52,7 +52,6 @@
             padding-top: env(safe-area-inset-top);
         }
         .navbar { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 24px; }
-        /* Updated Logo Style */
         .navbar .logo img { height: 40px; width: auto; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
         .onboard-time { font-weight: 700; font-size: 0.95rem; letter-spacing: 1px; text-shadow: 0 0 10px var(--neon-cyan); color: var(--neon-cyan); }
 
@@ -92,16 +91,34 @@
         .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 50%; }
         .dot.active { background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); }
 
-        /* --- Home & Voyage --- */
+        /* --- ANIMATED HOME HERO (UPDATED) --- */
         .home-hero {
-            height: 55vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 30px;
-            background-size: cover; background-position: center; position: relative; border-radius: 0 0 30px 30px; overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            height: 60vh; /* Taller for better impact */
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 30px;
+            position: relative; border-radius: 0 0 30px 30px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
         }
-        .home-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, var(--deep-bg) 0%, rgba(2,11,20,0.2) 50%, transparent 100%); }
-        .home-hero-content { position: relative; z-index: 2; }
-        .home-hero h1 { font-size: 3rem; line-height: 1; font-weight: 700; margin-bottom: 10px; text-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        
+        /* The Background Image Layer */
+        .home-hero-bg {
+            position: absolute; inset: 0; z-index: 1;
+            background-size: cover; background-position: center;
+            animation: slowZoom 20s infinite alternate ease-in-out;
+        }
+        /* The Dark Gradient Overlay Layer */
+        .home-hero::after { 
+            content: ''; position: absolute; inset: 0; z-index: 2;
+            background: linear-gradient(to top, var(--deep-bg) 5%, rgba(2,11,20,0.8) 30%, rgba(2,11,20,0.2) 60%, transparent 100%);
+        }
+        /* The Content Layer */
+        .home-hero-content { position: relative; z-index: 3; }
+        .home-hero h1 { font-size: 3.2rem; line-height: 1; font-weight: 700; margin-bottom: 12px; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .home-hero p { font-size: 1.1rem; color: rgba(255,255,255,0.9); max-width: 90%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.15); }
+        }
+
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
         .grid-item { background: var(--glass-surface); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: left; }
         .grid-item .label { font-size: 0.75rem; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
@@ -148,7 +165,7 @@
             const contentContainer = document.getElementById("content-container");
             let appData = {};
             let map;
-            let liveRouteLine = null; // Variable to store the dynamic line
+            let liveRouteLine = null;
             
             const destIcon = L.icon({
                 iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
@@ -194,7 +211,8 @@
                     const heroItem = page.items[0] || { images:[], name:'', description:'' };
                     contentContainer.innerHTML = `
                         <div class="page active" style="padding:0;">
-                            <div class="home-hero" style="background-image: url(${heroItem.images[0] || ''})">
+                            <div class="home-hero">
+                                <div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div>
                                 <div class="home-hero-content">
                                     <h1>${heroItem.name}</h1>
                                     <p>${heroItem.description}</p>
@@ -359,23 +377,15 @@
                             const shipPos = [norrona.position.latitude, norrona.position.longitude];
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
                             
-                            // Draw Markers
                             if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
                             if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
                             
-                            // *** LOGIC TO DRAW LINE FROM SHIP TO DESTINATION ***
-                            // Remove old dynamic line if it exists
                             if (liveRouteLine) { map.removeLayer(liveRouteLine); }
                             
-                            // Create new line from Ship GPS -> Destination GPS
                             liveRouteLine = L.polyline([shipPos, destPos], {
-                                color: '#00f2ff', // Neon Cyan color for the active line
-                                weight: 3,
-                                dashArray: '10, 10',
-                                opacity: 0.9
+                                color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9
                             }).addTo(map);
 
-                            // Center map to show both points
                             map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
                          }
                          fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon);
@@ -388,7 +398,6 @@
                 map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() }).setView([60.0, -2.0], 5);
                 L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
                 
-                // Keep the background route for context, but make it fainter
                 const detailedRoute = [
                     [57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],
                     [60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],
