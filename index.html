@@ -17,11 +17,6 @@
         #loader.fade-out { opacity: 0; pointer-events: none; }
         #error-display { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #330000; color: #ffaaaa; padding: 20px; border: 1px solid red; z-index: 9999; max-width: 90%; border-radius: 10px; }
 
-        /* Utilities */
-        .neon { color: var(--primary); text-shadow: 0 0 12px rgba(0, 243, 255, 0.4); }
-        .glass { background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; }
-        .hidden { display: none !important; }
-
         /* Nav */
         .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: #0f172a; border-radius: 40px; display: flex; justify-content: space-around; padding: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 1000; }
         .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--dim); text-decoration: none; font-size: 10px; transition: 0.3s; cursor: pointer; }
@@ -43,7 +38,7 @@
         .meta-row { display: flex; gap: 15px; margin: 10px 0; font-size: 0.9rem; color: var(--dim); }
         .meta-item { display: flex; align-items: center; gap: 5px; }
         
-        /* Sub Lists (Menu vs Catalog) */
+        /* Sub Lists */
         .sub-list-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); margin: 20px 0 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; }
         
         .menu-list .menu-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -58,13 +53,15 @@
         .catalog-item .price { display: block; color: var(--primary); font-weight: 700; margin-top: 4px; }
 
         .action-btn { display: block; width: 100%; background: var(--primary); color: #000; text-align: center; padding: 14px; border-radius: 12px; font-weight: 700; text-decoration: none; margin-top: 15px; }
-
+        .glass { background: var(--panel); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; }
+        
         /* Map & Stats */
         #map { height: 50vh; width: 100%; border-radius: 24px; margin-bottom: 20px; background: #111; }
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stat-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .stat-val { font-size: 1.5rem; font-weight: 700; }
         .stat-lbl { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+        .neon { color: var(--primary); text-shadow: 0 0 12px rgba(0, 243, 255, 0.4); }
     </style>
 </head>
 <body>
@@ -77,107 +74,29 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     
     <script>
-    // --- 1. DATA BACKUP (This ensures it works offline) ---
     const DEFAULT_DATA = {
       "settings": { "shipName": "Norröna", "logoUrl": "" },
       "categories": [
-        {
-          "id": "home", "title": "Dashboard", "icon": "home", "type": "home",
-          "items": [{ "id": "h1", "name": "Welcome Aboard", "description": "Your journey starts here.", "images": ["https://www.smyrilline.com/media/11293/norrona_ship_smyrilline_ferry.jpg"] }]
-        },
+        { "id": "home", "title": "Dashboard", "icon": "home", "type": "home", "items": [{ "id": "h1", "name": "Welcome Aboard", "description": "Your journey starts here.", "images": ["https://www.smyrilline.com/media/11293/norrona_ship_smyrilline_ferry.jpg"] }] },
         { "id": "voyage", "title": "Map", "icon": "public", "type": "voyage", "items": [] },
-        {
-          "id": "dining", "title": "Restaurants", "icon": "restaurant", "type": "grid",
-          "items": [
-            {
-              "id": "simmer", "name": "Simmer Dim", "description": "Gourmet steakhouse on Deck 6.",
-              "images": ["https://www.smyrilline.com/media/12462/simmer-dim-restaurant.jpg"],
-              "location": "Deck 6", "openingHours": ["18:00 - 22:00"],
-              "subListType": "menu",
-              "subList": [{ "title": "Ribeye Steak", "subtitle": "300g w/ Fries", "price": "295 DKK" }, { "title": "Salmon", "subtitle": "Grilled Fresh", "price": "245 DKK" }]
-            }
-          ]
-        },
-        {
-          "id": "shop", "title": "Tax Free", "icon": "shopping_bag", "type": "grid",
-          "items": [
-            {
-              "id": "taxfree", "name": "Duty Free Shop", "description": "Perfumes, Fashion & Sweets.",
-              "images": ["https://www.smyrilline.com/media/10821/tax-free-shop.jpg"],
-              "location": "Deck 5", "openingHours": ["09:00 - 22:00"],
-              "subListType": "catalog",
-              "subList": [{ "title": "Boss Bottled", "price": "399 DKK", "image": "https://m.media-amazon.com/images/I/51-12XbS32L._SX522_.jpg" }, { "title": "RayBan", "price": "899 DKK", "image": "https://m.media-amazon.com/images/I/612Y0H4VzFL._AC_UY1000_.jpg" }]
-            }
-          ]
-        }
+        { "id": "dining", "title": "Restaurants", "icon": "restaurant", "type": "grid", "items": [{ "id": "simmer", "name": "Simmer Dim", "description": "Gourmet steakhouse on Deck 6.", "images": ["https://www.smyrilline.com/media/12462/simmer-dim-restaurant.jpg"], "location": "Deck 6", "openingHours": ["18:00 - 22:00"], "subListType": "menu", "subList": [{ "title": "Ribeye Steak", "subtitle": "300g w/ Fries", "price": "295 DKK" }] }] }
       ]
     };
 
     document.addEventListener("DOMContentLoaded", async () => {
         let appData = {};
         let map = null;
-        const loader = document.getElementById('loader');
-
-        try {
-            // --- 2. ATTEMPT TO LOAD DATA ---
-            try {
-                const res = await fetch("data.json?v=" + Date.now());
-                if(!res.ok) throw new Error("File not found");
-                appData = await res.json();
-                console.log("Loaded remote/local data");
-            } catch(e) {
-                console.warn("Loading failed, using backup data.");
-                appData = DEFAULT_DATA;
-            }
-
-            // --- 3. INITIALIZE APP ---
-            if(!appData || !appData.categories) throw new Error("Data is invalid");
-            initApp();
-            
-            // Hide loader
-            setTimeout(() => loader.classList.add('fade-out'), 500);
-
-        } catch (criticalError) {
-            // Show error on screen if everything fails
-            loader.style.display = 'none';
-            const errBox = document.getElementById('error-display');
-            errBox.style.display = 'block';
-            errBox.innerText = "CRITICAL ERROR: " + criticalError.message;
-        }
-
-        function initApp() {
-            // Build Navigation
-            const navHTML = appData.categories.map(cat => 
-                `<div class="nav-btn" data-id="${cat.id}">
-                    <span class="material-icons">${cat.icon}</span>${cat.title}
-                 </div>`
-            ).join('');
-            document.getElementById('nav-container').innerHTML = navHTML;
-
-            // Add Click Listeners
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', () => renderPage(btn.dataset.id));
-            });
-            
-            // Render First Page
-            const startPage = window.location.hash.replace('#','') || appData.categories[0].id;
-            renderPage(startPage);
-
-            // Start Live Updates
-            setInterval(updateLiveStats, 30000);
-        }
-
-        // --- 4. RENDER ENGINE ---
-        window.renderPage = (pageId) => {
+        
+        // 1. DEFINE FUNCTIONS FIRST (Fixes the "not defined" error)
+        
+        function renderPage(pageId) {
             const cat = appData.categories.find(c => c.id === pageId);
-            if(!cat) return; // Category not found
+            if(!cat) return; 
 
-            // Update Nav
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.id === pageId));
-            
             const container = document.getElementById('app-container');
             
-            // --- LAYOUT: VOYAGE ---
+            // VOYAGE
             if(cat.type === 'voyage') {
                 container.innerHTML = `
                     <div class="page active">
@@ -188,11 +107,11 @@
                             <div class="stat-box"><div class="stat-val" id="stat-dist">--</div><div class="stat-lbl">Dist (km)</div></div>
                         </div>
                     </div>`;
-                setTimeout(initMap, 200); // Delay for DOM
+                setTimeout(initMap, 200);
                 return;
             }
 
-            // --- LAYOUT: HOME ---
+            // HOME
             if(cat.type === 'home') {
                 const hero = cat.items[0];
                 container.innerHTML = `
@@ -213,30 +132,26 @@
                 return;
             }
 
-            // --- LAYOUT: STANDARD GRID (Shops/Restaurants) ---
+            // GRID (Menu/Shops)
             const itemsHTML = cat.items.map(item => `
                 <div class="item-card glass p-4">
                     ${item.images && item.images.length ? `<img src="${item.images[0]}" class="item-img" onerror="this.style.display='none'">` : ''}
                     <h2 class="text-xl font-bold">${item.name}</h2>
                     <p class="text-sm text-dim mt-1">${item.description || ''}</p>
-                    
                     <div class="meta-row">
                         ${item.location ? `<div class="meta-item"><span class="material-icons text-sm text-cyan-400">place</span>${item.location}</div>` : ''}
                         ${item.openingHours && item.openingHours.length ? `<div class="meta-item"><span class="material-icons text-sm text-cyan-400">schedule</span>${item.openingHours[0]}</div>` : ''}
                     </div>
-
                     ${renderSubList(item)}
-
                     ${item.actionButton && item.actionButton.url ? `<a href="${item.actionButton.url}" class="action-btn">${item.actionButton.text || 'View More'}</a>` : ''}
                 </div>
             `).join('');
 
             container.innerHTML = `<div class="page active"><h1 class="text-2xl font-bold mb-4 px-2" style="padding-top:10px;">${cat.title}</h1>${itemsHTML}</div>`;
-        };
+        }
 
         function renderSubList(item) {
             if(!item.subList || !item.subList.length) return '';
-            
             if(item.subListType === 'catalog') {
                 return `<div class="sub-list-title">Catalog</div><div class="catalog-grid">
                     ${item.subList.map(s => `<div class="catalog-item">${s.image?`<img src="${s.image}" onerror="this.style.display='none'">`:''}<div class="text-sm font-medium">${s.title}</div><span class="price">${s.price}</span></div>`).join('')}
@@ -248,30 +163,57 @@
             }
         }
 
+        function initApp() {
+            const navHTML = appData.categories.map(cat => 
+                `<div class="nav-btn" data-id="${cat.id}">
+                    <span class="material-icons">${cat.icon}</span>${cat.title}
+                 </div>`
+            ).join('');
+            document.getElementById('nav-container').innerHTML = navHTML;
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => renderPage(btn.dataset.id));
+            });
+            
+            const startPage = window.location.hash.replace('#','') || appData.categories[0].id;
+            renderPage(startPage);
+        }
+
         async function updateLiveStats() {
             try {
                 const res = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
                 if(!res.ok) return;
                 const data = await res.json();
                 const ship = data.find(v => v.vesselName && v.vesselName.toUpperCase() === 'NORRONA');
-                if(ship) {
-                    const spd = ship.position.speed;
-                    if(document.getElementById('stat-speed')) document.getElementById('stat-speed').innerText = spd;
-                    if(document.getElementById('home-speed')) document.getElementById('home-speed').innerText = spd + " kn";
+                if(ship && document.getElementById('stat-speed')) {
+                    document.getElementById('stat-speed').innerText = ship.position.speed;
+                    if(document.getElementById('home-speed')) document.getElementById('home-speed').innerText = ship.position.speed + " kn";
                 }
-            } catch(e) { console.log("Live data unavailable"); }
+            } catch(e) {}
         }
 
         function initMap() {
             if(map) { map.remove(); map = null; }
             const mapEl = document.getElementById('map');
             if(!mapEl) return;
-            
             map = L.map('map', {zoomControl:false, attributionControl:false}).setView([62.00, -6.76], 6);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-            
-            // Simple Ship Marker
             L.marker([62.00, -6.76]).addTo(map).bindPopup("Norröna");
+        }
+
+        // 2. LOAD DATA & START
+        try {
+            const res = await fetch("data.json?v=" + Date.now());
+            if(!res.ok) throw new Error("Use Default");
+            appData = await res.json();
+        } catch(e) {
+            appData = DEFAULT_DATA;
+        }
+
+        if(appData) {
+            initApp();
+            setTimeout(() => document.getElementById('loader').classList.add('fade-out'), 500);
+            setInterval(updateLiveStats, 30000);
         }
     });
     </script>
