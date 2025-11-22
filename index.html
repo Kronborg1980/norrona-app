@@ -9,7 +9,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Outfit', sans-serif; background-color: var(--bg-dark); background-image: radial-gradient(circle at 50% 0%, #0f2236 0%, var(--bg-dark) 90%); color: var(--text-bright); -webkit-font-smoothing: antialiased; overflow-x: hidden; padding-bottom: 90px; }
         
-        /* UI Utils */
         .glass-card { background: var(--glass-panel); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 0 20px rgba(0, 243, 255, 0.1); border-radius: var(--border-radius); }
         .neon-text { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
         #app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
@@ -17,16 +16,15 @@
         .page.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- REDESIGNED CENTERED HEADER --- */
+        /* --- HEADER --- */
         .main-header {
             position: sticky; top: 0; z-index: 1000;
-            background: rgba(5, 11, 20, 0.8); /* Darker for contrast */
+            background: rgba(5, 11, 20, 0.8);
             backdrop-filter: blur(25px) saturate(1.2); -webkit-backdrop-filter: blur(25px) saturate(1.2);
             border-bottom: 1px solid rgba(0, 243, 255, 0.15);
             padding-top: env(safe-area-inset-top);
             box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
-        /* The Running Neon LED */
         .main-header::after {
             content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
             background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
@@ -35,28 +33,23 @@
         }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        .navbar { 
-            display: flex; justify-content: space-between; align-items: center; 
-            height: 70px; padding: 0 20px; position: relative; 
-        }
+        .navbar { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 20px; position: relative; }
         
+        .header-left { width: 60px; display: flex; align-items: center; }
+        .header-right { width: 60px; display: flex; justify-content: flex-end; }
+        .menu-icon { color: var(--text-dim); font-size: 28px; }
+
         /* Centered Logo Styles */
         .logo-container {
             position: absolute; left: 50%; top: 50%; 
             transform: translate(-50%, -50%);
             display: flex; justify-content: center; align-items: center;
-            width: 140px; /* Fixed width to ensure centering */
+            width: 140px; 
         }
         .logo-img { 
             height: 35px; width: auto; display: block; 
             filter: drop-shadow(0 0 8px rgba(0,243,255,0.6)) brightness(1.2); 
         }
-
-        /* Header Left/Right Elements */
-        .header-left { width: 60px; display: flex; align-items: center; } /* Spacer/Menu Icon */
-        .header-right { width: 60px; display: flex; justify-content: flex-end; }
-
-        .menu-icon { color: var(--text-dim); font-size: 28px; }
 
         .onboard-time { 
             font-family: 'Outfit', monospace; color: var(--neon-cyan); font-weight: 700; letter-spacing: 0.5px; font-size: 0.9rem;
@@ -167,7 +160,7 @@
 
                 let html = '';
                 if (page.type === 'home') {
-                    html = `<div class="page active" style="padding: 24px;"><div class="item-card" style="height: 55vh; position: relative; border: none; background: transparent; box-shadow: none;"><div style="position: absolute; inset: 0; background-image: url('${page.items[0]?.images[0]}'); background-size: cover; background-position: center; border-radius: 24px; opacity: 0.8;"></div><div style="position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-dark), transparent); border-radius: 24px;"></div><div style="position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; padding: 30px;"><h1 style="font-size: 3rem; text-shadow: 0 0 30px rgba(0,0,0,0.8);">Norröna</h1><p style="font-size: 1.2rem; color: var(--neon-cyan); margin-bottom: 20px;">Live Guide</p></div></div><div class="voyage-grid"><div class="grid-item"><div class="label">Heading To</div><div class="value neon-text" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div>${speedWidgetHtml}</div></div>`;
+                    html = `<div class="page active" style="padding: 24px;"><div class="item-card" style="height: 55vh; position: relative; border: none; background: transparent; box-shadow: none;"><div style="position: absolute; inset: 0; background-image: url('${page.items[0]?.images[0]}'); background-size: cover; background-position: center; border-radius: 24px; opacity: 1;"></div><div style="position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-dark) 0%, transparent 30%); border-radius: 24px;"></div><div style="position: relative; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; padding: 30px;"><h1 style="font-size: 3rem; text-shadow: 0 0 30px rgba(0,0,0,0.8);">Norröna</h1><p style="font-size: 1.2rem; color: var(--neon-cyan); margin-bottom: 20px;">Live Guide</p></div></div><div class="voyage-grid"><div class="grid-item"><div class="label">Heading To</div><div class="value neon-text" id="destination-home">--</div><div class="sub-value" id="eta-home">--</div></div>${speedWidgetHtml}</div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
                     html = `<div class="page active voyage-page"><div class="section-header"><h2 class="neon-text" style="text-align:center; margin-bottom:10px;">Live Tracking</h2></div><div id="map"></div><div class="voyage-grid">${speedWidgetHtml}<div class="grid-item"><div class="label">Time (Ship)</div><div class="value" id="onboard-time">--:--</div><div class="sub-value">Tórshavn Time</div></div><div class="grid-item"><div class="label">Distance Left</div><div class="value" id="distance">--</div><div class="sub-value" id="distance-unit">km</div></div><div class="grid-item"><div class="label">Destination</div><div class="value" id="destination-voyage">--</div><div class="sub-value" id="eta-voyage">--</div></div></div><div class="weather-panel"><img id="weather-icon" src="" alt="" style="width:50px;"><div class="weather-info"><div class="label">Weather at Destination</div><div class="value"><span id="weather-temp" class="neon-text">--°C</span> <span id="weather-description" style="font-size:0.9rem;color:var(--text-dim);">--</span></div></div></div></div>`;
