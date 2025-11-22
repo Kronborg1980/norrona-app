@@ -1,257 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Norröna CMS</title>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Norröna Admin Ultimate</title>
     <script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>body{font-family:'Inter',sans-serif;background:#f1f5f9}.input-field{width:100%;padding:.5rem;border:1px solid #cbd5e1;border-radius:.375rem;font-size:0.9rem;transition:0.2s}.input-field:focus{border-color:#3b82f6;outline:none;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}.section-box{background:white;padding:1.5rem;border-radius:0.75rem;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);margin-bottom:1.5rem;border:1px solid #e2e8f0}.btn{padding:0.5rem 1rem;border-radius:0.5rem;font-weight:600;display:inline-flex;align-items:center;gap:0.5rem;cursor:pointer;transition:0.2s}.btn-primary{background:#0f172a;color:white}.btn-primary:hover{background:#1e293b}.btn-danger{color:#ef4444}.btn-danger:hover{background:#fee2e2}.btn-sm{padding:0.25rem 0.5rem;font-size:0.75rem}</style>
+    <style>
+        body{font-family:'Inter',sans-serif;background-color:#f8fafc}
+        .card{background:white;border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.1);border:1px solid #e2e8f0}
+        .input-field{width:100%;padding:0.5rem 0.75rem;border:1px solid #cbd5e1;border-radius:0.5rem;font-size:0.9rem;transition:all 0.2s}
+        .input-field:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+        .label{display:block;font-size:0.75rem;font-weight:600;color:#64748b;margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.05em}
+        .section-title{font-size:1.25rem;font-weight:700;color:#1e293b;margin-bottom:1rem}
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.5rem 1rem;border-radius:0.5rem;font-weight:600;font-size:0.875rem;transition:all 0.2s}
+        .btn-primary{background:#3b82f6;color:white}.btn-primary:hover{background:#2563eb}
+        .btn-danger{color:#ef4444;background:#fee2e2}.btn-danger:hover{background:#fecaca}
+        .btn-secondary{background:#f1f5f9;color:#475569}.btn-secondary:hover{background:#e2e8f0}
+    </style>
 </head>
 <body>
-    <div id="notification" class="hidden fixed top-5 right-5 bg-emerald-500 text-white py-3 px-6 rounded-lg shadow-xl z-50 font-bold"></div>
-    
     <div id="pat-screen" class="min-h-screen flex items-center justify-center bg-slate-900 p-4">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-            <div class="text-center mb-8"><span class="material-icons text-5xl text-slate-800">admin_panel_settings</span><h2 class="text-2xl font-bold text-slate-800 mt-2">Norröna CMS</h2></div>
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
+            <h2 class="text-2xl font-bold text-center text-slate-800 mb-2">Norröna CMS</h2>
+            <p class="text-center text-slate-500 text-sm mb-6">Enter GitHub details to manage app data.</p>
             <div class="space-y-4">
-                <div><label class="text-xs font-bold text-slate-500 uppercase">GitHub Repository</label><input type="text" id="repo-name" class="input-field" value="Kronborg1980/smyril-app" placeholder="User/Repo"></div>
-                <div><label class="text-xs font-bold text-slate-500 uppercase">Access Token</label><input type="password" id="pat-input" class="input-field" placeholder="ghp_..."></div>
-                <button id="connect-btn" class="w-full btn btn-primary justify-center py-3 text-lg">Connect</button>
-                <p id="connect-error" class="text-red-500 text-xs text-center min-h-[20px]"></p>
+                <div><label class="label">Repository</label><input type="text" id="repo-name" class="input-field" value="Kronborg1980/smyril-app"></div>
+                <div><label class="label">Access Token (PAT)</label><input type="password" id="pat-input" class="input-field"></div>
+                <button id="connect-btn" class="btn btn-primary w-full py-3">Connect & Load</button>
+                <p id="connect-error" class="text-red-500 text-xs text-center mt-2"></p>
             </div>
         </div>
     </div>
 
-    <div id="admin-panel" class="hidden pb-32">
-        <header class="bg-slate-900 text-white py-4 sticky top-0 z-40 shadow-lg">
-            <div class="max-w-5xl mx-auto px-4 flex justify-between items-center">
-                <h1 class="font-bold text-lg flex items-center gap-2"><span class="material-icons">directions_boat</span> Content Manager</h1>
-                <button id="save-button" class="btn bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"><span class="material-icons">save</span> Save Changes</button>
+    <div id="admin-panel" class="hidden min-h-screen pb-20">
+        <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+            <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+                <h1 class="font-bold text-lg flex items-center gap-2"><span class="material-icons text-cyan-400">sailing</span> Norröna CMS</h1>
+                <div class="text-xs text-slate-400" id="connection-status"></div>
             </div>
         </header>
 
-        <main id="app" class="max-w-5xl mx-auto px-4 py-8">
-            <div class="section-box">
-                <h2 class="text-lg font-bold border-b pb-4 mb-4 flex items-center gap-2"><span class="material-icons text-slate-400">settings</span> Global Settings</h2>
-                <div class="flex items-center gap-6">
-                    <div class="relative w-24 h-24 bg-slate-100 rounded-lg border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden group cursor-pointer">
-                        <img id="logo-preview" class="absolute inset-0 w-full h-full object-contain p-2">
-                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" data-key="logoUrl" accept="image/*">
-                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white text-xs text-center">Change<br>Logo</div>
+        <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+            <section class="card p-6">
+                <h2 class="section-title">Global Settings</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="label">App Logo URL</label>
+                        <div class="flex gap-3">
+                            <img id="logo-preview" class="h-10 w-10 object-contain bg-slate-100 rounded border">
+                            <input type="text" class="input-field" data-path="settings.logoUrl">
+                        </div>
                     </div>
-                    <div class="flex-1"><p class="text-sm text-slate-500">Upload a transparent PNG or SVG for the best results on the dark app background.</p></div>
+                    <div><label class="label">Ship Name</label><input type="text" class="input-field" data-path="settings.shipName"></div>
                 </div>
-            </div>
+            </section>
 
-            <div id="categories-container" class="space-y-6"></div>
-            
-            <button onclick="addCategory()" class="w-full btn bg-white text-slate-500 border-2 border-dashed border-slate-300 hover:border-blue-500 hover:text-blue-500 py-6 justify-center mt-8 transition-all">
-                <span class="material-icons">add_circle_outline</span> Add New Category Section
+            <div id="categories-container" class="space-y-8"></div>
+
+            <button id="add-category" class="w-full btn btn-secondary border-2 border-dashed border-slate-300 py-4 text-slate-500 hover:text-blue-600 hover:border-blue-300">
+                <span class="material-icons">add_circle</span> Add New Category
             </button>
         </main>
+
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-50">
+            <div class="max-w-5xl mx-auto flex justify-end">
+                <button id="save-button" class="btn btn-primary px-8 py-3 text-base shadow-lg shadow-blue-500/30">
+                    <span class="material-icons">save</span> Save Changes to GitHub
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-    let appData={}; let GITHUB={};
-    const dom={patScreen:document.getElementById('pat-screen'),admin:document.getElementById('admin-panel'),app:document.getElementById('app')};
-
-    // --- GITHUB LOGIC ---
-    document.getElementById('connect-btn').addEventListener('click', async()=>{
-        const repo=document.getElementById('repo-name').value, pat=document.getElementById('pat-input').value;
-        if(!repo||!pat) return document.getElementById('connect-error').innerText = "Please fill in all fields.";
-        document.getElementById('connect-btn').innerText="Loading Data...";
-        try{
-            const res=await fetch(`https://api.github.com/repos/${repo}/contents/data.json`,{headers:{'Authorization':`token ${pat}`}});
-            if(!res.ok) throw new Error("Connection failed. Check token permissions.");
-            const json=await res.json();
-            appData=JSON.parse(decodeURIComponent(escape(atob(json.content))));
-            GITHUB={user:repo.split('/')[0],repo:repo.split('/')[1],pat:pat,sha:json.sha};
-            dom.patScreen.classList.add('hidden'); dom.admin.classList.remove('hidden'); render();
-        }catch(e){document.getElementById('connect-error').innerText=e.message; document.getElementById('connect-btn').innerText="Connect";}
-    });
-
-    document.getElementById('save-button').addEventListener('click', async()=>{
-        const btn=document.getElementById('save-button'); const oldHtml=btn.innerHTML; btn.innerHTML=`<span class="material-icons animate-spin">sync</span> Saving...`;
-        try{
-            const getRes=await fetch(`https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/data.json`,{headers:{'Authorization':`token ${GITHUB.pat}`}});
-            const sha=(await getRes.json()).sha;
-            const res=await fetch(`https://api.github.com/repos/${GITHUB.user}/${GITHUB.repo}/contents/data.json`,{
-                method:'PUT', headers:{'Authorization':`token ${GITHUB.pat}`, 'Content-Type':'application/json'},
-                body:JSON.stringify({message:"CMS Update via Admin", content:btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2)))), sha:sha})
-            });
-            if(!res.ok) throw new Error("Save failed");
-            showNotify("Changes saved successfully!");
-        }catch(e){alert(e.message);} finally { btn.innerHTML=oldHtml; }
-    });
-
-    function showNotify(msg){ const n=document.getElementById('notification'); n.innerText=msg; n.classList.remove('hidden'); setTimeout(()=>n.classList.add('hidden'),3000); }
-
-    // --- RENDERING ---
-    function render(){
-        document.getElementById('logo-preview').src=appData.settings.logoUrl||'';
-        const container=document.getElementById('categories-container'); container.innerHTML='';
-        
-        appData.categories.forEach((cat, cIdx)=>{
-            const catHTML = document.createElement('div'); catHTML.className='section-box border-l-4 border-slate-800';
-            catHTML.innerHTML = `
-                <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-                    <div class="flex gap-3 items-center flex-1">
-                        <div class="w-10 h-10 rounded bg-slate-100 flex items-center justify-center text-slate-500"><span class="material-icons">${cat.icon}</span></div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Section Title</label>
-                            <input type="text" class="font-bold text-xl w-full bg-transparent focus:outline-none focus:text-blue-600" value="${cat.title}" onchange="updateCat(${cIdx}, 'title', this.value)">
-                        </div>
-                    </div>
-                    <div class="flex gap-2 items-center">
-                        <div class="flex flex-col">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Layout</label>
-                            <select class="input-field py-1 text-sm bg-slate-50" onchange="updateCat(${cIdx}, 'type', this.value)">
-                                <option value="grid" ${cat.type==='grid'?'selected':''}>Grid (Menu)</option>
-                                <option value="home" ${cat.type==='home'?'selected':''}>Dashboard (Home)</option>
-                                <option value="voyage" ${cat.type==='voyage'?'selected':''}>Map (Voyage)</option>
-                            </select>
-                        </div>
-                        <div class="flex flex-col">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Icon Code</label>
-                            <input type="text" class="input-field py-1 w-20 text-sm" value="${cat.icon}" onchange="updateCat(${cIdx}, 'icon', this.value)">
-                        </div>
-                        <button class="btn btn-danger ml-4 p-2 rounded-full" onclick="deleteCat(${cIdx})" title="Delete Section"><span class="material-icons text-lg">delete</span></button>
-                    </div>
-                </div>
-                <div class="space-y-4" id="items-${cIdx}"></div>
-                <button class="w-full py-3 border-2 border-dashed border-slate-200 rounded-lg text-slate-400 hover:border-blue-400 hover:text-blue-500 mt-4 transition font-semibold text-sm" onclick="addItem(${cIdx})">+ Add New Item</button>
-            `;
-            container.appendChild(catHTML);
-            
-            const itemsCont = catHTML.querySelector(`#items-${cIdx}`);
-            cat.items.forEach((item, iIdx)=>{
-                const itemDiv=document.createElement('div'); itemDiv.className='border border-slate-200 rounded-lg p-5 bg-slate-50 relative hover:shadow-md transition duration-200';
-                itemDiv.innerHTML=`
-                    <button class="absolute top-3 right-3 text-slate-300 hover:text-red-500 transition" onclick="deleteItem(${cIdx},${iIdx})"><span class="material-icons">close</span></button>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div class="md:col-span-8 space-y-3">
-                            <div class="grid grid-cols-3 gap-3">
-                                <div class="col-span-2">
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Item Name</label>
-                                    <input type="text" class="input-field font-bold text-slate-800" value="${item.name}" onchange="updateItem(${cIdx},${iIdx},'name',this.value)">
-                                </div>
-                                <div>
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Location / Deck</label>
-                                    <input type="text" class="input-field" value="${item.location||''}" placeholder="e.g. Deck 5" onchange="updateItem(${cIdx},${iIdx},'location',this.value)">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase">Description</label>
-                                <textarea class="input-field h-20 resize-none" onchange="updateItem(${cIdx},${iIdx},'description',this.value)">${item.description||''}</textarea>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase">Main Link Button (Optional)</label>
-                                <div class="flex gap-2">
-                                    <input type="text" class="input-field w-1/3 text-sm" placeholder="Button Text" value="${item.link?.text||''}" onchange="updateItemLink(${cIdx},${iIdx},'text',this.value)">
-                                    <input type="text" class="input-field flex-1 text-sm" placeholder="URL (https://...)" value="${item.link?.url||''}" onchange="updateItemLink(${cIdx},${iIdx},'url',this.value)">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="md:col-span-4">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Cover Image</label>
-                            <div class="border-2 border-dashed border-slate-300 rounded-lg h-40 flex flex-col items-center justify-center bg-white cursor-pointer relative overflow-hidden group">
-                                ${item.images && item.images.length ? `<img src="${item.images[0]}" class="absolute inset-0 w-full h-full object-cover">` : `<span class="material-icons text-slate-300 text-3xl">add_photo_alternate</span><span class="text-xs text-slate-400 mt-1">Upload</span>`}
-                                <input type="file" class="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onchange="uploadImg(${cIdx},${iIdx},this)">
-                                ${item.images && item.images.length ? `<button class="absolute top-1 right-1 bg-white rounded-full p-1 z-20 shadow opacity-0 group-hover:opacity-100" onclick="removeImg(${cIdx},${iIdx},0)"><span class="material-icons text-sm text-red-500">delete</span></button>` : ''}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 border-t border-slate-200 pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        
-                        <div class="bg-white border rounded p-3">
-                            <div class="flex justify-between items-center mb-2"><h4 class="text-xs font-bold text-slate-600 uppercase">Opening Hours</h4><button class="text-emerald-500 text-xs font-bold" onclick="addHour(${cIdx},${iIdx})">+ Add</button></div>
-                            <div id="hours-${cIdx}-${iIdx}" class="space-y-2"></div>
-                        </div>
-
-                        <div class="bg-white border rounded p-3">
-                            <div class="flex justify-between items-center mb-2"><h4 class="text-xs font-bold text-slate-600 uppercase">Menu / Prices</h4><button class="text-emerald-500 text-xs font-bold" onclick="addMenu(${cIdx},${iIdx})">+ Add</button></div>
-                            <div id="menu-${cIdx}-${iIdx}" class="space-y-2"></div>
-                        </div>
-
-                        <div class="bg-white border rounded p-3">
-                            <div class="flex justify-between items-center mb-2"><h4 class="text-xs font-bold text-slate-600 uppercase">Catalogs / PDFs</h4><button class="text-emerald-500 text-xs font-bold" onclick="addCatalog(${cIdx},${iIdx})">+ Add</button></div>
-                            <div id="cats-${cIdx}-${iIdx}" class="space-y-2"></div>
-                        </div>
-
-                    </div>
-                `;
-                itemsCont.appendChild(itemDiv);
-                renderSubItems(cIdx, iIdx);
-            });
-        });
-    }
-
-    function renderSubItems(c, i) {
-        const item = appData.categories[c].items[i];
-        
-        // Render Hours
-        document.getElementById(`hours-${c}-${i}`).innerHTML = (item.openingHours||[]).map((h,x)=>`
-            <div class="flex gap-1 group">
-                <input class="input-field text-xs p-1 w-1/3" value="${h.day}" placeholder="Day" onchange="updateSub(${c},${i},'openingHours',${x},'day',this.value)">
-                <input class="input-field text-xs p-1 flex-1" value="${h.time}" placeholder="Time" onchange="updateSub(${c},${i},'openingHours',${x},'time',this.value)">
-                <button onclick="removeSub(${c},${i},'openingHours',${x})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><span class="material-icons text-sm">close</span></button>
-            </div>
-        `).join('') || '<p class="text-[10px] text-slate-300 italic">No hours added</p>';
-
-        // Render Menu
-        document.getElementById(`menu-${c}-${i}`).innerHTML = (item.menu||[]).map((m,x)=>`
-            <div class="flex flex-col gap-1 border-b border-slate-100 pb-1 mb-1 group relative">
-                <button onclick="removeSub(${c},${i},'menu',${x})" class="absolute top-0 right-0 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><span class="material-icons text-sm">close</span></button>
-                <div class="flex gap-1">
-                    <input class="input-field text-xs p-1 font-bold flex-1" value="${m.name}" placeholder="Item Name" onchange="updateSub(${c},${i},'menu',${x},'name',this.value)">
-                    <input class="input-field text-xs p-1 w-16 text-right" value="${m.price}" placeholder="Price" onchange="updateSub(${c},${i},'menu',${x},'price',this.value)">
-                </div>
-                <input class="input-field text-[10px] p-1 text-slate-500" value="${m.description||''}" placeholder="Description (optional)" onchange="updateSub(${c},${i},'menu',${x},'description',this.value)">
-            </div>
-        `).join('') || '<p class="text-[10px] text-slate-300 italic">No items added</p>';
-
-        // Render Catalogs
-        document.getElementById(`cats-${c}-${i}`).innerHTML = (item.catalogs||[]).map((k,x)=>`
-            <div class="flex gap-1 group">
-                <input class="input-field text-xs p-1 w-1/3" value="${k.name}" placeholder="Title" onchange="updateSub(${c},${i},'catalogs',${x},'name',this.value)">
-                <input class="input-field text-xs p-1 flex-1" value="${k.url}" placeholder="URL" onchange="updateSub(${c},${i},'catalogs',${x},'url',this.value)">
-                <button onclick="removeSub(${c},${i},'catalogs',${x})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100"><span class="material-icons text-sm">close</span></button>
-            </div>
-        `).join('') || '<p class="text-[10px] text-slate-300 italic">No catalogs added</p>';
-    }
-
-    // --- DATA HELPERS ---
-    window.updateCat = (i, k, v) => appData.categories[i][k]=v;
-    window.deleteCat = (i) => { if(confirm("Delete this entire section?")) { appData.categories.splice(i,1); render(); }};
-    window.addCategory = () => { appData.categories.push({id:`cat-${Date.now()}`, title:"New Section", icon:"article", type:"grid", items:[]}); render(); };
-    
-    window.addItem = (c) => { appData.categories[c].items.push({id:`item-${Date.now()}`, name:"", description:"", images:[]}); render(); };
-    window.deleteItem = (c,i) => { if(confirm("Delete this item?")) { appData.categories[c].items.splice(i,1); render(); }};
-    window.updateItem = (c,i,k,v) => { appData.categories[c].items[i][k]=v; };
-    window.updateItemLink = (c,i,k,v) => { if(!appData.categories[c].items[i].link) appData.categories[c].items[i].link={text:'',url:''}; appData.categories[c].items[i].link[k]=v; };
-
-    window.addHour = (c,i) => { if(!appData.categories[c].items[i].openingHours) appData.categories[c].items[i].openingHours=[]; appData.categories[c].items[i].openingHours.push({day:"",time:""}); renderSubItems(c,i); };
-    window.addMenu = (c,i) => { if(!appData.categories[c].items[i].menu) appData.categories[c].items[i].menu=[]; appData.categories[c].items[i].menu.push({name:"",price:"",description:""}); renderSubItems(c,i); };
-    window.addCatalog = (c,i) => { if(!appData.categories[c].items[i].catalogs) appData.categories[c].items[i].catalogs=[]; appData.categories[c].items[i].catalogs.push({name:"",url:""}); renderSubItems(c,i); };
-    
-    window.updateSub = (c,i,arr,idx,key,val) => { appData.categories[c].items[i][arr][idx][key]=val; };
-    window.removeSub = (c,i,arr,idx) => { appData.categories[c].items[i][arr].splice(idx,1); renderSubItems(c,i); };
-
-    window.uploadImg = (c,i,input) => {
-        const file = input.files[0]; if(!file) return;
-        const reader = new FileReader();
-        reader.onload = e => { 
-            appData.categories[c].items[i].images = [e.target.result]; // Replaces existing image to save space
-            render(); 
+    document.addEventListener("DOMContentLoaded", () => {
+        let GITHUB_USERNAME, GITHUB_REPO, GITHUB_PAT, appData = {};
+        const els = {
+            patScreen: document.getElementById("pat-screen"),
+            adminPanel: document.getElementById("admin-panel"),
+            connectBtn: document.getElementById("connect-btn"),
+            container: document.getElementById("categories-container"),
+            saveBtn: document.getElementById("save-button")
         };
-        reader.readAsDataURL(file);
-    };
-    window.removeImg = (c,i,x) => { appData.categories[c].items[i].images = []; render(); };
-    
-    document.querySelector('input[data-key="logoUrl"]').addEventListener('change', function(){
-        const file=this.files[0]; if(!file) return;
-        const reader=new FileReader(); reader.onload=e=>{ appData.settings.logoUrl=e.target.result; render(); }; reader.readAsDataURL(file);
+
+        // --- GitHub Logic ---
+        els.connectBtn.addEventListener('click', async () => {
+            const repo = document.getElementById('repo-name').value.trim();
+            const pat = document.getElementById('pat-input').value.trim();
+            if (!repo || !pat) return alert("Missing Repo or PAT");
+            
+            [GITHUB_USERNAME, GITHUB_REPO] = repo.split('/'); GITHUB_PAT = pat;
+            els.connectBtn.innerHTML = "Loading..."; els.connectBtn.disabled = true;
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { headers: { Authorization: `token ${pat}` }, cache: "no-store" });
+                if (!res.ok) throw new Error("Failed to load data");
+                const json = await res.json();
+                appData = JSON.parse(decodeURIComponent(escape(atob(json.content))));
+                appData.sha = json.sha; // Store SHA for updates
+                
+                els.patScreen.classList.add('hidden');
+                els.adminPanel.classList.remove('hidden');
+                document.getElementById('connection-status').innerText = `Connected: ${repo}`;
+                render();
+            } catch (e) {
+                document.getElementById('connect-error').innerText = e.message;
+                els.connectBtn.innerHTML = "Connect"; els.connectBtn.disabled = false;
+            }
+        });
+
+        els.saveBtn.addEventListener('click', async () => {
+            els.saveBtn.innerHTML = "Saving..."; els.saveBtn.disabled = true;
+            try {
+                // Get latest SHA first to avoid conflicts
+                const getRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { headers: { Authorization: `token ${GITHUB_PAT}` }});
+                const getJson = await getRes.json();
+                
+                const payload = {
+                    message: "Admin Panel Update",
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2)))),
+                    sha: getJson.sha
+                };
+
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, {
+                    method: 'PUT',
+                    headers: { Authorization: `token ${GITHUB_PAT}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error("Save failed");
+                els.saveBtn.innerHTML = `<span class="material-icons">check</span> Saved!`;
+                setTimeout(() => { els.saveBtn.innerHTML = `<span class="material-icons">save</span> Save Changes to GitHub`; els.saveBtn.disabled = false; }, 2000);
+            } catch (e) {
+                alert("Error saving: " + e.message);
+                els.saveBtn.innerHTML = "Save Failed"; els.saveBtn.disabled = false;
+            }
+        });
+
+        // --- Rendering Logic ---
+        function render() {
+            document.getElementById('logo-preview').src = appData.settings.logoUrl;
+            document.querySelector('[data-path="settings.logoUrl"]').value = appData.settings.logoUrl;
+            document.querySelector('[data-path="settings.shipName"]').value = appData.settings.shipName;
+
+            els.container.innerHTML = appData.categories.map((cat, cIdx) => `
+                <div class="card overflow-hidden">
+                    <div class="bg-slate-50 p-4 border-b flex justify-between items-center">
+                        <div class="flex gap-4 items-center flex-1">
+                            <span class="material-icons text-slate-400">${cat.icon}</span>
+                            <input type="text" class="font-bold text-lg bg-transparent border-none focus:ring-0 text-slate-700" value="${cat.title}" onchange="update('categories.${cIdx}.title', this.value)">
+                        </div>
+                        <div class="flex gap-2">
+                             <select class="input-field text-xs w-32" onchange="update('categories.${cIdx}.type', this.value)">
+                                <option value="grid" ${cat.type==='grid'?'selected':''}>Grid List</option>
+                                <option value="home" ${cat.type==='home'?'selected':''}>Home</option>
+                                <option value="voyage" ${cat.type==='voyage'?'selected':''}>Voyage Map</option>
+                            </select>
+                            <button class="text-slate-400 hover:text-red-500" onclick="removeCategory(${cIdx})"><span class="material-icons">delete</span></button>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-100 space-y-4">
+                        ${cat.items.map((item, iIdx) => renderItem(item, cIdx, iIdx)).join('')}
+                        <button class="w-full py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded border border-blue-200 border-dashed" onclick="addItem(${cIdx})">+ Add Item to ${cat.title}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderItem(item, cIdx, iIdx) {
+            const path = `categories.${cIdx}.items.${iIdx}`;
+            return `
+            <div class="bg-white border rounded-lg p-4 shadow-sm">
+                <div class="flex justify-between mb-4">
+                    <input type="text" class="font-semibold text-slate-800 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 w-full mr-4" value="${item.name}" placeholder="Item Name" onchange="update('${path}.name', this.value)">
+                    <button class="text-slate-300 hover:text-red-500" onclick="removeItem(${cIdx}, ${iIdx})"><span class="material-icons">close</span></button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div><label class="label">Description</label><textarea class="input-field h-20" onchange="update('${path}.description', this.value)">${item.description || ''}</textarea></div>
+                    <div class="space-y-2">
+                        <div><label class="label">Image URL</label><input type="text" class="input-field" value="${(item.images||[])[0]||''}" onchange="updateImage('${path}', this.value)"></div>
+                        <div><label class="label">Location (Deck)</label><input type="text" class="input-field" value="${item.location||''}" onchange="update('${path}.location', this.value)"></div>
+                    </div>
+                </div>
+
+                <div class="mb-4 border-t pt-3">
+                    <h4 class="label text-blue-600 flex items-center gap-1"><span class="material-icons text-[14px]">schedule</span> Opening Hours</h4>
+                    <div class="space-y-2">
+                        ${(item.openingHours||[]).map((h, hIdx) => `
+                            <div class="flex gap-2">
+                                <input type="text" class="input-field text-xs" value="${h}" onchange="updateArray('${path}.openingHours', ${hIdx}, this.value)">
+                                <button class="text-red-400 hover:text-red-600" onclick="removeArrayItem('${path}.openingHours', ${hIdx})"><span class="material-icons text-[16px]">remove_circle</span></button>
+                            </div>
+                        `).join('')}
+                        <button class="text-xs font-bold text-blue-500" onclick="addArrayItem('${path}.openingHours', 'Daily: 00:00 - 00:00')">+ Add Hours</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-3 rounded border">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="label text-blue-600">Content List</label>
+                        <select class="text-xs border rounded p-1" onchange="update('${path}.subListType', this.value)">
+                            <option value="menu" ${item.subListType==='menu'?'selected':''}>Menu List</option>
+                            <option value="catalog" ${item.subListType==='catalog'?'selected':''}>Image Catalog</option>
+                            <option value="info" ${item.subListType==='info'?'selected':''}>Info List</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2 max-h-60 overflow-y-auto">
+                        ${(item.subList||[]).map((sub, sIdx) => `
+                            <div class="flex gap-2 items-start border-b pb-2">
+                                <div class="flex-1 space-y-1">
+                                    <div class="flex gap-2">
+                                        <input type="text" class="input-field text-xs font-bold" placeholder="Title/Name" value="${sub.title||''}" onchange="update('${path}.subList.${sIdx}.title', this.value)">
+                                        <input type="text" class="input-field text-xs w-24 text-right" placeholder="Price" value="${sub.price||''}" onchange="update('${path}.subList.${sIdx}.price', this.value)">
+                                    </div>
+                                    <input type="text" class="input-field text-xs text-slate-500" placeholder="Description / Subtitle" value="${sub.subtitle||''}" onchange="update('${path}.subList.${sIdx}.subtitle', this.value)">
+                                    ${item.subListType === 'catalog' ? `<input type="text" class="input-field text-xs" placeholder="Image URL" value="${sub.image||''}" onchange="update('${path}.subList.${sIdx}.image', this.value)">` : ''}
+                                </div>
+                                <button class="text-red-300 hover:text-red-500 mt-1" onclick="removeArrayItem('${path}.subList', ${sIdx})"><span class="material-icons">delete</span></button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="mt-2 text-xs font-bold text-green-600" onclick="addSubItem('${path}')">+ Add List Item</button>
+                </div>
+                
+                <div class="mt-3 pt-2 border-t grid grid-cols-2 gap-2">
+                    <div><label class="label">Link Button Text</label><input type="text" class="input-field text-xs" value="${item.actionButton?.text||''}" onchange="update('${path}.actionButton.text', this.value)"></div>
+                    <div><label class="label">Link URL</label><input type="text" class="input-field text-xs" value="${item.actionButton?.url||''}" onchange="update('${path}.actionButton.url', this.value)"></div>
+                </div>
+            </div>`;
+        }
+
+        // --- Data Manipulation ---
+        window.update = (path, val) => {
+            const parts = path.split('.');
+            let obj = appData;
+            for(let i=0; i<parts.length-1; i++) {
+                if(!obj[parts[i]]) obj[parts[i]] = {};
+                obj = obj[parts[i]];
+            }
+            obj[parts[parts.length-1]] = val;
+        };
+
+        window.updateImage = (path, val) => {
+            // Helper to set first image of array
+            let parts = path.split('.');
+            let item = appData.categories[parts[1]].items[parts[3]];
+            item.images = [val];
+            render();
+        };
+
+        window.updateArray = (path, idx, val) => {
+            const parts = path.split('.');
+            let arr = appData.categories[parts[1]].items[parts[3]][parts[4]];
+            arr[idx] = val;
+        };
+
+        window.addItem = (cIdx) => {
+            appData.categories[cIdx].items.push({id: Date.now(), name: 'New Item', subListType: 'menu', openingHours:[], subList:[], images:[]});
+            render();
+        };
+        window.removeItem = (cIdx, iIdx) => {
+            if(confirm("Delete this item?")) {
+                appData.categories[cIdx].items.splice(iIdx, 1);
+                render();
+            }
+        };
+        window.addArrayItem = (path, defaultVal) => {
+             const parts = path.split('.');
+             let item = appData.categories[parts[1]].items[parts[3]];
+             if(!item[parts[4]]) item[parts[4]] = [];
+             item[parts[4]].push(defaultVal);
+             render();
+        };
+        window.addSubItem = (path) => {
+            const parts = path.split('.');
+            let item = appData.categories[parts[1]].items[parts[3]];
+            if(!item.subList) item.subList = [];
+            item.subList.push({title: '', price: '', subtitle: ''});
+            render();
+        };
+        window.removeArrayItem = (path, idx) => {
+            const parts = path.split('.');
+            let obj = appData.categories[parts[1]].items[parts[3]];
+            obj[parts[4]].splice(idx, 1);
+            render();
+        };
+        
+        // Update settings listeners
+        document.querySelectorAll('[data-path]').forEach(input => {
+            input.addEventListener('change', (e) => update(e.target.dataset.path, e.target.value));
+        });
     });
     </script>
 </body>
