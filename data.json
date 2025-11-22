@@ -13,10 +13,10 @@
       "items": [
         {
           "id": "hero-main",
-          "name": "Welcome Aboard",
-          "description": "Your journey across the North Atlantic starts here.",
+          "name": "Norröna",
+          "description": "Live Guide",
           "images": [
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Norr%C3%B6na_in_T%C3%B3rshavn.jpg/1200px-Norr%C3%B6na_in_T%C3%B3rshavn.jpg"
+            "https://www.smyrilline.com/wp-content/uploads/2025/03/Norrona_Djupini_DSC6900-copy-2.jpg"
           ],
           "link": {
             "text": "Safety Information",
