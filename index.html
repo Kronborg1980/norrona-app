@@ -16,12 +16,35 @@
         .page.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Header */
-        .main-header { position: sticky; top: 0; z-index: 1000; background: rgba(5, 11, 20, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 243, 255, 0.1); padding-top: env(safe-area-inset-top); }
-        .navbar { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 20px; }
-        /* LOGO FIX: Adjusted height and object-fit for the SVG data URI */
-        .navbar .logo img { height: 32px; width: auto; display: block; } 
-        .onboard-time { font-family: 'Outfit', monospace; color: var(--neon-cyan); font-weight: 600; letter-spacing: 1px; }
+        /* --- NEW REDESIGNED HEADER --- */
+        .main-header {
+            position: sticky; top: 0; z-index: 1000;
+            /* Deeper Glass Effect */
+            background: rgba(5, 11, 20, 0.7);
+            backdrop-filter: blur(25px) saturate(1.2); -webkit-backdrop-filter: blur(25px) saturate(1.2);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+            padding-top: env(safe-area-inset-top);
+            overflow: hidden; /* Required for LED animation */
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+        /* Running LED Strip Animation */
+        .main-header::after {
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 200%; height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--neon-cyan) 25%, #ffffff 50%, var(--neon-cyan) 75%, transparent 100%);
+            animation: running-led 4s linear infinite;
+            opacity: 0.9; box-shadow: 0 0 15px var(--neon-cyan);
+        }
+        @keyframes running-led { 0% { transform: translateX(-50%); } 100% { transform: translateX(0%); } }
+        
+        .navbar { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 24px; position: relative; z-index: 2; }
+        .logo img { height: 40px; width: auto; display: block; filter: drop-shadow(0 0 8px rgba(0,243,255,0.5)); transition: 0.3s; }
+        .logo:hover img { filter: drop-shadow(0 0 12px rgba(0,243,255,0.8)); transform: scale(1.05); }
+        .onboard-time {
+            font-family: 'Outfit', monospace; color: var(--neon-cyan); font-weight: 700; letter-spacing: 1px; font-size: 1.1rem;
+            text-shadow: 0 0 5px var(--neon-cyan), 0 0 20px rgba(0,243,255,0.5);
+            background: rgba(0, 243, 255, 0.05); padding: 8px 14px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.2);
+        }
         
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 480px; height: 70px; background: rgba(10, 20, 35, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 35px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.6); padding: 0 10px; }
@@ -76,7 +99,9 @@
     <div id="app-shell">
         <header class="main-header">
             <nav class="navbar">
-                <a href="#" class="logo"><img id="header-logo" src="" alt="Logo"></a>
+                <a href="#" class="logo">
+                    <img id="header-logo" src="https://www.smyrilline.dk/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line Logo">
+                </a>
                 <div class="onboard-time" id="onboard-time-header">--:--</div>
             </nav>
         </header>
@@ -214,7 +239,8 @@
                 try {
                     const res = await fetch("data.json?v=" + Date.now());
                     appData = await res.json();
-                    document.getElementById("header-logo").src = appData.settings.logoUrl;
+                    // Removed dynamic logo loading since it's hardcoded now
+                    // document.getElementById("header-logo").src = appData.settings.logoUrl;
                     const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join('');
                     document.getElementById("bottom-nav").innerHTML = navHtml;
                     document.querySelectorAll('.nav-item').forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }));
