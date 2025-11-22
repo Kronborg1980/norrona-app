@@ -28,7 +28,6 @@
             font-family: 'Outfit', sans-serif;
             background-color: var(--deep-bg);
             color: var(--text-main);
-            /* Deep Ocean/Space Gradient Background */
             background-image: radial-gradient(circle at 50% 0%, #0f2e4e 0%, var(--deep-bg) 60%);
             background-attachment: fixed;
             min-height: 100vh;
@@ -40,7 +39,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding-bottom: 90px; /* Space for nav */
+            padding-bottom: 90px;
             position: relative;
             overflow-x: hidden;
         }
@@ -106,28 +105,14 @@
         .item-card-image { width: 100%; height: 100%; object-fit: cover; }
 
         .item-info { padding: 24px; }
-        .item-info h3 { 
-            font-size: 1.4rem; 
-            font-weight: 600; 
-            margin-bottom: 8px; 
-            color: #fff;
-        }
+        .item-info h3 { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; color: #fff; }
         .item-info p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; }
 
-        /* --- Data Fields --- */
-        .fields { 
-            background: rgba(0,0,0,0.2); 
-            border-radius: 12px; 
-            padding: 16px; 
-            margin-top: 16px; 
-            display: grid; 
-            gap: 12px; 
-        }
+        .fields { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-top: 16px; display: grid; gap: 12px; }
         .field { display: flex; justify-content: space-between; font-size: 0.9rem; }
         .field strong { color: var(--neon-cyan); font-weight: 500; }
         .field span { color: #fff; }
 
-        /* --- Buttons --- */
         .item-link-button {
             display: block;
             background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
@@ -141,9 +126,7 @@
             box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
             transition: 0.3s;
         }
-        .item-link-button:hover { box-shadow: 0 0 30px rgba(0, 242, 255, 0.4); transform: translateY(-2px); }
-
-        /* --- Menu --- */
+        
         .menu { margin-top: 24px; border-top: 1px solid var(--glass-border); padding-top: 24px; }
         .menu h4 { color: var(--neon-cyan); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
         .menu-item { margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
@@ -195,15 +178,14 @@
             position: relative;
             overflow: hidden;
         }
-        .grid-item::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
-            transform: rotate(45deg); pointer-events: none;
-        }
         .grid-item .label { font-size: 0.75rem; color: var(--neon-cyan); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-        .grid-item .value { font-size: 1.8rem; font-weight: 600; line-height: 1.1; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        
+        /* New Value Styling for Speed Row */
+        .grid-item .value { font-size: 1.4rem; font-weight: 600; line-height: 1.1; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); display: flex; align-items: baseline; gap: 6px; }
+        .grid-item .value .unit { font-size: 0.7em; opacity: 0.7; font-weight: 400; }
+        
         .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-
+        
         /* --- Map & Weather --- */
         #map { width: 100%; height: 45vh; border-radius: 0 0 24px 24px; margin-bottom: 20px; box-shadow: inset 0 -20px 40px var(--deep-bg); }
         .weather-panel {
@@ -234,14 +216,7 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; transition: 0.3s; position: relative; width: 60px; }
         .nav-item .material-icons { font-size: 24px; margin-bottom: 4px; transition: 0.3s; }
         .nav-item.active { color: #fff; }
-        .nav-item.active .material-icons { 
-            color: var(--neon-cyan); 
-            text-shadow: 0 0 15px var(--neon-cyan);
-            transform: translateY(-5px); 
-        }
-        .nav-item.active::after {
-            content: ''; position: absolute; bottom: -10px; width: 4px; height: 4px; background: var(--neon-cyan); border-radius: 50%; box-shadow: 0 0 8px var(--neon-cyan);
-        }
+        .nav-item.active .material-icons { color: var(--neon-cyan); text-shadow: 0 0 15px var(--neon-cyan); transform: translateY(-5px); }
     </style>
 </head>
 <body>
@@ -318,13 +293,15 @@
                                 <div class="voyage-grid">
                                     <div class="grid-item">
                                         <div id="home-dest-label" class="label">Next Stop</div>
-                                        <div class="value" id="destination-home">--</div>
+                                        <div class="value" id="destination-home" style="font-size:1.6rem">--</div>
                                         <div class="sub-value" id="eta-home">--</div>
                                     </div>
                                     <div class="grid-item">
-                                        <div class="label">Speed</div>
-                                        <div class="value" id="speed-knots-home">--</div>
-                                        <div class="sub-value" id="speed-kmh-home">-- km/h</div>
+                                        <div class="label">Speed & Course</div>
+                                        <div class="value" style="font-size: 1.2rem;">
+                                            <span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span>
+                                        </div>
+                                        <div class="sub-value" id="course-home">Course: --°</div>
                                     </div>
                                 </div>
                             </div>
@@ -337,23 +314,25 @@
                             <div style="padding:0 24px 24px 24px;">
                                 <div class="voyage-grid">
                                     <div class="grid-item">
-                                        <div class="label">Speed</div>
-                                        <div class="value" id="speed-knots">--</div>
-                                        <div class="sub-value" id="speed-kmh">-- km/h</div>
+                                        <div class="label">Speed & Course</div>
+                                        <div class="value" style="font-size: 1.2rem;">
+                                            <span id="speed-knots">--</span> <span class="unit">|</span> <span id="speed-kmh">--</span>
+                                        </div>
+                                        <div class="sub-value" id="course-voyage">Course: --°</div>
                                     </div>
                                     <div class="grid-item">
                                         <div class="label">Time (Tórshavn)</div>
-                                        <div class="value" id="onboard-time">--:--</div>
+                                        <div class="value" id="onboard-time" style="font-size:1.6rem">--:--</div>
                                         <div class="sub-value">GMT</div>
                                     </div>
                                     <div class="grid-item">
                                         <div class="label">Distance Left</div>
-                                        <div class="value" id="distance">--</div>
+                                        <div class="value" id="distance" style="font-size:1.6rem">--</div>
                                         <div class="sub-value" id="distance-unit">Kilometers</div>
                                     </div>
                                     <div class="grid-item">
                                         <div class="label" id="destination-label">Next Destination</div>
-                                        <div class="value" id="destination-voyage">--</div>
+                                        <div class="value" id="destination-voyage" style="font-size:1.6rem">--</div>
                                         <div class="sub-value" id="eta-voyage">--</div>
                                     </div>
                                 </div>
@@ -412,13 +391,10 @@
                 } catch (error) { console.error(error); contentContainer.innerHTML = `<p>${error.message}</p>`; }
             }
 
-            // --- Logic for Ship Data/Map (Same as previous, just ensured IDs match) ---
             function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
             const destinationMap = { torshavn: { name: "Tórshavn", country: "FO", lat: 62.01, lon: -6.771 }, hirtshals: { name: "Hirtshals", country: "DK", lat: 57.594, lon: 9.965 }, seydisfjord: { name: "Seyðisfjörður", country: "IS", lat: 65.262, lon: -14.012 } };
             
-            // (Insert the rest of the helper functions: haversineDistance, formatETA, fetchWeatherData, updateShipData, normalizeDestinationName from your original code here. They logic is solid.)
-            // For brevity, I am including the core updateShipData logic tailored to the new IDs:
-             function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
+            function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
             function formatETA(e) { if (!e) return { day: "--", time: "--:--" }; try { const t = new Date(e); if (isNaN(t.getTime())) return { day: "Inv", time: "" }; const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }), a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a } } catch (e) { return { day: "Err", time: "" } } }
             
@@ -434,7 +410,7 @@
                     const descEl = document.getElementById("weather-description");
                     if (descEl) descEl.textContent = data.weatherCondition?.description?.text || "N/A";
                     const weatherIconEl = document.getElementById("weather-icon");
-                    if (weatherIconEl) weatherIconEl.src = `https://openweathermap.org/img/wn/02d@2x.png`; // Simplified for demo
+                    if (weatherIconEl) weatherIconEl.src = `https://openweathermap.org/img/wn/02d@2x.png`;
                 } catch (e) { console.log("Weather error"); }
             }
 
@@ -444,6 +420,9 @@
                     const norrona = (await response.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
                     if (!norrona) return;
                     const speedKnots = norrona.position?.speed || 0;
+                    // New: Get Course
+                    const course = Math.round(norrona.position?.course || 0);
+                    
                     const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
                     const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
                     const { day, time } = formatETA(norrona.etaFromAIS);
@@ -451,12 +430,17 @@
                     if (isHomePage) {
                         document.getElementById('destination-home').textContent = currentDestInfo.name;
                         document.getElementById('eta-home').textContent = `${day}, ${time}`;
+                        // Combined Speed & Course for Home
                         document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`;
                         document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
+                        document.getElementById('course-home').textContent = `Course: ${course}°`;
                     } else {
                          const page = document.querySelector('.voyage-page'); if(!page) return;
+                         // Combined Speed & Course for Voyage Page
                          document.getElementById("speed-knots").textContent = `${speedKnots} kn`;
                          document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
+                         document.getElementById("course-voyage").textContent = `Course: ${course}°`;
+
                          const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
                          document.getElementById("distance").textContent = Math.round(dist);
                          document.getElementById("destination-voyage").textContent = currentDestInfo.name;
@@ -468,7 +452,9 @@
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
                             if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
                             if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
-                            map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
+                            
+                            // Keep map centered on ship but view surrounding area
+                            map.panTo(shipPos);
                          }
                          fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon);
                     }
@@ -477,8 +463,32 @@
 
             function initializeVoyagePage() {
                 if (map) { map.remove(); map = null; }
-                map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() });
+                map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() }).setView([60.0, -2.0], 5);
                 L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
+                
+                // Updated Route: More detailed waypoints following actual shipping lanes
+                // Hirtshals -> Around Norway -> North of Shetland -> Faroe -> East Iceland
+                const detailedRoute = [
+                    [57.59, 9.96], // Hirtshals
+                    [57.80, 8.90], // Skagerrak Exit
+                    [58.20, 5.50], // North Sea
+                    [59.50, 2.00], // Heading NW
+                    [60.85, -0.83], // North of Shetland (Muckle Flugga)
+                    [61.50, -3.50], // Approaching Faroe
+                    [62.01, -6.77], // Torshavn
+                    [62.50, -8.00], // Leaving Faroe NW
+                    [64.00, -11.50], // Open Ocean
+                    [65.10, -13.00], // Approach Iceland
+                    [65.26, -14.01]  // Seydisfjordur
+                ];
+
+                L.polyline(detailedRoute, {
+                    color: '#00A9E0',
+                    weight: 2,
+                    dashArray: '5, 10',
+                    opacity: 0.7
+                }).addTo(map);
+                
                 updateShipData();
             }
 
