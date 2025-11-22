@@ -83,6 +83,7 @@
           "images": [
             "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
           ],
+          "trailerUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
           "fields": [
             { "label": "Deck", "value": "5" },
             { "label": "Show 1", "value": "14:00 (Kids)" },
@@ -91,7 +92,20 @@
           "offers": [],
           "menu": [],
           "link": { "text": "", "url": "" },
-          "secondaryLink": { "text": "", "url": "" }
+          "secondaryLink": { "text": "See Schedule", "url": "#" }
+        },
+        {
+          "id": "item-hottubs",
+          "name": "Hot Tubs",
+          "description": "Relax in our outdoor hot tubs with a stunning view of the wake.",
+          "images": [
+            "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+          ],
+          "fields": [
+             { "label": "Deck", "value": "7" }
+          ],
+          "menu": [],
+          "link": { "text": "Book Now", "url": "#" }
         }
       ]
     },
