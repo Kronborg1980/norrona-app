@@ -16,8 +16,10 @@
             "https://www.smyrilline.dk/wp-content/uploads/2025/02/Norrona_2021-3-1600px.jpg"
           ],
           "fields": [],
+          "offers": [],
           "menu": [],
-          "link": { "text": "", "url": "" }
+          "link": { "text": "", "url": "" },
+          "secondaryLink": { "text": "", "url": "" }
         }
       ]
     },
@@ -36,12 +38,17 @@
           ],
           "fields": [
             { "label": "Deck", "value": "6" },
-            { "label": "Status", "value": "Open" }
+            { "label": "Lunch", "value": "12:00 - 15:00" },
+            { "label": "Dinner", "value": "18:00 - 21:30" }
+          ],
+          "offers": [
+            { "title": "Family Deal", "description": "2 Adults + 2 Kids Burgers for 450 DKK" }
           ],
           "menu": [
             { "name": "Bacon Cheeseburger", "price": "145 DKK", "description": "Served with fries." }
           ],
-          "link": { "text": "Book Table", "url": "https://booking.smyrilline.com" }
+          "link": { "text": "Book Table", "url": "https://booking.smyrilline.com" },
+          "secondaryLink": { "text": "View PDF Menu", "url": "https://www.smyrilline.com/media/11355/the-diner-menu-2024.pdf" }
         },
         {
           "id": "item-shop",
@@ -51,10 +58,15 @@
              "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
           ],
           "fields": [
-             { "label": "Deck", "value": "5" }
+             { "label": "Deck", "value": "5" },
+             { "label": "Opening Hours", "value": "09:00 - 22:00" }
+          ],
+          "offers": [
+             { "title": "Perfume Sale", "description": "Get 20% off all Hugo Boss fragrances today only." }
           ],
           "menu": [],
-          "link": { "text": "View Catalog", "url": "#" }
+          "link": { "text": "View Offers Catalog", "url": "#" },
+          "secondaryLink": { "text": "", "url": "" }
         }
       ]
     },
@@ -73,23 +85,13 @@
           ],
           "fields": [
             { "label": "Deck", "value": "5" },
-            { "label": "Next Show", "value": "20:00" }
+            { "label": "Show 1", "value": "14:00 (Kids)" },
+            { "label": "Show 2", "value": "20:00 (Action)" }
           ],
+          "offers": [],
           "menu": [],
-          "link": { "text": "See Schedule", "url": "#" }
-        },
-        {
-          "id": "item-hottubs",
-          "name": "Hot Tubs",
-          "description": "Relax in our outdoor hot tubs with a stunning view of the wake.",
-          "images": [
-            "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-          ],
-          "fields": [
-             { "label": "Deck", "value": "7" }
-          ],
-          "menu": [],
-          "link": { "text": "Book Now", "url": "#" }
+          "link": { "text": "", "url": "" },
+          "secondaryLink": { "text": "", "url": "" }
         }
       ]
     },
