@@ -9,6 +9,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Outfit', sans-serif; background-color: var(--bg-dark); background-image: radial-gradient(circle at 50% 0%, #0f2236 0%, var(--bg-dark) 90%); color: var(--text-bright); -webkit-font-smoothing: antialiased; overflow-x: hidden; padding-bottom: 90px; }
         
+        /* UI Utils */
         .glass-card { background: var(--glass-panel); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 0 20px rgba(0, 243, 255, 0.1); border-radius: var(--border-radius); }
         .neon-text { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
         #app-shell { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
@@ -16,34 +17,53 @@
         .page.active { display: block; }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- NEW REDESIGNED HEADER --- */
+        /* --- REDESIGNED CENTERED HEADER --- */
         .main-header {
             position: sticky; top: 0; z-index: 1000;
-            /* Deeper Glass Effect */
-            background: rgba(5, 11, 20, 0.7);
+            background: rgba(5, 11, 20, 0.8); /* Darker for contrast */
             backdrop-filter: blur(25px) saturate(1.2); -webkit-backdrop-filter: blur(25px) saturate(1.2);
             border-bottom: 1px solid rgba(0, 243, 255, 0.15);
             padding-top: env(safe-area-inset-top);
-            overflow: hidden; /* Required for LED animation */
-            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
-        /* Running LED Strip Animation */
+        /* The Running Neon LED */
         .main-header::after {
-            content: ''; position: absolute; bottom: 0; left: 0;
-            width: 200%; height: 3px;
-            background: linear-gradient(90deg, transparent 0%, var(--neon-cyan) 25%, #ffffff 50%, var(--neon-cyan) 75%, transparent 100%);
-            animation: running-led 4s linear infinite;
-            opacity: 0.9; box-shadow: 0 0 15px var(--neon-cyan);
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: shimmer 3s infinite linear;
+            box-shadow: 0 0 10px var(--neon-cyan);
         }
-        @keyframes running-led { 0% { transform: translateX(-50%); } 100% { transform: translateX(0%); } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+        .navbar { 
+            display: flex; justify-content: space-between; align-items: center; 
+            height: 70px; padding: 0 20px; position: relative; 
+        }
         
-        .navbar { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 24px; position: relative; z-index: 2; }
-        .logo img { height: 40px; width: auto; display: block; filter: drop-shadow(0 0 8px rgba(0,243,255,0.5)); transition: 0.3s; }
-        .logo:hover img { filter: drop-shadow(0 0 12px rgba(0,243,255,0.8)); transform: scale(1.05); }
-        .onboard-time {
-            font-family: 'Outfit', monospace; color: var(--neon-cyan); font-weight: 700; letter-spacing: 1px; font-size: 1.1rem;
-            text-shadow: 0 0 5px var(--neon-cyan), 0 0 20px rgba(0,243,255,0.5);
-            background: rgba(0, 243, 255, 0.05); padding: 8px 14px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.2);
+        /* Centered Logo Styles */
+        .logo-container {
+            position: absolute; left: 50%; top: 50%; 
+            transform: translate(-50%, -50%);
+            display: flex; justify-content: center; align-items: center;
+            width: 140px; /* Fixed width to ensure centering */
+        }
+        .logo-img { 
+            height: 35px; width: auto; display: block; 
+            filter: drop-shadow(0 0 8px rgba(0,243,255,0.6)) brightness(1.2); 
+        }
+
+        /* Header Left/Right Elements */
+        .header-left { width: 60px; display: flex; align-items: center; } /* Spacer/Menu Icon */
+        .header-right { width: 60px; display: flex; justify-content: flex-end; }
+
+        .menu-icon { color: var(--text-dim); font-size: 28px; }
+
+        .onboard-time { 
+            font-family: 'Outfit', monospace; color: var(--neon-cyan); font-weight: 700; letter-spacing: 0.5px; font-size: 0.9rem;
+            text-shadow: 0 0 10px rgba(0,243,255,0.4);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            padding: 4px 8px; border-radius: 8px;
+            background: rgba(0, 243, 255, 0.05);
         }
         
         /* Bottom Nav */
@@ -82,7 +102,8 @@
         .catalog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
         .catalog-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; text-align: center; text-decoration: none; color: white; font-size: 0.8rem; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .catalog-btn:hover { background: rgba(0, 243, 255, 0.1); border-color: var(--neon-cyan); }
-        
+        .main-action-btn { display: block; margin-top: 16px; padding: 12px; background: var(--neon-cyan); color: #000; text-align: center; border-radius: 12px; text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 15px rgba(0,243,255,0.3); }
+
         /* Map */
         #map { width: 100%; height: 50vh; border-radius: var(--border-radius); border: 1px solid var(--glass-border); margin-bottom: 20px; background: #050b14; }
         .ship-pulse-icon { position: relative; display: flex; justify-content: center; align-items: center; }
@@ -99,10 +120,17 @@
     <div id="app-shell">
         <header class="main-header">
             <nav class="navbar">
-                <a href="#" class="logo">
-                    <img id="header-logo" src="https://www.smyrilline.dk/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line Logo">
-                </a>
-                <div class="onboard-time" id="onboard-time-header">--:--</div>
+                <div class="header-left">
+                    <span class="material-icons menu-icon">menu</span>
+                </div>
+
+                <div class="logo-container">
+                    <img class="logo-img" src="https://www.smyrilline.dk/wp-content/themes/lunnar-smyrilline/images/logo.svg" alt="Smyril Line">
+                </div>
+
+                <div class="header-right">
+                    <div class="onboard-time" id="onboard-time-header">--:--</div>
+                </div>
             </nav>
         </header>
         <main id="content-container"></main>
