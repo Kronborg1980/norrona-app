@@ -1,6 +1,6 @@
 {
   "settings": {
-    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Smyril_Line_logo.svg/2560px-Smyril_Line_logo.svg.png"
+    "logoUrl": "https://raw.githubusercontent.com/Kronborg1980/norrona-app/main/logosmyrilline.jpg"
   },
   "categories": [
     {
@@ -10,75 +10,95 @@
       "type": "home",
       "items": [
         {
-          "name": "Welcome",
-          "description": "Relax and enjoy the journey across the North Atlantic.",
+          "name": "Welcome Aboard",
+          "description": "Experience the North Atlantic. Relax, explore, and enjoy your journey with Smyril Line.",
           "images": [
             "https://media.istockphoto.com/id/1366233303/photo/ferry-boat-in-the-middle-of-the-ocean.jpg?s=612x612&w=0&k=20&c=7v4dZlOqCgH_O7jRjXpZtZ6y8zJ-j4xWqJ9xXqJ9xXq"
           ],
           "fields": [],
           "menu": [],
-          "link": {
-            "text": "",
-            "url": ""
-          }
+          "link": { "text": "", "url": "" }
         }
       ]
     },
     {
-      "id": "voyage",
-      "title": "Voyage",
-      "icon": "explore",
-      "type": "voyage",
-      "items": []
-    },
-    {
-      "id": "dining",
-      "title": "Dining",
-      "icon": "restaurant",
+      "id": "outlets",
+      "title": "Outlets",
+      "icon": "storefront",
       "type": "grid",
       "items": [
         {
-          "id": "item-17000000001",
+          "id": "item-diner",
           "name": "The Diner",
-          "description": "Classic burgers and fries with a view of the ocean.",
+          "description": "Classic meals with a view. Burgers, steaks, and family favorites.",
           "images": [
             "https://images.unsplash.com/photo-1550547660-d9450f859349?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
           ],
           "fields": [
             { "label": "Deck", "value": "6" },
-            { "label": "Open", "value": "11:00 - 22:00" }
+            { "label": "Status", "value": "Open" }
           ],
           "menu": [
-            { "name": "Bacon Cheeseburger", "price": "145 DKK", "description": "Served with fries and dip." },
-            { "name": "Caesar Salad", "price": "110 DKK", "description": "Chicken, parmesan, croutons." }
+            { "name": "Bacon Cheeseburger", "price": "145 DKK", "description": "Served with fries." }
           ],
-          "link": {
-            "text": "Book Table",
-            "url": "https://booking.smyrilline.com"
-          }
-        }
-      ]
-    },
-    {
-      "id": "shop",
-      "title": "Shopping",
-      "icon": "shopping_bag",
-      "type": "grid",
-      "items": [
+          "link": { "text": "Book Table", "url": "https://booking.smyrilline.com" }
+        },
         {
-          "id": "item-17000000002",
+          "id": "item-shop",
           "name": "Tax Free Shop",
-          "description": "Perfume, sweets, and beverages at great prices.",
+          "description": "Wide selection of perfume, sweets, alcohol and souvenirs.",
           "images": [
-            "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+             "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
           ],
           "fields": [
              { "label": "Deck", "value": "5" }
           ],
           "menu": [],
-          "link": { "text": "View Offers", "url": "#" }
+          "link": { "text": "View Catalog", "url": "#" }
         }
       ]
+    },
+    {
+      "id": "entertainment",
+      "title": "Entertainment",
+      "icon": "theaters",
+      "type": "grid",
+      "items": [
+        {
+          "id": "item-cinema",
+          "name": "Norröna Cinema",
+          "description": "Catch the latest movies on Deck 5. Tickets available at reception.",
+          "images": [
+            "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+          ],
+          "fields": [
+            { "label": "Deck", "value": "5" },
+            { "label": "Next Show", "value": "20:00" }
+          ],
+          "menu": [],
+          "link": { "text": "See Schedule", "url": "#" }
+        },
+        {
+          "id": "item-hottubs",
+          "name": "Hot Tubs",
+          "description": "Relax in our outdoor hot tubs with a stunning view of the wake.",
+          "images": [
+            "https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+          ],
+          "fields": [
+             { "label": "Deck", "value": "7" }
+          ],
+          "menu": [],
+          "link": { "text": "Book Now", "url": "#" }
+        }
+      ]
+    },
+    {
+      "id": "voyage",
+      "title": "Voyage Info",
+      "icon": "explore",
+      "type": "voyage",
+      "items": []
     }
   ]
 }
