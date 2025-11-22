@@ -7,30 +7,22 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         body { font-family: 'Outfit', sans-serif; background-color: #0f172a; color: #e2e8f0; height: 100vh; overflow: hidden; }
-        
-        /* Custom Scrollbar */
         .custom-scroll::-webkit-scrollbar { width: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #1e293b; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
         .input-field {
             width: 100%; background: #1e293b; border: 1px solid #334155; color: white; 
             padding: 0.6rem 1rem; border-radius: 0.5rem; font-size: 0.9rem; transition: 0.2s;
         }
         .input-field:focus { outline: none; border-color: #06b6d4; ring: 2px solid rgba(6,182,212,0.2); }
-        
         .section-label { text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem; color: #94a3b8; font-weight: 700; margin-bottom: 0.5rem; }
-        
         .sidebar-item { cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
         .sidebar-item.active { background: #1e293b; border-left-color: #06b6d4; color: white; }
         .sidebar-item:hover:not(.active) { background: #1e293b; opacity: 0.8; }
-
-        /* Accordion Animation */
         .item-body { display: none; }
         .item-header.open + .item-body { display: block; animation: slideDown 0.2s ease-out; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
         .btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 600; transition: 0.2s; }
         .btn-primary { background: #06b6d4; color: #0f172a; }
         .btn-primary:hover { background: #22d3ee; }
@@ -41,12 +33,9 @@
     </style>
 </head>
 <body>
-    
     <div id="notification" class="fixed top-5 right-5 bg-green-500 text-white px-6 py-4 rounded-lg shadow-2xl transform translate-y-[-150%] transition-transform duration-300 z-50 flex items-center gap-3">
-        <span class="material-icons">check_circle</span>
-        <span id="notification-message">Saved successfully!</span>
+        <span class="material-icons">check_circle</span><span id="notification-message">Saved successfully!</span>
     </div>
-
     <div id="pat-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-[url('https://images.unsplash.com/photo-1500043357865-264791028e04?auto=format&fit=crop&q=80&w=2000')] bg-cover">
         <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm"></div>
         <div class="relative bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
@@ -56,442 +45,136 @@
                 <p class="text-slate-400 text-sm mt-2">Connect to your GitHub Database</p>
             </div>
             <div class="space-y-5">
-                <div>
-                    <label class="section-label">Repository</label>
-                    <input type="text" id="repo-name" class="input-field" value="Kronborg1980/norrona-app">
-                </div>
-                <div>
-                    <label class="section-label">Access Token (PAT)</label>
-                    <input type="password" id="pat-input" class="input-field" placeholder="ghp_...">
-                </div>
-                <button id="connect-btn" class="btn btn-primary w-full py-3 text-lg">
-                    <span class="material-icons">login</span> Access Dashboard
-                </button>
+                <div><label class="section-label">Repository</label><input type="text" id="repo-name" class="input-field" value="Kronborg1980/norrona-app"></div>
+                <div><label class="section-label">Access Token (PAT)</label><input type="password" id="pat-input" class="input-field" placeholder="ghp_..."></div>
+                <button id="connect-btn" class="btn btn-primary w-full py-3 text-lg"><span class="material-icons">login</span> Access Dashboard</button>
                 <p id="connect-error" class="text-red-400 text-xs text-center h-4"></p>
             </div>
         </div>
     </div>
-
     <div id="admin-panel" class="hidden flex h-full">
-        
         <aside class="w-64 bg-slate-800 border-r border-slate-700 flex flex-col shrink-0 z-20">
-            <div class="p-6 border-b border-slate-700 flex items-center gap-3">
-                <span class="material-icons text-cyan-400">admin_panel_settings</span>
-                <span class="font-bold text-lg tracking-wide">CMS</span>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto custom-scroll py-4" id="sidebar-list">
-                </div>
-
-            <div class="p-4 border-t border-slate-700 bg-slate-800">
-                <button id="add-category-btn" class="btn btn-ghost w-full text-sm">
-                    <span class="material-icons text-sm">add</span> New Tab
-                </button>
-            </div>
+            <div class="p-6 border-b border-slate-700 flex items-center gap-3"><span class="material-icons text-cyan-400">admin_panel_settings</span><span class="font-bold text-lg tracking-wide">CMS</span></div>
+            <div class="flex-1 overflow-y-auto custom-scroll py-4" id="sidebar-list"></div>
+            <div class="p-4 border-t border-slate-700 bg-slate-800"><button id="add-category-btn" class="btn btn-ghost w-full text-sm"><span class="material-icons text-sm">add</span> New Tab</button></div>
         </aside>
-
         <main class="flex-1 flex flex-col h-full min-w-0 relative">
-            
             <header class="h-16 bg-slate-900/80 backdrop-blur border-b border-slate-800 flex items-center justify-between px-8 shrink-0 z-10">
-                <div id="header-title-area">
-                    <h1 class="text-xl font-bold text-white" id="page-title">Loading...</h1>
-                </div>
+                <div id="header-title-area"><h1 class="text-xl font-bold text-white" id="page-title">Loading...</h1></div>
                 <div class="flex items-center gap-4">
                     <div class="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
-                        <span class="text-xs text-slate-400 uppercase font-bold">App Logo:</span>
-                        <img id="header-logo-preview" class="h-6 w-auto">
-                        <label class="cursor-pointer ml-2 bg-slate-700 hover:bg-slate-600 text-xs px-2 py-1 rounded text-white transition">
-                            Change
-                            <input type="file" class="hidden" id="logo-upload" accept="image/*">
-                        </label>
+                        <span class="text-xs text-slate-400 uppercase font-bold">Logo:</span><img id="header-logo-preview" class="h-6 w-auto">
+                        <label class="cursor-pointer ml-2 bg-slate-700 hover:bg-slate-600 text-xs px-2 py-1 rounded text-white transition">Change<input type="file" class="hidden" id="logo-upload" accept="image/*"></label>
                     </div>
-                    <button id="save-button" class="btn btn-primary shadow-lg shadow-cyan-500/20 px-6">
-                        <span class="material-icons">save</span> Save Changes
-                    </button>
+                    <button id="save-button" class="btn btn-primary shadow-lg shadow-cyan-500/20 px-6"><span class="material-icons">save</span> Save Changes</button>
                 </div>
             </header>
-
-            <div class="flex-1 overflow-y-auto custom-scroll p-8 pb-32" id="editor-area">
-                </div>
-
+            <div class="flex-1 overflow-y-auto custom-scroll p-8 pb-32" id="editor-area"></div>
         </main>
     </div>
-
     <script>
     document.addEventListener("DOMContentLoaded", () => {
         let GITHUB_USERNAME, GITHUB_REPO, GITHUB_PAT;
         let appData = {};
-        let activeCategoryIndex = 0; // Tracks which tab is open
-
-        // --- LOGIN LOGIC ---
+        let activeCategoryIndex = 0; 
         const connectBtn = document.getElementById("connect-btn");
         connectBtn.addEventListener('click', async () => {
             const repo = document.getElementById('repo-name').value.trim();
             const pat = document.getElementById('pat-input').value.trim();
             const err = document.getElementById("connect-error");
-            
             if(!repo.includes('/') || !pat) { err.textContent = "Invalid format."; return; }
-            
-            connectBtn.innerHTML = `<span class="material-icons animate-spin">refresh</span> Connecting...`;
-            connectBtn.disabled = true;
-
+            connectBtn.innerHTML = `<span class="material-icons animate-spin">refresh</span> Connecting...`; connectBtn.disabled = true;
             [GITHUB_USERNAME, GITHUB_REPO] = repo.split('/'); GITHUB_PAT = pat;
-
             try {
-                const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { 
-                    headers: { 'Authorization': `token ${GITHUB_PAT}` }, cache: 'no-cache' 
-                });
+                const res = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { headers: { 'Authorization': `token ${GITHUB_PAT}` }, cache: 'no-cache' });
                 if (!res.ok) throw new Error("Access denied. Check token.");
                 const json = await res.json();
                 appData = JSON.parse(decodeURIComponent(escape(atob(json.content))));
-                
-                // Login Success
-                document.getElementById('pat-screen').classList.add('hidden');
-                document.getElementById('admin-panel').classList.remove('hidden');
-                renderSidebar();
-                renderContent();
-            } catch (error) {
-                err.textContent = error.message;
-                connectBtn.innerHTML = `<span class="material-icons">login</span> Access Dashboard`;
-                connectBtn.disabled = false;
-            }
+                document.getElementById('pat-screen').classList.add('hidden'); document.getElementById('admin-panel').classList.remove('hidden');
+                renderSidebar(); renderContent();
+            } catch (error) { err.textContent = error.message; connectBtn.innerHTML = `<span class="material-icons">login</span> Access Dashboard`; connectBtn.disabled = false; }
         });
-
-        // --- RENDER SIDEBAR (Tabs) ---
         function renderSidebar() {
             const list = document.getElementById('sidebar-list');
             list.innerHTML = appData.categories.map((cat, idx) => `
                 <div class="sidebar-item px-6 py-4 flex items-center justify-between ${idx === activeCategoryIndex ? 'active' : 'text-slate-400'}" onclick="switchTab(${idx})">
-                    <div class="flex items-center gap-3">
-                        <span class="material-icons text-sm">${cat.icon || 'folder'}</span>
-                        <span class="font-medium text-sm truncate max-w-[120px]">${cat.title}</span>
-                    </div>
+                    <div class="flex items-center gap-3"><span class="material-icons text-sm">${cat.icon || 'folder'}</span><span class="font-medium text-sm truncate max-w-[120px]">${cat.title}</span></div>
                     ${idx === activeCategoryIndex ? '<span class="material-icons text-xs text-cyan-400">chevron_right</span>' : ''}
                 </div>
             `).join('');
-            
-            // Also update header logo preview
             document.getElementById('header-logo-preview').src = appData.settings.logoUrl;
         }
-
-        window.switchTab = (idx) => {
-            activeCategoryIndex = idx;
-            renderSidebar();
-            renderContent();
-        };
-
-        // --- RENDER MAIN CONTENT (The Editor) ---
+        window.switchTab = (idx) => { activeCategoryIndex = idx; renderSidebar(); renderContent(); };
         function renderContent() {
             const cat = appData.categories[activeCategoryIndex];
             const container = document.getElementById('editor-area');
             document.getElementById('page-title').textContent = `Editing: ${cat.title}`;
-
             let html = `
                 <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-8 shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                            <span class="material-icons text-slate-500">tune</span> Tab Settings
-                        </h3>
-                        <button onclick="deleteCategory(${activeCategoryIndex})" class="text-xs text-red-400 hover:text-red-300 underline">Delete this Tab</button>
-                    </div>
+                    <div class="flex items-center justify-between mb-4"><h3 class="text-lg font-bold text-white flex items-center gap-2"><span class="material-icons text-slate-500">tune</span> Tab Settings</h3><button onclick="deleteCategory(${activeCategoryIndex})" class="text-xs text-red-400 hover:text-red-300 underline">Delete this Tab</button></div>
                     <div class="grid grid-cols-3 gap-4">
-                        <div class="col-span-2">
-                            <label class="section-label">Tab Name</label>
-                            <input type="text" class="input-field" value="${cat.title}" oninput="updateCat('title', this.value)">
-                        </div>
-                        <div>
-                            <label class="section-label">Icon (Material)</label>
-                            <input type="text" class="input-field font-mono text-center" value="${cat.icon}" oninput="updateCat('icon', this.value)">
-                        </div>
-                        <div class="col-span-3">
-                             <label class="section-label">Page Layout Style</label>
-                             <select class="input-field" onchange="updateCat('type', this.value)">
-                                <option value="grid" ${cat.type === 'grid' ? 'selected' : ''}>Standard Grid (Menu/Shop)</option>
-                                <option value="home" ${cat.type === 'home' ? 'selected' : ''}>Home Page (Big Image + Stats)</option>
-                                <option value="voyage" ${cat.type === 'voyage' ? 'selected' : ''}>Voyage Map (GPS)</option>
-                             </select>
-                             <p class="text-xs text-slate-500 mt-2">Select "Standard Grid" for restaurants, shops, or activities.</p>
-                        </div>
+                        <div class="col-span-2"><label class="section-label">Tab Name</label><input type="text" class="input-field" value="${cat.title}" oninput="updateCat('title', this.value)"></div>
+                        <div><label class="section-label">Icon (Material)</label><input type="text" class="input-field font-mono text-center" value="${cat.icon}" oninput="updateCat('icon', this.value)"></div>
+                        <div class="col-span-3"><label class="section-label">Page Layout Style</label><select class="input-field" onchange="updateCat('type', this.value)"><option value="grid" ${cat.type === 'grid' ? 'selected' : ''}>Standard Grid (Menu/Shop)</option><option value="home" ${cat.type === 'home' ? 'selected' : ''}>Home Page</option><option value="voyage" ${cat.type === 'voyage' ? 'selected' : ''}>Voyage Map</option></select></div>
                     </div>
                 </div>
-
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-bold text-white">Content Items</h3>
-                    </div>
-            `;
-
-            // Render Items
+                <div class="space-y-4"><div class="flex items-center justify-between"><h3 class="text-lg font-bold text-white">Content Items</h3></div>`;
             cat.items.forEach((item, iIdx) => {
                 html += `
                     <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-md transition hover:border-slate-600">
                         <div class="item-header p-4 flex items-center gap-4 cursor-pointer bg-slate-800 hover:bg-slate-750" onclick="this.classList.toggle('open')">
                             <img src="${item.images?.[0] || 'https://via.placeholder.com/100'}" class="w-12 h-12 rounded-lg object-cover bg-slate-900">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-white text-lg">${item.name || 'Untitled Item'}</h4>
-                                <p class="text-slate-500 text-xs truncate">${item.description || 'No description'}</p>
-                            </div>
+                            <div class="flex-1"><h4 class="font-bold text-white text-lg">${item.name || 'Untitled Item'}</h4><p class="text-slate-500 text-xs truncate">${item.description || 'No description'}</p></div>
                             <span class="material-icons text-slate-500">expand_more</span>
                         </div>
-
                         <div class="item-body border-t border-slate-700 p-6 bg-slate-800/50">
-                            
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 <div class="space-y-6">
-                                    <div>
-                                        <label class="section-label">Name</label>
-                                        <input type="text" class="input-field text-lg font-bold" value="${item.name}" oninput="updateItem(${iIdx}, 'name', this.value)">
-                                    </div>
-                                    <div>
-                                        <label class="section-label">Description</label>
-                                        <textarea class="input-field h-24 custom-scroll" oninput="updateItem(${iIdx}, 'description', this.value)">${item.description}</textarea>
-                                    </div>
-                                    <div>
-                                        <label class="section-label mb-2">Cover Image</label>
-                                        <div class="flex gap-3 items-end">
-                                            <img src="${item.images?.[0]}" class="w-24 h-24 rounded-lg object-cover border border-slate-600 bg-black">
-                                            <label class="btn btn-ghost text-xs cursor-pointer">
-                                                Upload New
-                                                <input type="file" class="hidden" accept="image/*" onchange="uploadItemImage(${iIdx}, this)">
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
+                                    <div><label class="section-label">Name</label><input type="text" class="input-field text-lg font-bold" value="${item.name}" oninput="updateItem(${iIdx}, 'name', this.value)"></div>
+                                    <div><label class="section-label">Description</label><textarea class="input-field h-24 custom-scroll" oninput="updateItem(${iIdx}, 'description', this.value)">${item.description}</textarea></div>
+                                    <div><label class="section-label mb-2">Cover Image</label><div class="flex gap-3 items-end"><img src="${item.images?.[0]}" class="w-24 h-24 rounded-lg object-cover border border-slate-600 bg-black"><label class="btn btn-ghost text-xs cursor-pointer">Upload New<input type="file" class="hidden" accept="image/*" onchange="uploadItemImage(${iIdx}, this)"></label></div></div>
                                     <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
                                         <label class="section-label flex items-center gap-2"><span class="material-icons text-xs">link</span> Action Buttons</label>
                                         <div class="space-y-4 mt-3">
-                                            <div>
-                                                <span class="text-xs text-cyan-400 font-bold uppercase mb-1 block">Primary Button (e.g. Book Table)</span>
-                                                <div class="grid grid-cols-2 gap-2">
-                                                    <input placeholder="Label" class="input-field text-sm" value="${item.link?.text||''}" oninput="updateLink(${iIdx}, 'link', 'text', this.value)">
-                                                    <input placeholder="https://..." class="input-field text-sm" value="${item.link?.url||''}" oninput="updateLink(${iIdx}, 'link', 'url', this.value)">
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <span class="text-xs text-purple-400 font-bold uppercase mb-1 block">Secondary Button (e.g. View Menu PDF)</span>
-                                                <div class="grid grid-cols-2 gap-2">
-                                                    <input placeholder="Label" class="input-field text-sm" value="${item.secondaryLink?.text||''}" oninput="updateLink(${iIdx}, 'secondaryLink', 'text', this.value)">
-                                                    <input placeholder="https://..." class="input-field text-sm" value="${item.secondaryLink?.url||''}" oninput="updateLink(${iIdx}, 'secondaryLink', 'url', this.value)">
-                                                </div>
-                                            </div>
+                                            <div><span class="text-xs text-cyan-400 font-bold uppercase mb-1 block">Primary Button</span><div class="grid grid-cols-2 gap-2"><input placeholder="Label" class="input-field text-sm" value="${item.link?.text||''}" oninput="updateLink(${iIdx}, 'link', 'text', this.value)"><input placeholder="URL" class="input-field text-sm" value="${item.link?.url||''}" oninput="updateLink(${iIdx}, 'link', 'url', this.value)"></div></div>
+                                            <div><span class="text-xs text-purple-400 font-bold uppercase mb-1 block">Secondary Button (e.g. Menu PDF)</span><div class="grid grid-cols-2 gap-2"><input placeholder="Label" class="input-field text-sm" value="${item.secondaryLink?.text||''}" oninput="updateLink(${iIdx}, 'secondaryLink', 'text', this.value)"><input placeholder="URL" class="input-field text-sm" value="${item.secondaryLink?.url||''}" oninput="updateLink(${iIdx}, 'secondaryLink', 'url', this.value)"></div></div>
+                                            <div><span class="text-xs text-red-400 font-bold uppercase mb-1 block">Video Trailer (YouTube)</span><input placeholder="YouTube Link (e.g. youtube.com/watch?v=...)" class="input-field text-sm" value="${item.trailerUrl||''}" oninput="updateItem(${iIdx}, 'trailerUrl', this.value)"></div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="space-y-6">
-                                    
-                                    <div class="bg-slate-900/30 p-4 rounded-lg border border-slate-700">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <label class="section-label">Info / Hours</label>
-                                            <button class="text-xs text-cyan-400 hover:text-cyan-300 font-bold" onclick="addField(${iIdx})">+ ADD ROW</button>
-                                        </div>
-                                        <div class="space-y-2">
-                                            ${(item.fields||[]).map((f, fIdx) => `
-                                                <div class="flex gap-2">
-                                                    <input class="input-field py-1 text-xs w-1/3" placeholder="Label (e.g. Lunch)" value="${f.label}" oninput="updateField(${iIdx}, ${fIdx}, 'label', this.value)">
-                                                    <input class="input-field py-1 text-xs w-2/3" placeholder="Value (e.g. 12:00 - 14:00)" value="${f.value}" oninput="updateField(${iIdx}, ${fIdx}, 'value', this.value)">
-                                                    <button class="text-slate-500 hover:text-red-500" onclick="removeField(${iIdx}, ${fIdx})"><span class="material-icons text-sm">close</span></button>
-                                                </div>
-                                            `).join('')}
-                                            ${(!item.fields || item.fields.length === 0) ? '<div class="text-slate-600 text-xs italic">No details added.</div>' : ''}
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-yellow-900/10 p-4 rounded-lg border border-yellow-500/30">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <label class="section-label text-yellow-500">Special Offers</label>
-                                            <button class="text-xs text-yellow-500 hover:text-yellow-300 font-bold" onclick="addOffer(${iIdx})">+ ADD OFFER</button>
-                                        </div>
-                                        <div class="space-y-3">
-                                            ${(item.offers||[]).map((o, oIdx) => `
-                                                <div class="bg-slate-900/50 p-2 rounded border border-slate-700 relative group">
-                                                    <input class="input-field py-1 text-sm font-bold mb-1 bg-transparent border-none p-0 focus:ring-0" placeholder="Offer Title" value="${o.title}" oninput="updateOffer(${iIdx}, ${oIdx}, 'title', this.value)">
-                                                    <textarea class="input-field py-1 text-xs bg-transparent border-none p-0 text-slate-400 focus:ring-0 w-full resize-none" placeholder="Description..." oninput="updateOffer(${iIdx}, ${oIdx}, 'description', this.value)">${o.description}</textarea>
-                                                    <button class="absolute top-2 right-2 text-slate-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition" onclick="removeOffer(${iIdx}, ${oIdx})"><span class="material-icons text-sm">delete</span></button>
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-slate-900/30 p-4 rounded-lg border border-slate-700">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <label class="section-label">Menu Highlights</label>
-                                            <button class="text-xs text-cyan-400 hover:text-cyan-300 font-bold" onclick="addMenu(${iIdx})">+ ADD DISH</button>
-                                        </div>
-                                        <div class="space-y-2 max-h-60 overflow-y-auto custom-scroll pr-2">
-                                            ${(item.menu||[]).map((m, mIdx) => `
-                                                <div class="border-b border-slate-700 pb-2 mb-2">
-                                                    <div class="flex gap-2 mb-1">
-                                                        <input class="input-field py-1 text-xs w-2/3 font-bold" placeholder="Dish Name" value="${m.name}" oninput="updateMenu(${iIdx}, ${mIdx}, 'name', this.value)">
-                                                        <input class="input-field py-1 text-xs w-1/3 text-right" placeholder="Price" value="${m.price}" oninput="updateMenu(${iIdx}, ${mIdx}, 'price', this.value)">
-                                                        <button class="text-slate-500 hover:text-red-500" onclick="removeMenu(${iIdx}, ${mIdx})"><span class="material-icons text-sm">close</span></button>
-                                                    </div>
-                                                    <input class="input-field py-0 text-[11px] bg-transparent border-none text-slate-400 p-0 focus:ring-0 w-full" placeholder="Ingredients/Description..." value="${m.description}" oninput="updateMenu(${iIdx}, ${mIdx}, 'description', this.value)">
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    </div>
-
-                                    <div class="pt-4 text-right">
-                                        <button class="btn btn-danger text-xs px-3 py-2" onclick="deleteItem(${iIdx})">
-                                            <span class="material-icons text-sm">delete</span> Delete Item
-                                        </button>
-                                    </div>
-
-                                </div> </div>
+                                    <div class="bg-slate-900/30 p-4 rounded-lg border border-slate-700"><div class="flex justify-between items-center mb-2"><label class="section-label">Info / Hours</label><button class="text-xs text-cyan-400 hover:text-cyan-300 font-bold" onclick="addField(${iIdx})">+ ADD ROW</button></div><div class="space-y-2">${(item.fields||[]).map((f, fIdx) => `<div class="flex gap-2"><input class="input-field py-1 text-xs w-1/3" placeholder="Label" value="${f.label}" oninput="updateField(${iIdx}, ${fIdx}, 'label', this.value)"><input class="input-field py-1 text-xs w-2/3" placeholder="Value" value="${f.value}" oninput="updateField(${iIdx}, ${fIdx}, 'value', this.value)"><button class="text-slate-500 hover:text-red-500" onclick="removeField(${iIdx}, ${fIdx})"><span class="material-icons text-sm">close</span></button></div>`).join('')}</div></div>
+                                    <div class="bg-yellow-900/10 p-4 rounded-lg border border-yellow-500/30"><div class="flex justify-between items-center mb-2"><label class="section-label text-yellow-500">Special Offers</label><button class="text-xs text-yellow-500 hover:text-yellow-300 font-bold" onclick="addOffer(${iIdx})">+ ADD OFFER</button></div><div class="space-y-3">${(item.offers||[]).map((o, oIdx) => `<div class="bg-slate-900/50 p-2 rounded border border-slate-700 relative group"><input class="input-field py-1 text-sm font-bold mb-1 bg-transparent border-none p-0 focus:ring-0" placeholder="Offer Title" value="${o.title}" oninput="updateOffer(${iIdx}, ${oIdx}, 'title', this.value)"><textarea class="input-field py-1 text-xs bg-transparent border-none p-0 text-slate-400 focus:ring-0 w-full resize-none" placeholder="Description..." oninput="updateOffer(${iIdx}, ${oIdx}, 'description', this.value)">${o.description}</textarea><button class="absolute top-2 right-2 text-slate-600 hover:text-red-500 opacity-0 group-hover:opacity-100 transition" onclick="removeOffer(${iIdx}, ${oIdx})"><span class="material-icons text-sm">delete</span></button></div>`).join('')}</div></div>
+                                    <div class="bg-slate-900/30 p-4 rounded-lg border border-slate-700"><div class="flex justify-between items-center mb-2"><label class="section-label">Menu Highlights</label><button class="text-xs text-cyan-400 hover:text-cyan-300 font-bold" onclick="addMenu(${iIdx})">+ ADD DISH</button></div><div class="space-y-2 max-h-60 overflow-y-auto custom-scroll pr-2">${(item.menu||[]).map((m, mIdx) => `<div class="border-b border-slate-700 pb-2 mb-2"><div class="flex gap-2 mb-1"><input class="input-field py-1 text-xs w-2/3 font-bold" placeholder="Dish" value="${m.name}" oninput="updateMenu(${iIdx}, ${mIdx}, 'name', this.value)"><input class="input-field py-1 text-xs w-1/3 text-right" placeholder="Price" value="${m.price}" oninput="updateMenu(${iIdx}, ${mIdx}, 'price', this.value)"><button class="text-slate-500 hover:text-red-500" onclick="removeMenu(${iIdx}, ${mIdx})"><span class="material-icons text-sm">close</span></button></div><input class="input-field py-0 text-[11px] bg-transparent border-none text-slate-400 p-0 focus:ring-0 w-full" placeholder="Desc..." value="${m.description}" oninput="updateMenu(${iIdx}, ${mIdx}, 'description', this.value)"></div>`).join('')}</div></div>
+                                    <div class="pt-4 text-right"><button class="btn btn-danger text-xs px-3 py-2" onclick="deleteItem(${iIdx})"><span class="material-icons text-sm">delete</span> Delete Item</button></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
-
-            html += `
-                    <button onclick="addNewItem()" class="w-full py-4 border-2 border-dashed border-slate-700 rounded-xl text-slate-500 font-bold hover:border-cyan-500 hover:text-cyan-400 transition flex items-center justify-center gap-2">
-                        <span class="material-icons">add_circle</span> Add New Item to ${cat.title}
-                    </button>
-                </div>
-            `;
-
+            html += `<button onclick="addNewItem()" class="w-full py-4 border-2 border-dashed border-slate-700 rounded-xl text-slate-500 font-bold hover:border-cyan-500 hover:text-cyan-400 transition flex items-center justify-center gap-2"><span class="material-icons">add_circle</span> Add New Item to ${cat.title}</button></div>`;
             container.innerHTML = html;
         }
-
-        // --- DATA MANIPULATION HELPERS ---
-        
-        // Categories
-        document.getElementById('add-category-btn').onclick = () => {
-            appData.categories.push({ id:`cat-${Date.now()}`, title:'New Tab', icon:'star', type:'grid', items:[] });
-            activeCategoryIndex = appData.categories.length - 1;
-            renderSidebar(); renderContent();
-        };
-        window.deleteCategory = (idx) => {
-            if(confirm("Delete this entire tab?")) {
-                appData.categories.splice(idx, 1);
-                activeCategoryIndex = 0;
-                renderSidebar(); renderContent();
-            }
-        };
-        window.updateCat = (key, val) => {
-            appData.categories[activeCategoryIndex][key] = val;
-            if(key === 'title') renderSidebar(); // refresh sidebar names
-        };
-
-        // Items
-        window.addNewItem = () => {
-            appData.categories[activeCategoryIndex].items.push({ 
-                name: 'New Item', description: '', images: [], fields:[], offers:[], menu:[], link:{text:'',url:''}, secondaryLink:{text:'',url:''} 
-            });
-            renderContent();
-        };
-        window.deleteItem = (iIdx) => {
-            if(confirm("Delete this item?")) {
-                appData.categories[activeCategoryIndex].items.splice(iIdx, 1);
-                renderContent();
-            }
-        };
-        window.updateItem = (iIdx, key, val) => {
-            appData.categories[activeCategoryIndex].items[iIdx][key] = val;
-            if(key === 'name') document.querySelectorAll('.item-header h4')[iIdx].innerText = val;
-        };
-
-        // Images
-        window.uploadItemImage = (iIdx, input) => {
-            const file = input.files[0]; if(!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                if(!appData.categories[activeCategoryIndex].items[iIdx].images) appData.categories[activeCategoryIndex].items[iIdx].images = [];
-                appData.categories[activeCategoryIndex].items[iIdx].images[0] = e.target.result; // Replace first image
-                renderContent();
-            };
-            reader.readAsDataURL(file);
-        };
-        document.getElementById('logo-upload').addEventListener('change', (e) => {
-            const file = e.target.files[0]; if(!file) return;
-            const r = new FileReader();
-            r.onload = (ev) => {
-                appData.settings.logoUrl = ev.target.result;
-                document.getElementById('header-logo-preview').src = ev.target.result;
-            };
-            r.readAsDataURL(file);
-        });
-
-        // Complex Fields (Arrays)
-        window.updateLink = (iIdx, linkKey, key, val) => {
-            if(!appData.categories[activeCategoryIndex].items[iIdx][linkKey]) appData.categories[activeCategoryIndex].items[iIdx][linkKey] = {};
-            appData.categories[activeCategoryIndex].items[iIdx][linkKey][key] = val;
-        };
-
-        // Universal Array Handlers (Fields, Offers, Menu)
-        window.addField = (iIdx) => {
-            if(!appData.categories[activeCategoryIndex].items[iIdx].fields) appData.categories[activeCategoryIndex].items[iIdx].fields = [];
-            appData.categories[activeCategoryIndex].items[iIdx].fields.push({label:'', value:''});
-            renderContent();
-        };
+        document.getElementById('add-category-btn').onclick = () => { appData.categories.push({ id:`cat-${Date.now()}`, title:'New Tab', icon:'star', type:'grid', items:[] }); activeCategoryIndex = appData.categories.length - 1; renderSidebar(); renderContent(); };
+        window.deleteCategory = (idx) => { if(confirm("Delete this entire tab?")) { appData.categories.splice(idx, 1); activeCategoryIndex = 0; renderSidebar(); renderContent(); } };
+        window.updateCat = (key, val) => { appData.categories[activeCategoryIndex][key] = val; if(key === 'title') renderSidebar(); };
+        window.addNewItem = () => { appData.categories[activeCategoryIndex].items.push({ name: 'New Item', description: '', images: [], fields:[], offers:[], menu:[], link:{text:'',url:''}, secondaryLink:{text:'',url:''}, trailerUrl:'' }); renderContent(); };
+        window.deleteItem = (iIdx) => { if(confirm("Delete this item?")) { appData.categories[activeCategoryIndex].items.splice(iIdx, 1); renderContent(); } };
+        window.updateItem = (iIdx, key, val) => { appData.categories[activeCategoryIndex].items[iIdx][key] = val; if(key === 'name') document.querySelectorAll('.item-header h4')[iIdx].innerText = val; };
+        window.uploadItemImage = (iIdx, input) => { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = (e) => { if(!appData.categories[activeCategoryIndex].items[iIdx].images) appData.categories[activeCategoryIndex].items[iIdx].images = []; appData.categories[activeCategoryIndex].items[iIdx].images[0] = e.target.result; renderContent(); }; reader.readAsDataURL(file); };
+        document.getElementById('logo-upload').addEventListener('change', (e) => { const file = e.target.files[0]; if(!file) return; const r = new FileReader(); r.onload = (ev) => { appData.settings.logoUrl = ev.target.result; document.getElementById('header-logo-preview').src = ev.target.result; }; r.readAsDataURL(file); });
+        window.updateLink = (iIdx, linkKey, key, val) => { if(!appData.categories[activeCategoryIndex].items[iIdx][linkKey]) appData.categories[activeCategoryIndex].items[iIdx][linkKey] = {}; appData.categories[activeCategoryIndex].items[iIdx][linkKey][key] = val; };
+        window.addField = (iIdx) => { if(!appData.categories[activeCategoryIndex].items[iIdx].fields) appData.categories[activeCategoryIndex].items[iIdx].fields = []; appData.categories[activeCategoryIndex].items[iIdx].fields.push({label:'', value:''}); renderContent(); };
         window.updateField = (iIdx, fIdx, key, val) => { appData.categories[activeCategoryIndex].items[iIdx].fields[fIdx][key] = val; };
         window.removeField = (iIdx, fIdx) => { appData.categories[activeCategoryIndex].items[iIdx].fields.splice(fIdx, 1); renderContent(); };
-
-        window.addOffer = (iIdx) => {
-            if(!appData.categories[activeCategoryIndex].items[iIdx].offers) appData.categories[activeCategoryIndex].items[iIdx].offers = [];
-            appData.categories[activeCategoryIndex].items[iIdx].offers.push({title:'', description:''});
-            renderContent();
-        };
+        window.addOffer = (iIdx) => { if(!appData.categories[activeCategoryIndex].items[iIdx].offers) appData.categories[activeCategoryIndex].items[iIdx].offers = []; appData.categories[activeCategoryIndex].items[iIdx].offers.push({title:'', description:''}); renderContent(); };
         window.updateOffer = (iIdx, oIdx, key, val) => { appData.categories[activeCategoryIndex].items[iIdx].offers[oIdx][key] = val; };
         window.removeOffer = (iIdx, oIdx) => { appData.categories[activeCategoryIndex].items[iIdx].offers.splice(oIdx, 1); renderContent(); };
-
-        window.addMenu = (iIdx) => {
-            if(!appData.categories[activeCategoryIndex].items[iIdx].menu) appData.categories[activeCategoryIndex].items[iIdx].menu = [];
-            appData.categories[activeCategoryIndex].items[iIdx].menu.push({name:'', price:'', description:''});
-            renderContent();
-        };
+        window.addMenu = (iIdx) => { if(!appData.categories[activeCategoryIndex].items[iIdx].menu) appData.categories[activeCategoryIndex].items[iIdx].menu = []; appData.categories[activeCategoryIndex].items[iIdx].menu.push({name:'', price:'', description:''}); renderContent(); };
         window.updateMenu = (iIdx, mIdx, key, val) => { appData.categories[activeCategoryIndex].items[iIdx].menu[mIdx][key] = val; };
         window.removeMenu = (iIdx, mIdx) => { appData.categories[activeCategoryIndex].items[iIdx].menu.splice(mIdx, 1); renderContent(); };
-
-
-        // --- SAVE TO GITHUB ---
-        document.getElementById('save-button').addEventListener('click', async () => {
-            const btn = document.getElementById('save-button');
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<span class="material-icons animate-spin">refresh</span> Saving...`;
-
-            try {
-                // 1. Get current SHA
-                const getRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { 
-                    headers: { 'Authorization': `token ${GITHUB_PAT}` } 
-                });
-                const getJson = await getRes.json();
-                const sha = getJson.sha;
-
-                // 2. Prepare content (Base64 safe)
-                const content = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-
-                // 3. Push Update
-                const putRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, {
-                    method: 'PUT',
-                    headers: { 
-                        'Authorization': `token ${GITHUB_PAT}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: 'CMS Update via Admin Panel',
-                        content: content,
-                        sha: sha
-                    })
-                });
-
-                if(!putRes.ok) throw new Error("Save failed.");
-
-                // Success Notification
-                const toast = document.getElementById('notification');
-                toast.classList.remove('translate-y-[-150%]');
-                setTimeout(() => toast.classList.add('translate-y-[-150%]'), 3000);
-
-            } catch (err) {
-                alert("Error saving: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        });
-
+        document.getElementById('save-button').addEventListener('click', async () => { const btn = document.getElementById('save-button'); const originalText = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<span class="material-icons animate-spin">refresh</span> Saving...`; try { const getRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { headers: { 'Authorization': `token ${GITHUB_PAT}` } }); const getJson = await getRes.json(); const sha = getJson.sha; const content = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2)))); const putRes = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/data.json`, { method: 'PUT', headers: { 'Authorization': `token ${GITHUB_PAT}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: 'CMS Update', content: content, sha: sha }) }); if(!putRes.ok) throw new Error("Save failed."); const toast = document.getElementById('notification'); toast.classList.remove('translate-y-[-150%]'); setTimeout(() => toast.classList.add('translate-y-[-150%]'), 3000); } catch (err) { alert("Error: " + err.message); } finally { btn.disabled = false; btn.innerHTML = originalText; } });
     });
     </script>
 </body>
