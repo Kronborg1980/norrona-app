@@ -327,7 +327,7 @@
 
             function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
             
-            // UPDATED DESTINATION COORDINATES (Directly on the docks)
+            // UPDATED DESTINATION COORDINATES
             const destinationMap = { 
                 torshavn: { name: "Tórshavn", country: "FO", lat: 62.0080, lon: -6.7705 }, 
                 hirtshals: { name: "Hirtshals", country: "DK", lat: 57.5915, lon: 9.9620 }, 
@@ -417,28 +417,38 @@
                             const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
                             
-                            // Ship Marker Logic
+                            // 1. UPDATE SHIP MARKER
                             if (!map.shipMarker) { 
                                 map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); 
                             } else { 
                                 map.shipMarker.setLatLng(shipPos);
-                                map.shipMarker.setIcon(createShipIcon(course)); // Update rotation
+                                map.shipMarker.setIcon(createShipIcon(course)); 
                             }
 
-                            // Destination Marker Logic
-                            if (!map.destMarker) { 
-                                map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); 
-                            } else { 
-                                map.destMarker.setLatLng(destPos); 
-                            }
-                            
-                            if (liveRouteLine) { map.removeLayer(liveRouteLine); }
-                            
-                            if (!isInPort) {
+                            // 2. HANDLE DESTINATION PIN & ROUTE
+                            if (isInPort) {
+                                // If in port: REMOVE destination marker and route line
+                                if (map.destMarker) {
+                                    map.removeLayer(map.destMarker);
+                                    map.destMarker = null;
+                                }
+                                if (liveRouteLine) {
+                                    map.removeLayer(liveRouteLine);
+                                    liveRouteLine = null;
+                                }
+                                // Zoom tight on the ship
+                                map.setView(shipPos, 15);
+                            } else {
+                                // If sailing: SHOW destination marker and route
+                                if (!map.destMarker) { 
+                                    map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); 
+                                } else { 
+                                    map.destMarker.setLatLng(destPos); 
+                                }
+                                
+                                if (liveRouteLine) { map.removeLayer(liveRouteLine); }
                                 liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
                                 map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
-                            } else {
-                                map.setView(shipPos, 14); // Close zoom when docked
                             }
                         }
                         
