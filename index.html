@@ -107,6 +107,9 @@
         
         #map { width: 100%; height: 50vh; border-radius: 0 0 40px 40px; margin-bottom: 20px; box-shadow: inset 0 -30px 60px var(--primary-dark); filter: saturate(0.8) contrast(1.1); }
         
+        /* Map Icon Styles */
+        .ship-marker-container { transition: all 0.5s ease-out; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
+
         /* UPDATED WEATHER PANEL (CENTERED) */
         .weather-panel { 
             background: var(--glass-bg); 
@@ -177,7 +180,27 @@
             let appData = {};
             let map;
             let liveRouteLine = null;
-            const destIcon = L.icon({ iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png", iconSize: [12, 20], iconAnchor: [6, 20] });
+            
+            // ICONS DEFINITIONS
+            const pinIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            const createShipIcon = (course) => {
+                // Gold ship SVG arrow
+                const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>`;
+                return L.divIcon({
+                    className: 'ship-marker-container',
+                    html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px;">${svg}</div>`,
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+            };
 
             function createImageArea(images) {
                 if (!Array.isArray(images) || images.length === 0) return `<div class="image-container" style="display:none"></div>`;
@@ -303,7 +326,14 @@
             }
 
             function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
-            const destinationMap = { torshavn: { name: "Tórshavn", country: "FO", lat: 62.01, lon: -6.771 }, hirtshals: { name: "Hirtshals", country: "DK", lat: 57.594, lon: 9.965 }, seydisfjord: { name: "Seyðisfjörður", country: "IS", lat: 65.262, lon: -14.012 } };
+            
+            // UPDATED DESTINATION COORDINATES (Directly on the docks)
+            const destinationMap = { 
+                torshavn: { name: "Tórshavn", country: "FO", lat: 62.0080, lon: -6.7705 }, 
+                hirtshals: { name: "Hirtshals", country: "DK", lat: 57.5915, lon: 9.9620 }, 
+                seydisfjord: { name: "Seyðisfjörður", country: "IS", lat: 65.2595, lon: -14.0090 } 
+            };
+
             function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
             function formatETA(e) { if (!e) return { day: "--", time: "--:--" }; try { const t = new Date(e); if (isNaN(t.getTime())) return { day: "Inv", time: "" }; const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }), a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a } } catch (e) { return { day: "Err", time: "" } } }
@@ -332,10 +362,8 @@
                     const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
                     const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
                     
-                    // Beregn afstand
                     const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
                     
-                    // TJEK OM VI ER I HAVN (Fart under 1.0 knob OG afstand under 2 km)
                     const isInPort = speedKnots < 1.0 && dist < 2.0;
 
                     const { day, time } = formatETA(norrona.etaFromAIS);
@@ -389,8 +417,20 @@
                             const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
                             
-                            if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
-                            if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
+                            // Ship Marker Logic
+                            if (!map.shipMarker) { 
+                                map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); 
+                            } else { 
+                                map.shipMarker.setLatLng(shipPos);
+                                map.shipMarker.setIcon(createShipIcon(course)); // Update rotation
+                            }
+
+                            // Destination Marker Logic
+                            if (!map.destMarker) { 
+                                map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); 
+                            } else { 
+                                map.destMarker.setLatLng(destPos); 
+                            }
                             
                             if (liveRouteLine) { map.removeLayer(liveRouteLine); }
                             
@@ -398,7 +438,7 @@
                                 liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
                                 map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
                             } else {
-                                map.setView(shipPos, 12);
+                                map.setView(shipPos, 14); // Close zoom when docked
                             }
                         }
                         
