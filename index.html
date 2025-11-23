@@ -85,11 +85,11 @@
             border: 1px solid var(--glass-border); 
             border-radius: 16px; 
             padding: 20px; 
-            text-align: center; /* Changed from left to center */
+            text-align: center;
             display: flex; 
             flex-direction: column; 
             justify-content: center;
-            align-items: center; /* Centers flex children */
+            align-items: center; 
         }
         .grid-item .label { 
             font-size: 0.7rem; color: var(--accent-gold); opacity: 0.9; 
@@ -99,7 +99,7 @@
             font-size: 1.4rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; 
             display: flex; 
             align-items: baseline; 
-            justify-content: center; /* Centers the row content */
+            justify-content: center; 
             gap: 4px; 
         }
         .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
@@ -115,7 +115,7 @@
             padding: 16px 20px; 
             display: flex; 
             align-items: center; 
-            justify-content: center; /* Centers content */
+            justify-content: center; 
             gap: 20px; 
             margin-bottom: 12px; 
             margin-top: -10px;
@@ -323,33 +323,86 @@
                 try {
                     const response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
                     const norrona = (await response.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
+                    
                     if (!norrona) return;
+
                     const speedKnots = norrona.position?.speed || 0;
                     const course = Math.round(norrona.position?.course || 0);
+                    
                     const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
                     const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
+                    
+                    // Beregn afstand
+                    const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
+                    
+                    // TJEK OM VI ER I HAVN (Fart under 1.0 knob OG afstand under 2 km)
+                    const isInPort = speedKnots < 1.0 && dist < 2.0;
+
                     const { day, time } = formatETA(norrona.etaFromAIS);
                     
-                    document.getElementById('header-dest-text').textContent = `To ${currentDestInfo.name}`;
+                    // Opdater Header
+                    if (isInPort) {
+                         document.getElementById('header-dest-text').textContent = `In Harbor (${currentDestInfo.name})`;
+                    } else {
+                         document.getElementById('header-dest-text').textContent = `To ${currentDestInfo.name}`;
+                    }
 
                     if (isHomePage) {
-                        document.getElementById('destination-home').textContent = currentDestInfo.name; document.getElementById('eta-home').textContent = `${day}, ${time}`;
-                        document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`; document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
+                        if (isInPort) {
+                            document.getElementById('home-dest-label').textContent = "Current Status";
+                            document.getElementById('destination-home').textContent = "In Harbor";
+                            document.getElementById('eta-home').textContent = `Docked in ${currentDestInfo.name}`;
+                        } else {
+                            document.getElementById('home-dest-label').textContent = "Next Stop";
+                            document.getElementById('destination-home').textContent = currentDestInfo.name;
+                            document.getElementById('eta-home').textContent = `${day}, ${time}`;
+                        }
+
+                        document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`; 
+                        document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
                         document.getElementById('course-home').textContent = `Course: ${course}°`;
+                        
                     } else {
-                         const page = document.querySelector('.voyage-page'); if(!page) return;
-                         document.getElementById("speed-knots").textContent = `${speedKnots} kn`; document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`; document.getElementById("course-voyage").textContent = `Course: ${course}°`;
-                         const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
-                         document.getElementById("distance").textContent = Math.round(dist); document.getElementById("destination-voyage").textContent = currentDestInfo.name; document.getElementById("eta-voyage").textContent = `${day} ${time}`; document.getElementById("onboard-time").textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
-                         if (map) {
-                            const shipPos = [norrona.position.latitude, norrona.position.longitude]; const destPos = [currentDestInfo.lat, currentDestInfo.lon];
+                        const page = document.querySelector('.voyage-page'); 
+                        if(!page) return;
+                        
+                        document.getElementById("speed-knots").textContent = `${speedKnots} kn`; 
+                        document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`; 
+                        document.getElementById("course-voyage").textContent = `Course: ${course}°`;
+                        document.getElementById("onboard-time").textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
+
+                        if (isInPort) {
+                            document.getElementById("distance").textContent = "Docked"; 
+                            document.getElementById("distance-unit").textContent = `in ${currentDestInfo.name}`;
+                            document.getElementById("destination-label").textContent = "Current Location";
+                            document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                            document.getElementById("eta-voyage").textContent = "Arrived";
+                        } else {
+                            document.getElementById("distance").textContent = Math.round(dist); 
+                            document.getElementById("distance-unit").textContent = "Kilometers";
+                            document.getElementById("destination-label").textContent = "Next Destination";
+                            document.getElementById("destination-voyage").textContent = currentDestInfo.name;
+                            document.getElementById("eta-voyage").textContent = `${day} ${time}`;
+                        }
+
+                        if (map) {
+                            const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
+                            const destPos = [currentDestInfo.lat, currentDestInfo.lon];
+                            
                             if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: destIcon }).addTo(map); } else { map.shipMarker.setLatLng(shipPos); }
                             if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: destIcon }).addTo(map); } else { map.destMarker.setLatLng(destPos); }
+                            
                             if (liveRouteLine) { map.removeLayer(liveRouteLine); }
-                            liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
-                            map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
-                         }
-                         fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon);
+                            
+                            if (!isInPort) {
+                                liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
+                                map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [50, 50] });
+                            } else {
+                                map.setView(shipPos, 12);
+                            }
+                        }
+                        
+                        fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon);
                     }
                 } catch(e) { console.log(e); }
             }
