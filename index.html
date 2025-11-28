@@ -32,17 +32,17 @@
         .navbar { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 20px; }
         .navbar .logo img { height: 32px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
         
-        /* UPDATED HEADER TIME STYLE */
+        /* HEADER TIME STYLE */
         .onboard-time { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; }
         
-        /* UPDATED VOYAGE STATUS STYLE TO FIT MORE TEXT */
+        /* VOYAGE STATUS STYLE */
         .voyage-status { display: flex; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(252, 185, 0, 0.2); padding: 6px 14px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-width: 55%; overflow: hidden; text-overflow: ellipsis; }
         .status-dot { flex-shrink: 0; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
         
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
         @media (max-width: 360px) { 
             .voyage-status { font-size: 0.6rem; padding: 4px 10px; } 
-            .onboard-time { display: none; } /* Hide clock on very small screens to fit destination */
+            .onboard-time { display: none; } 
         }
 
         /* Layout */
@@ -342,7 +342,18 @@
 
             function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
             function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-            function formatETA(e) { if (!e) return { day: "--", time: "--:--" }; try { const t = new Date(e); if (isNaN(t.getTime())) return { day: "Inv", time: "" }; const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }), a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a } } catch (e) { return { day: "Err", time: "" } } }
+            
+            // Updated Format Function to return null if invalid date
+            function formatETA(e) { 
+                if (!e) return null; 
+                try { 
+                    const t = new Date(e); 
+                    if (isNaN(t.getTime())) return null; 
+                    const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" });
+                    const a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); 
+                    return { day: o, time: a };
+                } catch (e) { return null; } 
+            }
             
             async function fetchWeatherData(lat, lon) {
                  try {
@@ -378,29 +389,43 @@
                     // Format Arrival Time (ETA) for sailing
                     const arrivalTime = formatETA(norrona.etaFromAIS);
                     
-                    // Format Departure Time (ETD) for docked state
-                    // We try to find scheduledDeparture, otherwise fallback to standard ETA field which might indicate next move
-                    const departureTimeRaw = norrona.scheduledDeparture || norrona.etd || norrona.etaFromAIS;
-                    const departureTime = formatETA(departureTimeRaw);
+                    // Logic for Departure Time
+                    // We ONLY use scheduledDeparture or ETD. 
+                    // We DO NOT fallback to etaFromAIS (which is arrival time).
+                    let departureTimeRaw = norrona.scheduledDeparture || norrona.etd;
+                    let departureTime = formatETA(departureTimeRaw);
 
                     if (isInPort) {
-                         // When in port, show "In [City] - Dep [Time]"
-                         // Using a bullet point for clean separation
-                         headerTextEl.innerHTML = `In ${currentDestInfo.name} &bull; Dep. ${departureTime.day} ${departureTime.time}`;
+                         // When in port, if we have a valid future departure time:
+                         if (departureTime) {
+                            headerTextEl.innerHTML = `In ${currentDestInfo.name} &bull; Dep. ${departureTime.day} ${departureTime.time}`;
+                         } else {
+                            // If API doesn't give a departure time, just say Docked
+                            headerTextEl.innerHTML = `In ${currentDestInfo.name} &bull; Docked`;
+                         }
                     } else {
-                         // When sailing, show "To [City] - ETA [Time]"
-                         headerTextEl.innerHTML = `To ${currentDestInfo.name} &bull; ETA ${arrivalTime.day} ${arrivalTime.time}`;
+                         // When sailing
+                         if (arrivalTime) {
+                             headerTextEl.innerHTML = `To ${currentDestInfo.name} &bull; ETA ${arrivalTime.day} ${arrivalTime.time}`;
+                         } else {
+                             headerTextEl.innerHTML = `To ${currentDestInfo.name}`;
+                         }
                     }
 
                     if (isHomePage) {
                         if (isInPort) {
                             document.getElementById('home-dest-label').textContent = "Current Status";
                             document.getElementById('destination-home').textContent = "In Harbor";
-                            document.getElementById('eta-home').textContent = `Docked in ${currentDestInfo.name}`;
+                            // For Home Page stats, if we have departure time, show it, otherwise show generic text
+                            if (departureTime) {
+                                document.getElementById('eta-home').textContent = `Departs: ${departureTime.day} ${departureTime.time}`;
+                            } else {
+                                document.getElementById('eta-home').textContent = `Docked in ${currentDestInfo.name}`;
+                            }
                         } else {
                             document.getElementById('home-dest-label').textContent = "Next Stop";
                             document.getElementById('destination-home').textContent = currentDestInfo.name;
-                            document.getElementById('eta-home').textContent = `${arrivalTime.day}, ${arrivalTime.time}`;
+                            document.getElementById('eta-home').textContent = arrivalTime ? `${arrivalTime.day}, ${arrivalTime.time}` : '--';
                         }
 
                         document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`; 
@@ -421,20 +446,24 @@
                             document.getElementById("distance-unit").textContent = `in ${currentDestInfo.name}`;
                             document.getElementById("destination-label").textContent = "Current Location";
                             document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                            document.getElementById("eta-voyage").textContent = "Arrived";
+                            
+                            if (departureTime) {
+                                document.getElementById("eta-voyage").textContent = `Departs: ${departureTime.day} ${departureTime.time}`;
+                            } else {
+                                document.getElementById("eta-voyage").textContent = "Arrived";
+                            }
                         } else {
                             document.getElementById("distance").textContent = Math.round(dist); 
                             document.getElementById("distance-unit").textContent = "Kilometers";
                             document.getElementById("destination-label").textContent = "Next Destination";
                             document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                            document.getElementById("eta-voyage").textContent = `${arrivalTime.day} ${arrivalTime.time}`;
+                            document.getElementById("eta-voyage").textContent = arrivalTime ? `${arrivalTime.day} ${arrivalTime.time}` : '--';
                         }
 
                         if (map) {
                             const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
                             const destPos = [currentDestInfo.lat, currentDestInfo.lon];
                             
-                            // 1. UPDATE SHIP MARKER
                             if (!map.shipMarker) { 
                                 map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); 
                             } else { 
@@ -442,23 +471,13 @@
                                 map.shipMarker.setIcon(createShipIcon(course)); 
                             }
 
-                            // 2. HANDLE DESTINATION PIN & ROUTE
                             if (isInPort) {
-                                if (map.destMarker) {
-                                    map.removeLayer(map.destMarker);
-                                    map.destMarker = null;
-                                }
-                                if (liveRouteLine) {
-                                    map.removeLayer(liveRouteLine);
-                                    liveRouteLine = null;
-                                }
+                                if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
+                                if (liveRouteLine) { map.removeLayer(liveRouteLine); liveRouteLine = null; }
                                 map.setView(shipPos, 15);
                             } else {
-                                if (!map.destMarker) { 
-                                    map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); 
-                                } else { 
-                                    map.destMarker.setLatLng(destPos); 
-                                }
+                                if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); } 
+                                else { map.destMarker.setLatLng(destPos); }
                                 
                                 if (liveRouteLine) { map.removeLayer(liveRouteLine); }
                                 liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
