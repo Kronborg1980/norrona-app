@@ -31,11 +31,19 @@
         .main-header { position: sticky; top: 0; z-index: 100; background: rgba(0, 40, 54, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding-top: env(safe-area-inset-top); transition: all 0.3s ease; }
         .navbar { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 20px; }
         .navbar .logo img { height: 32px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
-        .onboard-time { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); }
-        .voyage-status { display: flex; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(252, 185, 0, 0.2); padding: 6px 14px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .status-dot { width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
+        
+        /* UPDATED HEADER TIME STYLE */
+        .onboard-time { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; }
+        
+        /* UPDATED VOYAGE STATUS STYLE TO FIT MORE TEXT */
+        .voyage-status { display: flex; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(252, 185, 0, 0.2); padding: 6px 14px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-width: 55%; overflow: hidden; text-overflow: ellipsis; }
+        .status-dot { flex-shrink: 0; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
+        
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-        @media (max-width: 340px) { .voyage-status { display: none; } }
+        @media (max-width: 360px) { 
+            .voyage-status { font-size: 0.6rem; padding: 4px 10px; } 
+            .onboard-time { display: none; } /* Hide clock on very small screens to fit destination */
+        }
 
         /* Layout */
         .page { padding: 24px; display: none; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -77,7 +85,7 @@
         .home-hero p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin: 0 auto; max-width: 90%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.5; }
         @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.15); } }
         
-        /* UPDATED GRID ITEMS (CENTERED) */
+        /* Grid Items */
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
         
         .grid-item { 
@@ -110,7 +118,7 @@
         /* Map Icon Styles */
         .ship-marker-container { transition: all 0.5s ease-out; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
 
-        /* UPDATED WEATHER PANEL (CENTERED) */
+        /* Weather Panel */
         .weather-panel { 
             background: var(--glass-bg); 
             border: 1px solid var(--glass-border); 
@@ -157,7 +165,7 @@
                 <a href="#" class="logo"><img id="header-logo" src="" alt="Logo"></a>
                 <div class="voyage-status">
                     <span class="status-dot"></span>
-                    <span id="header-dest-text">MS NORRÖNA</span>
+                    <span id="header-dest-text">LOADING...</span>
                 </div>
                 <div class="onboard-time" id="onboard-time-header">--:--</div>
             </nav>
@@ -192,7 +200,6 @@
             });
 
             const createShipIcon = (course) => {
-                // Gold ship SVG arrow
                 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FCB900" stroke="#002836" stroke-width="2" stroke-linejoin="round"><path d="M12 2L19 21L12 17L5 21L12 2Z"/></svg>`;
                 return L.divIcon({
                     className: 'ship-marker-container',
@@ -327,7 +334,6 @@
 
             function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
             
-            // UPDATED DESTINATION COORDINATES
             const destinationMap = { 
                 torshavn: { name: "Tórshavn", country: "FO", lat: 62.0080, lon: -6.7705 }, 
                 hirtshals: { name: "Hirtshals", country: "DK", lat: 57.5915, lon: 9.9620 }, 
@@ -366,13 +372,24 @@
                     
                     const isInPort = speedKnots < 1.0 && dist < 2.0;
 
-                    const { day, time } = formatETA(norrona.etaFromAIS);
+                    // UPDATED HEADER LOGIC
+                    const headerTextEl = document.getElementById('header-dest-text');
                     
-                    // Opdater Header
+                    // Format Arrival Time (ETA) for sailing
+                    const arrivalTime = formatETA(norrona.etaFromAIS);
+                    
+                    // Format Departure Time (ETD) for docked state
+                    // We try to find scheduledDeparture, otherwise fallback to standard ETA field which might indicate next move
+                    const departureTimeRaw = norrona.scheduledDeparture || norrona.etd || norrona.etaFromAIS;
+                    const departureTime = formatETA(departureTimeRaw);
+
                     if (isInPort) {
-                         document.getElementById('header-dest-text').textContent = `In Harbor (${currentDestInfo.name})`;
+                         // When in port, show "In [City] - Dep [Time]"
+                         // Using a bullet point for clean separation
+                         headerTextEl.innerHTML = `In ${currentDestInfo.name} &bull; Dep. ${departureTime.day} ${departureTime.time}`;
                     } else {
-                         document.getElementById('header-dest-text').textContent = `To ${currentDestInfo.name}`;
+                         // When sailing, show "To [City] - ETA [Time]"
+                         headerTextEl.innerHTML = `To ${currentDestInfo.name} &bull; ETA ${arrivalTime.day} ${arrivalTime.time}`;
                     }
 
                     if (isHomePage) {
@@ -383,7 +400,7 @@
                         } else {
                             document.getElementById('home-dest-label').textContent = "Next Stop";
                             document.getElementById('destination-home').textContent = currentDestInfo.name;
-                            document.getElementById('eta-home').textContent = `${day}, ${time}`;
+                            document.getElementById('eta-home').textContent = `${arrivalTime.day}, ${arrivalTime.time}`;
                         }
 
                         document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`; 
@@ -410,7 +427,7 @@
                             document.getElementById("distance-unit").textContent = "Kilometers";
                             document.getElementById("destination-label").textContent = "Next Destination";
                             document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                            document.getElementById("eta-voyage").textContent = `${day} ${time}`;
+                            document.getElementById("eta-voyage").textContent = `${arrivalTime.day} ${arrivalTime.time}`;
                         }
 
                         if (map) {
@@ -427,7 +444,6 @@
 
                             // 2. HANDLE DESTINATION PIN & ROUTE
                             if (isInPort) {
-                                // If in port: REMOVE destination marker and route line
                                 if (map.destMarker) {
                                     map.removeLayer(map.destMarker);
                                     map.destMarker = null;
@@ -436,10 +452,8 @@
                                     map.removeLayer(liveRouteLine);
                                     liveRouteLine = null;
                                 }
-                                // Zoom tight on the ship
                                 map.setView(shipPos, 15);
                             } else {
-                                // If sailing: SHOW destination marker and route
                                 if (!map.destMarker) { 
                                     map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); 
                                 } else { 
