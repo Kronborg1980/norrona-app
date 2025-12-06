@@ -24,7 +24,6 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        /* CHANGED: System Fonts instead of Google Fonts */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: var(--primary-dark); 
@@ -42,10 +41,8 @@
         .navbar { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 20px; }
         .navbar .logo img { height: 32px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
         
-        /* HEADER TIME STYLE */
         .onboard-time { font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; }
         
-        /* VOYAGE STATUS STYLE */
         .voyage-status { display: flex; align-items: center; gap: 8px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(252, 185, 0, 0.2); padding: 6px 14px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.2); max-width: 55%; overflow: hidden; text-overflow: ellipsis; }
         .status-dot { flex-shrink: 0; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
         
@@ -123,9 +120,9 @@
         .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
         .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;}
         
-        #map { width: 100%; height: 50vh; border-radius: 0 0 40px 40px; margin-bottom: 20px; box-shadow: inset 0 -30px 60px var(--primary-dark); filter: saturate(0.8) contrast(1.1); }
+        /* --- CHANGED: HEIGHT REDUCED FROM 50vh TO 30vh --- */
+        #map { width: 100%; height: 30vh; border-radius: 0 0 40px 40px; margin-bottom: 20px; box-shadow: inset 0 -30px 60px var(--primary-dark); filter: saturate(0.8) contrast(1.1); }
         
-        /* Map Icon Styles */
         .ship-marker-container { transition: all 0.5s ease-out; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
 
         /* Weather Panel */
