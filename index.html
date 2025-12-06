@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Norröna Onboard - Clock Restored</title>
+    <title>Norröna Onboard - Framed Map</title>
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
@@ -17,7 +17,7 @@
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.65);
             --glass-bg: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
             --card-radius: 20px;
             --nav-height: 75px;
@@ -37,73 +37,23 @@
 
         #app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: calc(var(--nav-height) + 30px); position: relative; overflow-x: hidden; }
         
-        /* --- HEADER (Fixed Layout) --- */
+        /* --- HEADER --- */
         .main-header { position: sticky; top: 0; z-index: 100; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding-top: env(safe-area-inset-top); }
-        
-        .navbar { 
-            display: flex; 
-            align-items: center; 
-            height: 60px; 
-            padding: 0 16px; 
-            gap: 10px; /* Reduced gap slightly */
-        }
-        
-        /* Logo: Fixed width to prevent shrinking */
+        .navbar { display: flex; align-items: center; height: 60px; padding: 0 16px; gap: 10px; }
         .navbar .logo { flex-shrink: 0; display: flex; align-items: center; }
         .navbar .logo img { height: 28px; width: auto; object-fit: contain; }
-        
-        /* Clock: Always visible, fixed width behavior */
-        .onboard-time { 
-            flex-shrink: 0; 
-            font-weight: 600; 
-            font-size: 0.8rem; 
-            color: var(--text-main); 
-            opacity: 0.9; 
-            background: var(--glass-bg); 
-            padding: 6px 10px; 
-            border-radius: 50px; 
-            border: 1px solid var(--glass-border); 
-            white-space: nowrap; 
-            text-align: center;
-        }
-
-        /* Status Pill: Flexible width */
-        .voyage-status { 
-            flex: 1; /* Takes up all remaining space */
-            min-width: 0; /* Allows shrinking below content size (truncation) */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid rgba(252, 185, 0, 0.25); 
-            padding: 6px 10px; 
-            border-radius: 50px; 
-            height: 36px; 
-        }
-
+        .onboard-time { flex-shrink: 0; font-weight: 600; font-size: 0.8rem; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; text-align: center; }
+        .voyage-status { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(252, 185, 0, 0.25); padding: 6px 10px; border-radius: 50px; height: 36px; }
         .status-dot { flex-shrink: 0; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
-        
-        #header-dest-text { 
-            font-size: 0.75rem; 
-            font-weight: 700; 
-            color: var(--accent-gold); 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-        }
-
+        #header-dest-text { font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-
-        /* --- MOBILE ADJUSTMENTS (Keeping clock visible) --- */
+        
+        /* Mobile adjust */
         @media (max-width: 380px) {
             .navbar { padding: 0 10px; gap: 8px; }
             .onboard-time { font-size: 0.7rem; padding: 5px 8px; }
             .voyage-status { padding: 5px 8px; }
             #header-dest-text { font-size: 0.65rem; }
-            .navbar .logo img { height: 24px; }
         }
 
         /* --- PAGES --- */
@@ -111,14 +61,15 @@
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* --- VOYAGE MAP LAYOUT --- */
+        /* --- FRAMED VOYAGE MAP --- */
         .voyage-page.active { padding: 0; display: flex; flex-direction: column; }
         
         .voyage-map-container {
             position: relative;
             width: 100%;
-            height: 38vh; /* Fixed height for map */
+            height: 40vh; /* Map height */
             z-index: 1;
+            padding: 12px 12px 0 12px; /* Padding for the frame effect */
         }
 
         #map { 
@@ -126,12 +77,20 @@
             height: 100%; 
             background: #001e29;
             filter: saturate(0.8) contrast(1.1);
+            
+            /* THE BORDER & FRAME STYLING */
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.8);
+            overflow: hidden;
         }
 
+        /* Gradient inside map container to blend bottom */
         .map-gradient {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            height: 60px;
-            background: linear-gradient(to bottom, transparent, rgba(0, 40, 54, 0.8));
+            position: absolute; bottom: 0; left: 13px; right: 13px;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 40, 54, 0.6));
+            border-radius: 0 0 20px 20px;
             pointer-events: none;
             z-index: 2;
         }
@@ -139,7 +98,7 @@
         .voyage-sheet {
             position: relative;
             z-index: 10;
-            margin-top: -20px;
+            margin-top: -16px; /* Overlaps map slightly */
             background: var(--primary-dark);
             border-radius: 24px 24px 0 0;
             border-top: 1px solid var(--glass-border);
@@ -148,6 +107,7 @@
             min-height: 60vh;
         }
 
+        /* Weather Strip */
         .weather-strip {
             display: flex; align-items: center; justify-content: space-between;
             background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
@@ -163,6 +123,7 @@
         .weather-desc { font-size: 0.8rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
         .weather-label { font-size: 0.7rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; }
 
+        /* Grid */
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-item { 
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; 
@@ -174,7 +135,7 @@
         .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
         .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;}
 
-        /* Standard Page Styles */
+        /* Standard Styles */
         .section-header { margin-bottom: 24px; margin-top: 10px; }
         .section-header h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; color: white; }
         .item-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 24px; box-shadow: var(--glass-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
@@ -285,6 +246,7 @@
                     contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero"><div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div><div class="home-hero-content"><h1>${heroItem.name}</h1><p>${heroItem.description}</p></div></div><div style="padding:24px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Stop</div><div class="value" id="destination-home" style="font-size:1.6rem">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Speed & Course</div><div class="value" style="font-size: 1.2rem;"><span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span></div><div class="sub-value" id="course-home">Course: --°</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
+                    // --- REDESIGNED VOYAGE HTML WITH FRAMED MAP ---
                     contentContainer.innerHTML = `
                         <div class="page active voyage-page" style="padding:0">
                             <div class="voyage-map-container">
