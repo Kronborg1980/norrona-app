@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Norröna Onboard - Redesigned</title>
+    <title>Norröna Onboard - Clock Restored</title>
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
@@ -37,24 +37,81 @@
 
         #app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: calc(var(--nav-height) + 30px); position: relative; overflow-x: hidden; }
         
-        /* --- HEADER --- */
+        /* --- HEADER (Fixed Layout) --- */
         .main-header { position: sticky; top: 0; z-index: 100; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding-top: env(safe-area-inset-top); }
-        .navbar { display: flex; align-items: center; height: 60px; padding: 0 16px; gap: 12px; }
+        
+        .navbar { 
+            display: flex; 
+            align-items: center; 
+            height: 60px; 
+            padding: 0 16px; 
+            gap: 10px; /* Reduced gap slightly */
+        }
+        
+        /* Logo: Fixed width to prevent shrinking */
         .navbar .logo { flex-shrink: 0; display: flex; align-items: center; }
         .navbar .logo img { height: 28px; width: auto; object-fit: contain; }
-        .onboard-time { flex-shrink: 0; font-weight: 600; font-size: 0.8rem; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; }
-        .voyage-status { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(252, 185, 0, 0.25); padding: 6px 12px; border-radius: 50px; height: 36px; }
+        
+        /* Clock: Always visible, fixed width behavior */
+        .onboard-time { 
+            flex-shrink: 0; 
+            font-weight: 600; 
+            font-size: 0.8rem; 
+            color: var(--text-main); 
+            opacity: 0.9; 
+            background: var(--glass-bg); 
+            padding: 6px 10px; 
+            border-radius: 50px; 
+            border: 1px solid var(--glass-border); 
+            white-space: nowrap; 
+            text-align: center;
+        }
+
+        /* Status Pill: Flexible width */
+        .voyage-status { 
+            flex: 1; /* Takes up all remaining space */
+            min-width: 0; /* Allows shrinking below content size (truncation) */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px; 
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid rgba(252, 185, 0, 0.25); 
+            padding: 6px 10px; 
+            border-radius: 50px; 
+            height: 36px; 
+        }
+
         .status-dot { flex-shrink: 0; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
-        #header-dest-text { font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        #header-dest-text { 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            color: var(--accent-gold); 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-        @media (max-width: 400px) { .onboard-time { display: none; } .voyage-status { margin-right: 0; } }
+
+        /* --- MOBILE ADJUSTMENTS (Keeping clock visible) --- */
+        @media (max-width: 380px) {
+            .navbar { padding: 0 10px; gap: 8px; }
+            .onboard-time { font-size: 0.7rem; padding: 5px 8px; }
+            .voyage-status { padding: 5px 8px; }
+            #header-dest-text { font-size: 0.65rem; }
+            .navbar .logo img { height: 24px; }
+        }
 
         /* --- PAGES --- */
         .page { padding: 24px; display: none; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* --- REDESIGNED VOYAGE MAP LAYOUT --- */
+        /* --- VOYAGE MAP LAYOUT --- */
         .voyage-page.active { padding: 0; display: flex; flex-direction: column; }
         
         .voyage-map-container {
@@ -71,7 +128,6 @@
             filter: saturate(0.8) contrast(1.1);
         }
 
-        /* Gradient overlay at bottom of map for smooth transition */
         .map-gradient {
             position: absolute; bottom: 0; left: 0; right: 0;
             height: 60px;
@@ -80,20 +136,18 @@
             z-index: 2;
         }
 
-        /* The "Sheet" that slides over the map */
         .voyage-sheet {
             position: relative;
             z-index: 10;
-            margin-top: -20px; /* Pulls sheet up over map */
+            margin-top: -20px;
             background: var(--primary-dark);
             border-radius: 24px 24px 0 0;
             border-top: 1px solid var(--glass-border);
             padding: 24px;
             box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-            min-height: 60vh; /* Ensures it fills screen */
+            min-height: 60vh;
         }
 
-        /* Weather Strip Style */
         .weather-strip {
             display: flex; align-items: center; justify-content: space-between;
             background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
@@ -109,7 +163,6 @@
         .weather-desc { font-size: 0.8rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
         .weather-label { font-size: 0.7rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Grid */
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-item { 
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; 
@@ -121,7 +174,7 @@
         .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
         .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;}
 
-        /* --- STANDARD STYLES FOR OTHER PAGES --- */
+        /* Standard Page Styles */
         .section-header { margin-bottom: 24px; margin-top: 10px; }
         .section-header h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; color: white; }
         .item-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 24px; box-shadow: var(--glass-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
@@ -144,7 +197,6 @@
         .item-link-button.secondary { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: #fff; box-shadow: none; }
         .item-link-button.trailer { background: #e11d48; color: white; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3); }
 
-        /* Home Hero */
         .home-hero { height: 60vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px; position: relative; border-radius: 0 0 40px 40px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
         .home-hero-bg { position: absolute; inset: 0; z-index: 1; background-size: cover; background-position: center; animation: slowZoom 24s infinite alternate ease-in-out; }
         .home-hero::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(to top, var(--primary-dark) 10%, rgba(0,40,54,0.8) 35%, rgba(0,40,54,0) 70%); }
@@ -153,7 +205,6 @@
         .home-hero p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin: 0 auto; max-width: 90%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.5; }
         @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.15); } }
 
-        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 432px; margin: 0 auto; height: var(--nav-height); background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; display: flex; justify-content: space-evenly; align-items: center; z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding-bottom: env(safe-area-inset-bottom); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: all 0.3s ease; width: 60px; height: 100%; }
         .nav-item .material-icons { font-size: 24px; margin-bottom: 4px; transition: 0.3s; }
@@ -161,7 +212,6 @@
         .nav-item.active .material-icons { color: var(--accent-gold); transform: translateY(-4px); filter: drop-shadow(0 0 8px rgba(252, 185, 0, 0.4)); }
         .nav-item.active::after { content: ''; width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%; position: absolute; bottom: 12px; }
 
-        /* Modals/Video/Slideshow CSS remains same */
         #video-modal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px; }
         #video-modal.active { display: flex; animation: fadeIn 0.3s ease; }
         .video-container { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: black; border-radius: 16px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.8); position: relative; border: 1px solid rgba(255,255,255,0.1); }
@@ -218,7 +268,6 @@
                 return L.divIcon({ className: 'ship-marker-container', html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px;">${svg}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
             };
 
-            // Standard functions (Image, Menu, Offers, Slideshow, Video)
             function createImageArea(images) { if (!Array.isArray(images) || images.length === 0) return `<div class="image-container" style="display:none"></div>`; if (images.length === 1) return `<div class="image-container"><img src="${images[0]}" class="item-card-image" loading="lazy"></div>`; const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${img}"></div>`).join(''); const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join(''); return `<div class="image-container"><div class="slideshow" data-total="${images.length}">${slides}<div class="slideshow-nav"><button class="prev">&lt;</button><button class="next">&gt;</button></div><div class="slideshow-dots">${dots}</div></div></div>`; }
             function createMenu(menuItems) { if (!Array.isArray(menuItems) || menuItems.length === 0) return ''; return `<div style="margin-top:24px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;"><h4 style="color:var(--accent-gold); text-transform:uppercase; font-size:0.7rem; font-weight:700; letter-spacing:1px; margin-bottom:12px;">Details / Schedule</h4>${menuItems.map(item => `<div style="display:flex; justify-content:space-between; margin-bottom:14px; align-items:center;"><div style="flex:1; padding-right:10px;"><div style="font-weight:600; font-size:0.95rem; color:#fff;">${item.name}</div>${item.description ? `<div style="font-size:0.8rem; color:rgba(255,255,255,0.5); margin-top:2px;">${item.description}</div>` : ''}</div><div style="display:flex; align-items:center; gap:10px;"><div style="font-weight:600; color:#fff; font-size:0.95rem;">${item.price}</div>${item.trailerUrl ? `<button onclick="openTrailer('${item.trailerUrl}')" style="background:var(--accent-gold); border:none; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#002836;"><span class="material-icons" style="font-size:18px;">play_arrow</span></button>` : ''}</div></div>`).join('')}</div>`; }
             function createOffers(offers) { if (!Array.isArray(offers) || offers.length === 0) return ''; return `<div class="offer-box"><h4>Special Offers</h4>${offers.map(o => `<div><div class="offer-item">${o.title}</div><div class="offer-desc">${o.description}</div></div>`).join('<br>')}</div>`; }
@@ -236,7 +285,6 @@
                     contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero"><div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div><div class="home-hero-content"><h1>${heroItem.name}</h1><p>${heroItem.description}</p></div></div><div style="padding:24px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Stop</div><div class="value" id="destination-home" style="font-size:1.6rem">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Speed & Course</div><div class="value" style="font-size: 1.2rem;"><span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span></div><div class="sub-value" id="course-home">Course: --°</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
-                    // --- REDESIGNED VOYAGE HTML ---
                     contentContainer.innerHTML = `
                         <div class="page active voyage-page" style="padding:0">
                             <div class="voyage-map-container">
