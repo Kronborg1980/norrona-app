@@ -134,13 +134,11 @@
         .grid-item .value { font-size: 1.3rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
         .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
         
-        /* UPDATED SUB-VALUE STYLE FOR NICER WIND DISPLAY */
         .grid-item .sub-value { 
             font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;
             display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         
-        /* NEW: Badge for Wind Direction */
         .wind-dir-badge {
             background: rgba(252, 185, 0, 0.15);
             color: var(--accent-gold);
@@ -268,7 +266,7 @@
                     contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero"><div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div><div class="home-hero-content"><h1>${heroItem.name}</h1><p>${heroItem.description}</p></div></div><div style="padding:24px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Stop</div><div class="value" id="destination-home" style="font-size:1.6rem">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Speed & Course</div><div class="value" style="font-size: 1.2rem;"><span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span></div><div class="sub-value" id="course-home">Course: --°</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
-                    // --- VOYAGE PAGE (Framed Map + UPDATED WIND UI) ---
+                    // --- VOYAGE PAGE ---
                     contentContainer.innerHTML = `
                         <div class="page active voyage-page" style="padding:0">
                             <div class="voyage-map-container">
@@ -340,11 +338,18 @@
                     if (!response.ok) throw new Error("Could not load data.");
                     appData = await response.json();
                     document.getElementById("header-logo").src = appData.settings.logoUrl;
+                    
+                    // --- SET DYNAMIC FAVICON ---
+                    const favicon = document.querySelector("link[rel~='icon']") || document.createElement('link');
+                    favicon.type = 'image/png';
+                    favicon.rel = 'shortcut icon';
+                    favicon.href = appData.settings.logoUrl;
+                    document.getElementsByTagName('head')[0].appendChild(favicon);
+
                     const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join('');
                     document.getElementById("bottom-nav").innerHTML = navHtml;
                     document.querySelectorAll('.nav-item').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }); });
                     
-                    // --- FORCE DEFAULT TO HOME ---
                     const initialPageId = window.location.hash.substring(1);
                     if (initialPageId) {
                         renderPage(initialPageId);
