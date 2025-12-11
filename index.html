@@ -133,7 +133,23 @@
         .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); opacity: 0.9; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-weight: 700; }
         .grid-item .value { font-size: 1.3rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
         .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
-        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;}
+        
+        /* UPDATED SUB-VALUE STYLE FOR NICER WIND DISPLAY */
+        .grid-item .sub-value { 
+            font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        
+        /* NEW: Badge for Wind Direction */
+        .wind-dir-badge {
+            background: rgba(252, 185, 0, 0.15);
+            color: var(--accent-gold);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border: 1px solid rgba(252, 185, 0, 0.2);
+        }
 
         /* Standard Styles */
         .section-header { margin-bottom: 24px; margin-top: 10px; }
@@ -252,7 +268,7 @@
                     contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero"><div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div><div class="home-hero-content"><h1>${heroItem.name}</h1><p>${heroItem.description}</p></div></div><div style="padding:24px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Stop</div><div class="value" id="destination-home" style="font-size:1.6rem">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Speed & Course</div><div class="value" style="font-size: 1.2rem;"><span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span></div><div class="sub-value" id="course-home">Course: --°</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
-                    // --- VOYAGE PAGE ---
+                    // --- VOYAGE PAGE (Framed Map + UPDATED WIND UI) ---
                     contentContainer.innerHTML = `
                         <div class="page active voyage-page" style="padding:0">
                             <div class="voyage-map-container">
@@ -285,7 +301,11 @@
                                     <div class="grid-item">
                                         <div class="label">Wind (Here)</div>
                                         <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
-                                        <div class="sub-value"><span id="wind-knots">--</span> knots <span id="wind-dir-text" style="font-weight:700; color:#fff;"></span></div>
+                                        <div class="sub-value">
+                                            <span id="wind-knots">--</span> kn
+                                            <span style="opacity:0.25; margin:0 4px;">|</span>
+                                            <span id="wind-dir-text" class="wind-dir-badge">--</span>
+                                        </div>
                                     </div>
                                     <div class="grid-item">
                                         <div class="label">Wave Height</div>
