@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Norröna Onboard - Framed Map</title>
+    <title>Norröna Onboard - Voyage Info</title>
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
@@ -13,13 +13,11 @@
             --primary-dark: #002836;  
             --primary-brand: #004A59; 
             --accent-gold: #FCB900;   
-            --accent-gold-hover: #e5a800;
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.65);
             --glass-bg: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            --card-radius: 20px;
             --nav-height: 75px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -31,160 +29,66 @@
             background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 70%); 
             background-attachment: fixed; 
             min-height: 100vh; 
-            -webkit-font-smoothing: antialiased; 
             padding-bottom: env(safe-area-inset-bottom);
         }
 
         #app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: calc(var(--nav-height) + 30px); position: relative; overflow-x: hidden; }
         
-        /* --- HEADER --- */
-        .main-header { position: sticky; top: 0; z-index: 100; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding-top: env(safe-area-inset-top); }
+        /* HEADER */
+        .main-header { position: sticky; top: 0; z-index: 100; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding-top: env(safe-area-inset-top); }
         .navbar { display: flex; align-items: center; height: 60px; padding: 0 16px; gap: 10px; }
-        .navbar .logo { flex-shrink: 0; display: flex; align-items: center; }
-        .navbar .logo img { height: 28px; width: auto; object-fit: contain; }
-        .onboard-time { flex-shrink: 0; font-weight: 600; font-size: 0.8rem; color: var(--text-main); opacity: 0.9; background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; text-align: center; }
-        .voyage-status { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(252, 185, 0, 0.25); padding: 6px 10px; border-radius: 50px; height: 36px; }
-        .status-dot { flex-shrink: 0; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; }
-        #header-dest-text { font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-        
-        /* Mobile adjust */
-        @media (max-width: 380px) {
-            .navbar { padding: 0 10px; gap: 8px; }
-            .onboard-time { font-size: 0.7rem; padding: 5px 8px; }
-            .voyage-status { padding: 5px 8px; }
-            #header-dest-text { font-size: 0.65rem; }
-        }
+        .navbar .logo img { height: 28px; width: auto; }
+        .onboard-time { font-weight: 600; font-size: 0.8rem; color: var(--text-main); background: var(--glass-bg); padding: 6px 10px; border-radius: 50px; border: 1px solid var(--glass-border); white-space: nowrap; }
+        .voyage-status { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(252, 185, 0, 0.25); padding: 6px 10px; border-radius: 50px; height: 36px; min-width: 0; }
+        .status-dot { width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulse 2s infinite; flex-shrink: 0; }
+        #header-dest-text { font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* --- PAGES --- */
-        .page { padding: 24px; display: none; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        /* PAGES & MAP */
+        .page { display: none; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* --- FRAMED VOYAGE MAP --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .voyage-page.active { padding: 0; display: flex; flex-direction: column; }
+        .voyage-map-container { position: relative; width: 100%; height: 35vh; padding: 12px 12px 0 12px; z-index: 1; }
+        #map { width: 100%; height: 100%; background: #001e29; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.5); overflow: hidden; }
+        .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, rgba(0, 40, 54, 0.8)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; }
         
-        .voyage-map-container {
-            position: relative;
-            width: 100%;
-            height: 40vh; /* Map height */
-            z-index: 1;
-            padding: 12px 12px 0 12px; /* Padding for the frame effect */
-        }
+        .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--primary-dark); border-radius: 24px 24px 0 0; border-top: 1px solid var(--glass-border); padding: 24px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); min-height: 65vh; }
 
-        #map { 
-            width: 100%; 
-            height: 100%; 
-            background: #001e29;
-            filter: saturate(0.8) contrast(1.1);
-            
-            /* THE BORDER & FRAME STYLING */
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.8);
-            overflow: hidden;
-        }
-
-        /* Gradient inside map container to blend bottom */
-        .map-gradient {
-            position: absolute; bottom: 0; left: 13px; right: 13px;
-            height: 40px;
-            background: linear-gradient(to bottom, transparent, rgba(0, 40, 54, 0.6));
-            border-radius: 0 0 20px 20px;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .voyage-sheet {
-            position: relative;
-            z-index: 10;
-            margin-top: -16px; /* Overlaps map slightly */
-            background: var(--primary-dark);
-            border-radius: 24px 24px 0 0;
-            border-top: 1px solid var(--glass-border);
-            padding: 24px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
-            min-height: 60vh;
-        }
-
-        /* Weather Strip */
-        .weather-strip {
-            display: flex; align-items: center; justify-content: space-between;
-            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 24px;
-        }
+        /* WEATHER STRIP */
+        .weather-strip { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px 16px; margin-bottom: 20px; }
         .weather-left { display: flex; align-items: center; gap: 12px; }
         .weather-left img { width: 40px; height: 40px; filter: drop-shadow(0 0 8px rgba(255,255,255,0.2)); }
-        .weather-details { display: flex; flex-direction: column; }
         .weather-temp { font-size: 1.4rem; font-weight: 700; color: #fff; line-height: 1; }
-        .weather-desc { font-size: 0.8rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; margin-top: 4px; }
-        .weather-label { font-size: 0.7rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; }
+        .weather-desc { font-size: 0.75rem; color: var(--accent-gold); text-transform: uppercase; font-weight: 600; margin-top: 4px; }
+        .weather-label { font-size: 0.65rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Grid */
-        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-item { 
-            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; 
-            padding: 16px 12px; text-align: center; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; min-height: 100px;
-        }
-        .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); opacity: 0.9; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-weight: 700; }
-        .grid-item .value { font-size: 1.3rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
-        .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
-        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;}
+        /* GRID SYSTEM */
+        .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 95px; }
+        .grid-item .label { font-size: 0.6rem; color: var(--accent-gold); opacity: 0.9; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+        .grid-item .value { font-size: 1.2rem; font-weight: 600; color: #fff; display: flex; align-items: baseline; justify-content: center; gap: 3px; }
+        .grid-item .unit { font-size: 0.75rem; opacity: 0.6; font-weight: 400; }
+        .grid-item .sub-value { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; font-weight: 300;}
 
-        /* Standard Styles */
-        .section-header { margin-bottom: 24px; margin-top: 10px; }
-        .section-header h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; color: white; }
-        .item-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--card-radius); overflow: hidden; margin-bottom: 24px; box-shadow: var(--glass-shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        .image-container { width: 100%; height: 240px; background: #001e29; position: relative; }
+        /* STANDARD UI ELEMENTS */
+        .item-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; overflow: hidden; margin-bottom: 24px; }
+        .image-container { width: 100%; height: 220px; background: #001e29; position: relative; }
         .item-card-image { width: 100%; height: 100%; object-fit: cover; }
-        .item-info { padding: 24px; }
-        .item-info h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 8px; color: #fff; letter-spacing: -0.3px; }
-        .item-info p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
-        .fields { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-top: 16px; border: 1px solid rgba(255,255,255,0.05); display: grid; gap: 14px; }
-        .field { display: flex; justify-content: space-between; font-size: 0.9rem; align-items: center; }
-        .field strong { color: var(--accent-gold); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; }
-        .field span { color: #fff; font-weight: 500; }
-        .offer-box { margin-top: 24px; padding: 20px; border: 1px solid rgba(252, 185, 0, 0.3); border-radius: 16px; background: linear-gradient(135deg, rgba(252, 185, 0, 0.1), transparent); position: relative; overflow: hidden; }
-        .offer-box::before { content: '★'; position: absolute; top: -10px; right: -10px; font-size: 80px; color: var(--accent-gold); opacity: 0.1; transform: rotate(15deg); }
-        .offer-box h4 { color: var(--accent-gold); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 10px; }
-        .offer-item { font-weight: 600; font-size: 1.1rem; color: white; margin-bottom: 4px; }
-        .offer-desc { font-size: 0.9rem; color: rgba(255,255,255,0.8); }
-        .button-group { margin-top: 28px; display: grid; gap: 14px; }
-        .item-link-button { display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--accent-gold); color: #002836; text-align: center; padding: 16px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(252, 185, 0, 0.2); }
-        .item-link-button.secondary { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: #fff; box-shadow: none; }
-        .item-link-button.trailer { background: #e11d48; color: white; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3); }
+        .item-info { padding: 20px; }
+        .item-info h3 { color: white; margin-bottom: 8px; font-size: 1.4rem; }
+        .item-info p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px; }
+        .item-link-button { display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--accent-gold); color: #002836; padding: 16px; border-radius: 50px; text-decoration: none; font-weight: 700; margin-top: 10px; }
 
-        .home-hero { height: 60vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px; position: relative; border-radius: 0 0 40px 40px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
-        .home-hero-bg { position: absolute; inset: 0; z-index: 1; background-size: cover; background-position: center; animation: slowZoom 24s infinite alternate ease-in-out; }
-        .home-hero::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(to top, var(--primary-dark) 10%, rgba(0,40,54,0.8) 35%, rgba(0,40,54,0) 70%); }
-        .home-hero-content { position: relative; z-index: 3; text-align: center; margin-bottom: 20px; }
-        .home-hero h1 { font-size: 3rem; line-height: 1.1; font-weight: 700; margin-bottom: 16px; text-shadow: 0 10px 30px rgba(0,0,0,0.8); letter-spacing: -1px; }
-        .home-hero p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin: 0 auto; max-width: 90%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.5; }
-        @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.15); } }
-
-        .bottom-nav { position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 432px; margin: 0 auto; height: var(--nav-height); background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; display: flex; justify-content: space-evenly; align-items: center; z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: all 0.3s ease; width: 60px; height: 100%; }
-        .nav-item .material-icons { font-size: 24px; margin-bottom: 4px; transition: 0.3s; }
+        /* NAVIGATION */
+        .bottom-nav { position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 432px; margin: 0 auto; height: var(--nav-height); background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; display: flex; justify-content: space-evenly; align-items: center; z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.5); padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.7rem; font-weight: 500; transition: all 0.3s; }
         .nav-item.active { color: #fff; }
-        .nav-item.active .material-icons { color: var(--accent-gold); transform: translateY(-4px); filter: drop-shadow(0 0 8px rgba(252, 185, 0, 0.4)); }
-        .nav-item.active::after { content: ''; width: 4px; height: 4px; background: var(--accent-gold); border-radius: 50%; position: absolute; bottom: 12px; }
+        .nav-item .material-icons { font-size: 24px; margin-bottom: 4px; }
+        .nav-item.active .material-icons { color: var(--accent-gold); transform: translateY(-3px); text-shadow: 0 0 10px rgba(252, 185, 0, 0.4); }
 
-        #video-modal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px; }
-        #video-modal.active { display: flex; animation: fadeIn 0.3s ease; }
-        .video-container { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: black; border-radius: 16px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.8); position: relative; border: 1px solid rgba(255,255,255,0.1); }
-        .close-video { position: absolute; top: -50px; right: 0; color: white; font-size: 32px; cursor: pointer; opacity: 0.8; transition: 0.2s; }
-        .slideshow { position: relative; width: 100%; height: 100%; }
-        .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s; }
-        .slide.active { opacity: 1; }
-        .slide img { width: 100%; height: 100%; object-fit: cover; }
-        .slideshow-dots { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; }
-        .dot { width: 6px; height: 6px; background: rgba(255,255,255,0.3); border-radius: 50%; }
-        .dot.active { background: var(--accent-gold); box-shadow: 0 0 8px var(--accent-gold); }
-        .ship-marker-container { transition: all 0.5s ease-out; filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
+        .ship-marker-container { filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); transition: all 1s linear; }
     </style>
 </head>
 <body>
@@ -202,13 +106,6 @@
         <main id="content-container"></main>
     </div>
     <nav class="bottom-nav" id="bottom-nav"></nav>
-    
-    <div id="video-modal">
-        <div style="position:relative; width:100%; max-width:800px;">
-            <span class="material-icons close-video" onclick="closeTrailer()">close</span>
-            <div class="video-container"><div id="player-embed"></div></div>
-        </div>
-    </div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
@@ -218,6 +115,13 @@
             let map;
             let liveRouteLine = null;
             
+            // Hjælpefunktion til kompasretning (International)
+            function getWindDirection(degrees) {
+                const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+                return directions[Math.round(degrees / 45) % 8];
+            }
+
+            // Ikoner til kortet
             const pinIcon = L.icon({
                 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
                 shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -229,24 +133,19 @@
                 return L.divIcon({ className: 'ship-marker-container', html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px;">${svg}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
             };
 
-            function createImageArea(images) { if (!Array.isArray(images) || images.length === 0) return `<div class="image-container" style="display:none"></div>`; if (images.length === 1) return `<div class="image-container"><img src="${images[0]}" class="item-card-image" loading="lazy"></div>`; const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${img}"></div>`).join(''); const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join(''); return `<div class="image-container"><div class="slideshow" data-total="${images.length}">${slides}<div class="slideshow-nav"><button class="prev">&lt;</button><button class="next">&gt;</button></div><div class="slideshow-dots">${dots}</div></div></div>`; }
-            function createMenu(menuItems) { if (!Array.isArray(menuItems) || menuItems.length === 0) return ''; return `<div style="margin-top:24px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;"><h4 style="color:var(--accent-gold); text-transform:uppercase; font-size:0.7rem; font-weight:700; letter-spacing:1px; margin-bottom:12px;">Details / Schedule</h4>${menuItems.map(item => `<div style="display:flex; justify-content:space-between; margin-bottom:14px; align-items:center;"><div style="flex:1; padding-right:10px;"><div style="font-weight:600; font-size:0.95rem; color:#fff;">${item.name}</div>${item.description ? `<div style="font-size:0.8rem; color:rgba(255,255,255,0.5); margin-top:2px;">${item.description}</div>` : ''}</div><div style="display:flex; align-items:center; gap:10px;"><div style="font-weight:600; color:#fff; font-size:0.95rem;">${item.price}</div>${item.trailerUrl ? `<button onclick="openTrailer('${item.trailerUrl}')" style="background:var(--accent-gold); border:none; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#002836;"><span class="material-icons" style="font-size:18px;">play_arrow</span></button>` : ''}</div></div>`).join('')}</div>`; }
-            function createOffers(offers) { if (!Array.isArray(offers) || offers.length === 0) return ''; return `<div class="offer-box"><h4>Special Offers</h4>${offers.map(o => `<div><div class="offer-item">${o.title}</div><div class="offer-desc">${o.description}</div></div>`).join('<br>')}</div>`; }
-            function initializeSlideshows() { document.querySelectorAll('.slideshow').forEach(slideshow => { let currentIndex = 0; const slides = slideshow.querySelectorAll('.slide'), dots = slideshow.querySelectorAll('.dot'), total = slides.length; function showSlide(index) { slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active')); slides[index].classList.add('active'); dots[index].classList.add('active'); currentIndex = index; } slideshow.querySelector('.next').addEventListener('click', (e) => { e.preventDefault(); showSlide((currentIndex + 1) % total)}); slideshow.querySelector('.prev').addEventListener('click', (e) => { e.preventDefault(); showSlide((currentIndex - 1 + total) % total)}); }); }
-            window.openTrailer = function(url) { if (!url) return; let embedUrl = ""; const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^#&?]*).*/); if (ytMatch && ytMatch[1]) { embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1&modestbranding=1&rel=0`; } else { embedUrl = url; } document.getElementById('player-embed').innerHTML = `<iframe src="${embedUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; height:100%"></iframe>`; document.getElementById('video-modal').classList.add('active'); }
-            window.closeTrailer = function() { document.getElementById('video-modal').classList.remove('active'); document.getElementById('player-embed').innerHTML = ''; }
-
             function renderPage(pageId) {
                 const page = appData.categories.find(cat => cat.id === pageId);
-                if (!page) { contentContainer.innerHTML = '<p style="padding:20px">Page not found.</p>'; return; }
+                if (!page) return;
+                
                 document.querySelectorAll('.nav-item').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
                 
                 if (page.type === 'home') {
-                    const heroItem = page.items[0] || { images:[], name:'', description:'' };
-                    contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero"><div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div><div class="home-hero-content"><h1>${heroItem.name}</h1><p>${heroItem.description}</p></div></div><div style="padding:24px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Stop</div><div class="value" id="destination-home" style="font-size:1.6rem">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Speed & Course</div><div class="value" style="font-size: 1.2rem;"><span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span></div><div class="sub-value" id="course-home">Course: --°</div></div></div></div></div>`;
-                    updateShipData(true);
-                } else if (page.type === 'voyage') {
-                    // --- REDESIGNED VOYAGE HTML WITH FRAMED MAP ---
+                    // Simpel Home (kan udvides)
+                    const hero = page.items[0];
+                    contentContainer.innerHTML = `<div class="page active" style="padding:24px; padding-top:100px; text-align:center;"><h2>${hero.name}</h2><p>${hero.description}</p></div>`;
+                } 
+                else if (page.type === 'voyage') {
+                    // --- VOYAGE SIDE MED WIND/WAVES ---
                     contentContainer.innerHTML = `
                         <div class="page active voyage-page" style="padding:0">
                             <div class="voyage-map-container">
@@ -264,79 +163,121 @@
                                     </div>
                                     <div class="weather-label">Destination<br>Weather</div>
                                 </div>
+
                                 <div class="voyage-grid">
+                                    
                                     <div class="grid-item">
-                                        <div class="label">Speed & Course</div>
-                                        <div class="value" style="font-size: 1.2rem;"><span id="speed-knots">--</span> <span class="unit">|</span> <span id="speed-kmh">--</span></div>
-                                        <div class="sub-value" id="course-voyage">Course: --°</div>
+                                        <div class="label">Speed</div>
+                                        <div class="value"><span id="speed-knots">--</span> <span class="unit">kn</span></div>
+                                        <div class="sub-value" id="speed-kmh">-- km/h</div>
                                     </div>
+
                                     <div class="grid-item">
-                                        <div class="label">Time (Tórshavn)</div>
-                                        <div class="value" id="onboard-time" style="font-size:1.5rem">--:--</div>
-                                        <div class="sub-value">GMT</div>
+                                        <div class="label">Course</div>
+                                        <div class="value" id="course-voyage">--°</div>
+                                        <div class="sub-value">Heading</div>
                                     </div>
+
+                                    <div class="grid-item">
+                                        <div class="label">Wind</div>
+                                        <div class="value"><span id="wind-ms">--</span> <span class="unit">m/s</span></div>
+                                        <div class="sub-value"><span id="wind-knots">--</span> kn <span id="wind-dir-text" style="margin-left:4px; font-weight:700; color:#fff;"></span></div>
+                                    </div>
+
+                                    <div class="grid-item">
+                                        <div class="label">Wave Height</div>
+                                        <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
+                                        <div class="sub-value">Significant</div>
+                                    </div>
+
                                     <div class="grid-item">
                                         <div class="label">Distance Left</div>
-                                        <div class="value" id="distance" style="font-size:1.5rem">--</div>
-                                        <div class="sub-value" id="distance-unit">Kilometers</div>
+                                        <div class="value" id="distance">--</div>
+                                        <div class="sub-value" id="distance-unit">Km</div>
                                     </div>
+
                                     <div class="grid-item">
-                                        <div class="label" id="destination-label">Next Destination</div>
-                                        <div class="value" id="destination-voyage" style="font-size:1.5rem">--</div>
-                                        <div class="sub-value" id="eta-voyage">--</div>
+                                        <div class="label">Time (Tórshavn)</div>
+                                        <div class="value" id="onboard-time">--:--</div>
+                                        <div class="sub-value">GMT</div>
                                     </div>
+
+                                </div>
+                                
+                                <div style="margin-top: 20px; text-align:center;">
+                                    <div class="label" style="font-size:0.65rem; color:var(--accent-gold); letter-spacing:1px; margin-bottom:4px; text-transform:uppercase; font-weight:700;">Next Destination</div>
+                                    <div id="destination-voyage" style="font-size:1.3rem; font-weight:600; color:white;">--</div>
+                                    <div id="eta-voyage" style="color:var(--text-muted); font-size:0.9rem; margin-top:4px;">--</div>
                                 </div>
                             </div>
                         </div>`;
                     initializeVoyagePage();
                 } else {
-                    contentContainer.innerHTML = `<div class="page active"><div class="section-header"><h2>${page.title}</h2></div><div class="content-grid">${page.items.map(item => `<div class="item-card">${createImageArea(item.images)}<div class="item-info"><h3>${item.name}</h3>${item.description ? `<p>${item.description}</p>` : ''}${(item.fields || []).length > 0 ? `<div class="fields">${item.fields.map(f => `<div class="field"><strong>${f.label}</strong><span>${f.value}</span></div>`).join('')}</div>` : ''}${createOffers(item.offers)}${createMenu(item.menu)}<div class="button-group">${item.trailerUrl ? `<button onclick="openTrailer('${item.trailerUrl}')" class="item-link-button trailer"><span class="material-icons">play_circle_filled</span> Watch Main Trailer</button>` : ''}${item.link && item.link.url ? `<a href="${item.link.url}" target="_blank" class="item-link-button">${item.link.text}</a>` : ''}${item.secondaryLink && item.secondaryLink.url ? `<a href="${item.secondaryLink.url}" target="_blank" class="item-link-button secondary">${item.secondaryLink.text}</a>` : ''}</div></div></div>`).join('')}</div></div>`;
-                    initializeSlideshows();
+                    // Standard Lister
+                    contentContainer.innerHTML = `<div class="page active" style="padding:24px; padding-top:20px;"><h2>${page.title}</h2>${page.items.map(item => `<div class="item-card"><div class="image-container"><img src="${item.images[0]}" class="item-card-image"></div><div class="item-info"><h3>${item.name}</h3><p>${item.description}</p>${item.link ? `<a href="${item.link.url}" class="item-link-button">${item.link.text}</a>` : ''}</div></div>`).join('')}</div>`;
                 }
-                window.location.hash = pageId;
             }
 
-            async function init() {
+            // Hent Marine Data (Vind/Bølger) fra Open-Meteo Marine API
+            async function fetchMarineData(lat, lon) {
                 try {
-                    const response = await fetch("data.json?v=" + Date.now());
-                    if (!response.ok) throw new Error("Could not load data.");
-                    appData = await response.json();
-                    document.getElementById("header-logo").src = appData.settings.logoUrl;
-                    const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join('');
-                    document.getElementById("bottom-nav").innerHTML = navHtml;
-                    document.querySelectorAll('.nav-item').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }); });
-                    const initialPageId = window.location.hash.substring(1) || appData.categories[0]?.id;
-                    if (initialPageId) renderPage(initialPageId);
-                } catch (error) { console.error(error); contentContainer.innerHTML = `<p>${error.message}</p>`; }
+                    // Bemærk: wind_speed_unit=ms tvinger m/s
+                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=significant_wave_height,wind_wave_direction,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms`;
+                    const response = await fetch(url);
+                    if (!response.ok) return;
+                    const data = await response.json();
+                    
+                    const waveHeight = data.current.significant_wave_height;
+                    const windMs = data.current.wind_speed_10m;
+                    const windDir = data.current.wind_direction_10m;
+                    
+                    // Opdater HTML hvis elementerne findes
+                    const elWave = document.getElementById('wave-height');
+                    const elWindMs = document.getElementById('wind-ms');
+                    const elWindKnots = document.getElementById('wind-knots');
+                    const elWindDir = document.getElementById('wind-dir-text');
+
+                    if(elWave) elWave.innerText = waveHeight !== null ? waveHeight.toFixed(1) : "--";
+                    if(elWindMs) elWindMs.innerText = windMs !== null ? Math.round(windMs) : "--";
+                    
+                    // Beregn Knob (1 m/s = 1.94384 knob)
+                    if(elWindKnots && windMs !== null) elWindKnots.innerText = Math.round(windMs * 1.94384);
+                    
+                    // Sæt retning (f.eks NW)
+                    if(elWindDir && windDir !== null) elWindDir.innerText = getWindDirection(windDir);
+
+                } catch(e) { console.log("Marine data error", e); }
             }
 
-            function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
-            
-            const destinationMap = { 
-                torshavn: { name: "Tórshavn", country: "FO", lat: 62.0080, lon: -6.7705 }, 
-                hirtshals: { name: "Hirtshals", country: "DK", lat: 57.5915, lon: 9.9620 }, 
-                seydisfjord: { name: "Seyðisfjörður", country: "IS", lat: 65.2595, lon: -14.0090 } 
-            };
-
-            function normalizeDestinationName(e) { return e ? e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ð/g, "d").replace(/[^a-z0-9]/g, "") : "" }
-            function haversineDistance(e,t,o,a){const n=6371,r=(o-e)*Math.PI/180,i=(a-t)*Math.PI/180,s=Math.sin(r/2)*Math.sin(r/2)+Math.cos(e*Math.PI/180)*Math.cos(o*Math.PI/180)*Math.sin(i/2)*Math.sin(i/2);return 2*n*Math.atan2(Math.sqrt(s),Math.sqrt(1-s))}
-            function formatETA(e) { if (!e) return null; try { const t = new Date(e); if (isNaN(t.getTime())) return null; const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }); const a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a }; } catch (e) { return null; } }
-            function getWeatherDetails(wCode) { const codeMap = { 0:{desc:'Clear',icon:'01d'}, 1:{desc:'Mainly clear',icon:'02d'}, 2:{desc:'Partly cloudy',icon:'03d'}, 3:{desc:'Overcast',icon:'04d'}, 45:{desc:'Fog',icon:'50d'}, 48:{desc:'Rime fog',icon:'50d'}, 51:{desc:'Light drizzle',icon:'09d'}, 53:{desc:'Drizzle',icon:'09d'}, 55:{desc:'Dense drizzle',icon:'09d'}, 61:{desc:'Slight rain',icon:'10d'}, 63:{desc:'Rain',icon:'10d'}, 65:{desc:'Heavy rain',icon:'10d'}, 71:{desc:'Light snow',icon:'13d'}, 73:{desc:'Snow',icon:'13d'}, 75:{desc:'Heavy snow',icon:'13d'}, 80:{desc:'Light showers',icon:'09d'}, 81:{desc:'Showers',icon:'09d'}, 82:{desc:'Violent showers',icon:'09d'}, 95:{desc:'Thunderstorm',icon:'11d'} }; return codeMap[wCode] || { desc: 'Unknown', icon: '01d' }; }
-
+            // Hent Vejr Data (Temp/Ikon) fra standard API
             async function fetchWeatherData(lat, lon) {
-                 try {
+                try {
                     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto`;
-                    const response = await fetch(url); if (!response.ok) throw new Error("Weather Fail"); const data = await response.json();
-                    const temp = Math.round(data.current.temperature_2m);
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    // Simple weather codes map
                     const wCode = data.current.weathercode;
-                    const { desc, icon } = getWeatherDetails(wCode);
-                    const tempEl = document.getElementById("weather-temp"); if (tempEl) tempEl.textContent = `${temp}°C`;
-                    const descEl = document.getElementById("weather-description"); if (descEl) descEl.textContent = desc;
-                    const weatherIconEl = document.getElementById("weather-icon"); if (weatherIconEl) weatherIconEl.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-                } catch (e) { console.log("Weather error"); }
+                    let desc = "Cloudy"; let icon = "03d";
+                    if(wCode <= 1) { desc = "Clear"; icon = "01d"; }
+                    else if(wCode <= 3) { desc = "Cloudy"; icon = "03d"; }
+                    else if(wCode <= 48) { desc = "Fog"; icon = "50d"; }
+                    else if(wCode <= 67) { desc = "Rain"; icon = "10d"; }
+                    else if(wCode <= 77) { desc = "Snow"; icon = "13d"; }
+                    else { desc = "Storm"; icon = "11d"; }
+
+                    const elTemp = document.getElementById("weather-temp");
+                    const elDesc = document.getElementById("weather-description");
+                    const elIcon = document.getElementById("weather-icon");
+
+                    if(elTemp) elTemp.innerText = Math.round(data.current.temperature_2m) + "°C";
+                    if(elDesc) elDesc.innerText = desc;
+                    if(elIcon) elIcon.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+                } catch(e) { console.log("Weather error"); }
             }
 
-            async function updateShipData(isHomePage = false) {
+            async function updateShipData() {
                 try {
                     const response = await fetch("https://smyrillinewebapi-cec3fkhjh8bbhtd3.northeurope-01.azurewebsites.net/vessel/vessels");
                     const norrona = (await response.json()).find(v => v.vesselName?.toUpperCase() === 'NORRONA');
@@ -344,92 +285,65 @@
 
                     const speedKnots = norrona.position?.speed || 0;
                     const course = Math.round(norrona.position?.course || 0);
-                    const currentDestKey = normalizeDestinationName(norrona.destinationFromAIS.split(",")[0].trim());
-                    const currentDestInfo = destinationMap[currentDestKey] || destinationMap['torshavn'];
-                    const dist = haversineDistance(norrona.position.latitude, norrona.position.longitude, currentDestInfo.lat, currentDestInfo.lon);
-                    const isInPort = speedKnots < 1.0 && dist < 2.0;
+                    const lat = norrona.position.latitude;
+                    const lon = norrona.position.longitude;
 
-                    const headerTextEl = document.getElementById('header-dest-text');
-                    const arrivalTime = formatETA(norrona.etaFromAIS);
-                    let departureTimeRaw = norrona.scheduledDeparture || norrona.etd;
-                    let departureTime = formatETA(departureTimeRaw);
-
-                    if (isInPort) {
-                         if (departureTime) { headerTextEl.innerHTML = `In ${currentDestInfo.name} &bull; Dep. ${departureTime.day} ${departureTime.time}`; } 
-                         else { headerTextEl.innerHTML = `In ${currentDestInfo.name} &bull; Docked`; }
-                    } else {
-                         if (arrivalTime) { headerTextEl.innerHTML = `To ${currentDestInfo.name} &bull; ETA ${arrivalTime.day} ${arrivalTime.time}`; } 
-                         else { headerTextEl.innerHTML = `To ${currentDestInfo.name}`; }
-                    }
-
-                    if (isHomePage) {
-                        if (isInPort) {
-                            document.getElementById('home-dest-label').textContent = "Current Status";
-                            document.getElementById('destination-home').textContent = "In Harbor";
-                            if (departureTime) { document.getElementById('eta-home').textContent = `Departs: ${departureTime.day} ${departureTime.time}`; } 
-                            else { document.getElementById('eta-home').textContent = `Docked in ${currentDestInfo.name}`; }
-                        } else {
-                            document.getElementById('home-dest-label').textContent = "Next Stop";
-                            document.getElementById('destination-home').textContent = currentDestInfo.name;
-                            document.getElementById('eta-home').textContent = arrivalTime ? `${arrivalTime.day}, ${arrivalTime.time}` : '--';
-                        }
-                        document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`; 
-                        document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
-                        document.getElementById('course-home').textContent = `Course: ${course}°`;
-                    } else {
-                        const page = document.querySelector('.voyage-page'); if(!page) return;
-                        document.getElementById("speed-knots").textContent = `${speedKnots} kn`; 
-                        document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`; 
-                        document.getElementById("course-voyage").textContent = `Course: ${course}°`;
-                        document.getElementById("onboard-time").textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
-
-                        if (isInPort) {
-                            document.getElementById("distance").textContent = "Docked"; 
-                            document.getElementById("distance-unit").textContent = `in ${currentDestInfo.name}`;
-                            document.getElementById("destination-label").textContent = "Current Location";
-                            document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                            if (departureTime) { document.getElementById("eta-voyage").textContent = `Departs: ${departureTime.day} ${departureTime.time}`; } 
-                            else { document.getElementById("eta-voyage").textContent = "Arrived"; }
-                        } else {
-                            document.getElementById("distance").textContent = Math.round(dist); 
-                            document.getElementById("distance-unit").textContent = "Kilometers";
-                            document.getElementById("destination-label").textContent = "Next Destination";
-                            document.getElementById("destination-voyage").textContent = currentDestInfo.name;
-                            document.getElementById("eta-voyage").textContent = arrivalTime ? `${arrivalTime.day} ${arrivalTime.time}` : '--';
-                        }
-
-                        if (map) {
-                            const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
-                            const destPos = [currentDestInfo.lat, currentDestInfo.lon];
-                            if (!map.shipMarker) { map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map); } 
+                    // Opdater header status
+                    const destName = norrona.destinationFromAIS.split(",")[0];
+                    document.getElementById('header-dest-text').innerText = "To " + destName;
+                    
+                    // Opdater Voyage felter hvis vi er på siden
+                    if(document.querySelector('.voyage-page')) {
+                        document.getElementById('speed-knots').innerText = speedKnots.toFixed(1);
+                        document.getElementById('speed-kmh').innerText = (speedKnots * 1.852).toFixed(1) + " km/h";
+                        document.getElementById('course-voyage').innerText = course + "°";
+                        document.getElementById('onboard-time').innerText = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
+                        
+                        // Fake distance logic til demo
+                        const destLat = 62.00; const destLon = -6.77; // Tórshavn
+                        const dist = Math.sqrt(Math.pow(destLat - lat, 2) + Math.pow(destLon - lon, 2)) * 111; 
+                        document.getElementById('distance').innerText = Math.round(dist);
+                        document.getElementById('destination-voyage').innerText = destName;
+                        
+                        // Opdater kort
+                        if(map) {
+                            const shipPos = [lat, lon];
+                            if (!map.shipMarker) map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map);
                             else { map.shipMarker.setLatLng(shipPos); map.shipMarker.setIcon(createShipIcon(course)); }
-
-                            if (isInPort) {
-                                if (map.destMarker) { map.removeLayer(map.destMarker); map.destMarker = null; }
-                                if (liveRouteLine) { map.removeLayer(liveRouteLine); liveRouteLine = null; }
-                                map.setView(shipPos, 15);
-                            } else {
-                                if (!map.destMarker) { map.destMarker = L.marker(destPos, { icon: pinIcon }).addTo(map); } 
-                                else { map.destMarker.setLatLng(destPos); }
-                                if (liveRouteLine) { map.removeLayer(liveRouteLine); }
-                                liveRouteLine = L.polyline([shipPos, destPos], { color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity: 0.9 }).addTo(map);
-                                map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] }); // Reduced padding for better mobile view
+                            if(!liveRouteLine) {
+                                liveRouteLine = L.polyline([shipPos, [destLat, destLon]], {color: '#00f2ff', weight: 3, dashArray: '10, 10', opacity:0.8}).addTo(map);
+                                map.setView(shipPos, 6);
                             }
                         }
-                        fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon);
+
+                        // Kald Marine API for Bølger & Vind (VIGTIGT: Kun hvert 5. minut normalt, her hver gang for demo)
+                        fetchMarineData(lat, lon);
+                        // Kald Vejr API for Destination (Tórshavn)
+                        fetchWeatherData(destLat, destLon); 
                     }
+
                 } catch(e) { console.log(e); }
             }
 
             function initializeVoyagePage() {
                 if (map) { map.remove(); map = null; }
-                map = L.map("map", { zoomControl: !1, attributionControl: !1, renderer: L.canvas() }).setView([60.0, -2.0], 5);
-                L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { attribution: "", subdomains: "abcd" }).addTo(map);
-                const detailedRoute = [[57.59, 9.96], [57.80, 8.90], [58.20, 5.50], [59.50, 2.00],[60.85, -0.83], [61.50, -3.50], [62.01, -6.77], [62.50, -8.00],[64.00, -11.50], [65.10, -13.00], [65.26, -14.01]];
-                L.polyline(detailedRoute, { color: '#ffffff', weight: 1, dashArray: '5, 15', opacity: 0.2 }).addTo(map);
+                map = L.map("map", { zoomControl: false, attributionControl: false }).setView([62.0, -6.0], 5);
+                L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", { subdomains: "abcd" }).addTo(map);
                 updateShipData();
             }
-            setInterval(updateShipData, 60000); setInterval(updateHeaderTime, 1000); init();
+
+            // Init
+            async function init() {
+                const res = await fetch("data.json");
+                appData = await res.json();
+                document.getElementById("header-logo").src = appData.settings.logoUrl;
+                document.getElementById("bottom-nav").innerHTML = appData.categories.map(cat => `<a href="#" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join('');
+                document.querySelectorAll('.nav-item').forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }));
+                
+                setInterval(updateShipData, 60000); 
+                renderPage('voyage'); // Start på voyage
+            }
+            init();
         });
     </script>
 </body>
