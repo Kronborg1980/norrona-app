@@ -140,12 +140,11 @@
                 document.querySelectorAll('.nav-item').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
                 
                 if (page.type === 'home') {
-                    // Simpel Home (kan udvides)
                     const hero = page.items[0];
                     contentContainer.innerHTML = `<div class="page active" style="padding:24px; padding-top:100px; text-align:center;"><h2>${hero.name}</h2><p>${hero.description}</p></div>`;
                 } 
                 else if (page.type === 'voyage') {
-                    // --- VOYAGE SIDE MED WIND/WAVES ---
+                    // --- VOYAGE SIDE ---
                     contentContainer.innerHTML = `
                         <div class="page active voyage-page" style="padding:0">
                             <div class="voyage-map-container">
@@ -213,50 +212,35 @@
                         </div>`;
                     initializeVoyagePage();
                 } else {
-                    // Standard Lister
                     contentContainer.innerHTML = `<div class="page active" style="padding:24px; padding-top:20px;"><h2>${page.title}</h2>${page.items.map(item => `<div class="item-card"><div class="image-container"><img src="${item.images[0]}" class="item-card-image"></div><div class="item-info"><h3>${item.name}</h3><p>${item.description}</p>${item.link ? `<a href="${item.link.url}" class="item-link-button">${item.link.text}</a>` : ''}</div></div>`).join('')}</div>`;
                 }
             }
 
-            // Hent Marine Data (Vind/Bølger) fra Open-Meteo Marine API
-            async function fetchMarineData(lat, lon) {
+            // Henter KUN Bølger (Marine API) - Kan fejle hvis tæt på land, men crasher ikke
+            async function fetchWaveData(lat, lon) {
                 try {
-                    // Bemærk: wind_speed_unit=ms tvinger m/s
-                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=significant_wave_height,wind_wave_direction,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms`;
+                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=significant_wave_height`;
                     const response = await fetch(url);
                     if (!response.ok) return;
                     const data = await response.json();
                     
                     const waveHeight = data.current.significant_wave_height;
-                    const windMs = data.current.wind_speed_10m;
-                    const windDir = data.current.wind_direction_10m;
-                    
-                    // Opdater HTML hvis elementerne findes
                     const elWave = document.getElementById('wave-height');
-                    const elWindMs = document.getElementById('wind-ms');
-                    const elWindKnots = document.getElementById('wind-knots');
-                    const elWindDir = document.getElementById('wind-dir-text');
+                    if(elWave && waveHeight !== null) elWave.innerText = waveHeight.toFixed(1);
+                    else if(elWave) elWave.innerText = "0.0"; // Hvis null (ingen data/roligt vand)
 
-                    if(elWave) elWave.innerText = waveHeight !== null ? waveHeight.toFixed(1) : "--";
-                    if(elWindMs) elWindMs.innerText = windMs !== null ? Math.round(windMs) : "--";
-                    
-                    // Beregn Knob (1 m/s = 1.94384 knob)
-                    if(elWindKnots && windMs !== null) elWindKnots.innerText = Math.round(windMs * 1.94384);
-                    
-                    // Sæt retning (f.eks NW)
-                    if(elWindDir && windDir !== null) elWindDir.innerText = getWindDirection(windDir);
-
-                } catch(e) { console.log("Marine data error", e); }
+                } catch(e) { console.log("Wave data error", e); }
             }
 
-            // Hent Vejr Data (Temp/Ikon) fra standard API
-            async function fetchWeatherData(lat, lon) {
+            // Henter Vejr + VIND (Standard API - Mere stabil)
+            async function fetchWeatherAndWind(lat, lon) {
                 try {
-                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto`;
+                    // Vi henter både vejr (til topbaren) OG vind (til boksen) her
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&temperature_unit=celsius`;
                     const response = await fetch(url);
                     const data = await response.json();
                     
-                    // Simple weather codes map
+                    // 1. Opdater Vejr (Ikon + Temp)
                     const wCode = data.current.weathercode;
                     let desc = "Cloudy"; let icon = "03d";
                     if(wCode <= 1) { desc = "Clear"; icon = "01d"; }
@@ -274,7 +258,21 @@
                     if(elDesc) elDesc.innerText = desc;
                     if(elIcon) elIcon.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
-                } catch(e) { console.log("Weather error"); }
+                    // 2. Opdater Vind (Nu henter vi den herfra, da vi ved denne API virker)
+                    const windMs = data.current.wind_speed_10m;
+                    const windDir = data.current.wind_direction_10m;
+                    
+                    const elWindMs = document.getElementById('wind-ms');
+                    const elWindKnots = document.getElementById('wind-knots');
+                    const elWindDir = document.getElementById('wind-dir-text');
+
+                    if(elWindMs && windMs !== null) {
+                         elWindMs.innerText = Math.round(windMs);
+                         if(elWindKnots) elWindKnots.innerText = Math.round(windMs * 1.94384); // Omregn til Knob
+                         if(elWindDir) elWindDir.innerText = getWindDirection(windDir);
+                    }
+
+                } catch(e) { console.log("Weather error", e); }
             }
 
             async function updateShipData() {
@@ -292,14 +290,14 @@
                     const destName = norrona.destinationFromAIS.split(",")[0];
                     document.getElementById('header-dest-text').innerText = "To " + destName;
                     
-                    // Opdater Voyage felter hvis vi er på siden
+                    // Opdater Voyage felter KUN hvis vi er på siden
                     if(document.querySelector('.voyage-page')) {
                         document.getElementById('speed-knots').innerText = speedKnots.toFixed(1);
                         document.getElementById('speed-kmh').innerText = (speedKnots * 1.852).toFixed(1) + " km/h";
                         document.getElementById('course-voyage').innerText = course + "°";
                         document.getElementById('onboard-time').innerText = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
                         
-                        // Fake distance logic til demo
+                        // Demo distance (kan erstattes med rigtig beregning)
                         const destLat = 62.00; const destLon = -6.77; // Tórshavn
                         const dist = Math.sqrt(Math.pow(destLat - lat, 2) + Math.pow(destLon - lon, 2)) * 111; 
                         document.getElementById('distance').innerText = Math.round(dist);
@@ -316,10 +314,11 @@
                             }
                         }
 
-                        // Kald Marine API for Bølger & Vind (VIGTIGT: Kun hvert 5. minut normalt, her hver gang for demo)
-                        fetchMarineData(lat, lon);
-                        // Kald Vejr API for Destination (Tórshavn)
-                        fetchWeatherData(destLat, destLon); 
+                        // LØSNING: Vi bruger positionen til at hente data
+                        // Hent Vejr + Vind (Standard API)
+                        fetchWeatherAndWind(lat, lon);
+                        // Hent Bølger (Marine API)
+                        fetchWaveData(lat, lon);
                     }
 
                 } catch(e) { console.log(e); }
@@ -341,7 +340,7 @@
                 document.querySelectorAll('.nav-item').forEach(l => l.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }));
                 
                 setInterval(updateShipData, 60000); 
-                renderPage('voyage'); // Start på voyage
+                renderPage('voyage');
             }
             init();
         });
