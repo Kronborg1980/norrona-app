@@ -216,69 +216,47 @@
                 }
             }
 
-            // --- EKSTREM ROBUST MARINE DATA LØSNING ---
+            // --- FIXED: Use 'wave_height' (supported in current) instead of 'significant_wave_height' ---
             async function fetchMarineData(lat, lon) {
                 try {
-                    // Vi anmoder KUN om 'hourly' data, da 'current' kan være upålidelig for havmodeller pga 3-timers intervaller
-                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=significant_wave_height,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&timeformat=unixtime&timezone=auto`;
+                    // CORRECT URL: using 'wave_height' in current as per Grok/Open-Meteo documentation
+                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height,wind_wave_direction,wind_speed_10m,wind_direction_10m&hourly=wave_height&wind_speed_unit=ms&timeformat=unixtime`;
                     
                     const response = await fetch(url);
                     if (!response.ok) return; 
                     const data = await response.json();
                     
-                    // Find det index i hourly data, der er tættest på lige nu
-                    const now = Math.floor(Date.now() / 1000);
-                    let closestIndex = 0;
-                    let minDiff = Infinity;
+                    // --- BØLGER ---
+                    // Now trying 'wave_height' which should exist
+                    let waveHeight = data.current?.wave_height;
                     
-                    if (data.hourly && data.hourly.time) {
-                        for(let i=0; i < data.hourly.time.length; i++) {
-                            // Vi kigger kun 12 timer frem/tilbage for at undgå fejl
-                            let diff = Math.abs(data.hourly.time[i] - now);
-                            if(diff < minDiff) { 
-                                minDiff = diff; 
-                                closestIndex = i; 
-                            }
+                    // Fallback to hourly if current is strangely missing
+                    if ((waveHeight === null || waveHeight === undefined) && data.hourly?.wave_height) {
+                        const now = Math.floor(Date.now() / 1000);
+                        let closestIndex = 0;
+                        let minDiff = Infinity;
+                        for (let i = 0; i < data.hourly.time.length; i++) {
+                            const diff = Math.abs(data.hourly.time[i] - now);
+                            if (diff < minDiff) { minDiff = diff; closestIndex = i; }
                         }
+                        waveHeight = data.hourly.wave_height[closestIndex];
                     }
 
-                    // --- BØLGER ---
-                    let waveHeight = null;
-                    if (data.hourly && data.hourly.significant_wave_height) {
-                         // Prøv det nærmeste index
-                         waveHeight = data.hourly.significant_wave_height[closestIndex];
-                         
-                         // Hvis null, søg bagud indtil vi finder noget (fallback)
-                         if (waveHeight === null) {
-                             for(let j = closestIndex; j >= 0; j--) {
-                                 if (data.hourly.significant_wave_height[j] !== null) {
-                                     waveHeight = data.hourly.significant_wave_height[j];
-                                     break;
-                                 }
-                             }
-                         }
-                    }
-                    
                     const elWave = document.getElementById('wave-height');
                     if(elWave) {
-                        if (waveHeight !== null) elWave.innerText = Number(waveHeight).toFixed(1);
-                        else elWave.innerText = "0.0"; // Hvis alt fejler, antag 0 bølger
+                        if (waveHeight !== null && waveHeight !== undefined) elWave.innerText = Number(waveHeight).toFixed(1);
+                        else elWave.innerText = "--"; 
                     }
 
-                    // --- VIND (Fra Marine API) ---
-                    let windMs = null;
-                    let windDir = null;
-                    
-                    if (data.hourly && data.hourly.wind_speed_10m) {
-                        windMs = data.hourly.wind_speed_10m[closestIndex];
-                        windDir = data.hourly.wind_direction_10m[closestIndex];
-                    }
+                    // --- VIND (Marine Kilde) ---
+                    let windMs = data.current?.wind_speed_10m;
+                    let windDir = data.current?.wind_direction_10m;
 
                     const elWindMs = document.getElementById('wind-ms');
                     const elWindKnots = document.getElementById('wind-knots');
                     const elWindDir = document.getElementById('wind-dir-text');
 
-                    if(elWindMs && windMs !== null) {
+                    if(elWindMs && windMs !== null && windMs !== undefined) {
                          elWindMs.innerText = Math.round(windMs);
                          if(elWindKnots) elWindKnots.innerText = Math.round(windMs * 1.94384);
                          if(elWindDir && windDir !== null) elWindDir.innerText = getWindDirection(windDir);
