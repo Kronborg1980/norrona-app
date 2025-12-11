@@ -216,31 +216,54 @@
                 }
             }
 
-            // --- VIGTIG RETTELSE: Henter Bølger & Vind fra Marine API med 'best_match' model ---
+            // --- NY ROBUST LØSNING: Henter både Current og Hourly som backup ---
             async function fetchMarineData(lat, lon) {
                 try {
-                    // Vi bruger "models=best_match" for at sikre at den finder en model der dækker havet
-                    // Vi henter både bølger og vind herfra, da det er mest præcist på havet
-                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=significant_wave_height,wind_wave_direction,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&models=best_match`;
+                    // Vi beder om 'current' data SAMT 'hourly' data som backup
+                    // Vi bruger ikke 'models=...' da vi lader API'en vælge den bedste (auto)
+                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=significant_wave_height,wind_wave_direction,wind_speed_10m,wind_direction_10m&hourly=significant_wave_height,wind_speed_10m&wind_speed_unit=ms&timeformat=unixtime`;
                     
                     const response = await fetch(url);
-                    if (!response.ok) return; // Stop hvis fejl
-                    
+                    if (!response.ok) return; 
                     const data = await response.json();
                     
-                    // 1. Bølger
-                    const waveHeight = data.current.significant_wave_height;
+                    // --- 1. BØLGER ---
+                    let waveHeight = data.current.significant_wave_height;
+                    
+                    // FALLBACK: Hvis current er null, så find nærmeste time i 'hourly'
+                    if (waveHeight === null && data.hourly && data.hourly.significant_wave_height) {
+                        const now = Math.floor(Date.now() / 1000);
+                        // Find index hvor tiden er tættest på nu
+                        let closestIndex = 0;
+                        let minDiff = Infinity;
+                        for(let i=0; i<data.hourly.time.length; i++) {
+                            let diff = Math.abs(data.hourly.time[i] - now);
+                            if(diff < minDiff) { minDiff = diff; closestIndex = i; }
+                        }
+                        waveHeight = data.hourly.significant_wave_height[closestIndex];
+                    }
+
                     const elWave = document.getElementById('wave-height');
                     if(elWave) {
-                        // Hvis null (ingen data), skriv 0.0 hvis vi er langt ude, ellers --
-                        if (waveHeight !== null) elWave.innerText = waveHeight.toFixed(1);
+                        if (waveHeight !== null) elWave.innerText = Number(waveHeight).toFixed(1);
                         else elWave.innerText = "--"; 
                     }
 
-                    // 2. Vind (Primær kilde)
-                    const windMs = data.current.wind_speed_10m;
-                    const windDir = data.current.wind_direction_10m;
+                    // --- 2. VIND (Marine Kilde) ---
+                    let windMs = data.current.wind_speed_10m;
+                    // Fallback for vind også
+                    if (windMs === null && data.hourly && data.hourly.wind_speed_10m) {
+                         const now = Math.floor(Date.now() / 1000);
+                         let closestIndex = 0;
+                         let minDiff = Infinity;
+                         for(let i=0; i<data.hourly.time.length; i++) {
+                            let diff = Math.abs(data.hourly.time[i] - now);
+                            if(diff < minDiff) { minDiff = diff; closestIndex = i; }
+                        }
+                        windMs = data.hourly.wind_speed_10m[closestIndex];
+                    }
                     
+                    const windDir = data.current.wind_direction_10m;
                     const elWindMs = document.getElementById('wind-ms');
                     const elWindKnots = document.getElementById('wind-knots');
                     const elWindDir = document.getElementById('wind-dir-text');
@@ -248,21 +271,20 @@
                     if(elWindMs && windMs !== null) {
                          elWindMs.innerText = Math.round(windMs);
                          if(elWindKnots) elWindKnots.innerText = Math.round(windMs * 1.94384);
-                         if(elWindDir) elWindDir.innerText = getWindDirection(windDir);
+                         if(elWindDir && windDir !== null) elWindDir.innerText = getWindDirection(windDir);
                     }
 
                 } catch(e) { console.log("Marine data error", e); }
             }
 
-            // Henter Vejr (Skyer/Temp) fra Standard API 
-            // + BACKUP VIND hvis Marine API fejler
+            // Henter Vejr (Skyer/Temp) + Vind Backup
             async function fetchWeatherStandard(lat, lon) {
                 try {
                     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&temperature_unit=celsius`;
                     const response = await fetch(url);
                     const data = await response.json();
                     
-                    // Opdater Ikon + Temp
+                    // Ikon + Temp
                     const wCode = data.current.weathercode;
                     let desc = "Cloudy"; let icon = "03d";
                     if(wCode <= 1) { desc = "Clear"; icon = "01d"; }
@@ -280,7 +302,7 @@
                     if(elDesc) elDesc.innerText = desc;
                     if(elIcon) elIcon.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
-                    // BACKUP VIND: Tjek om Marine API allerede har udfyldt vind. Hvis der står "--", så brug denne data.
+                    // BACKUP VIND: Kun hvis Marine API stadig viser "--"
                     const elWindMs = document.getElementById('wind-ms');
                     if (elWindMs && elWindMs.innerText === "--" && data.current.wind_speed_10m !== null) {
                         const windMs = data.current.wind_speed_10m;
@@ -305,7 +327,7 @@
                     const lat = norrona.position.latitude;
                     const lon = norrona.position.longitude;
 
-                    // Opdater header status
+                    // Header
                     const destName = norrona.destinationFromAIS.split(",")[0];
                     document.getElementById('header-dest-text').innerText = "To " + destName;
                     
@@ -315,12 +337,13 @@
                         document.getElementById('course-voyage').innerText = course + "°";
                         document.getElementById('onboard-time').innerText = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
                         
-                        // Demo distance
-                        const destLat = 62.00; const destLon = -6.77; // Tórshavn
+                        // Distance (demo)
+                        const destLat = 62.00; const destLon = -6.77; 
                         const dist = Math.sqrt(Math.pow(destLat - lat, 2) + Math.pow(destLon - lon, 2)) * 111; 
                         document.getElementById('distance').innerText = Math.round(dist);
                         document.getElementById('destination-voyage').innerText = destName;
                         
+                        // Map
                         if(map) {
                             const shipPos = [lat, lon];
                             if (!map.shipMarker) map.shipMarker = L.marker(shipPos, { icon: createShipIcon(course) }).addTo(map);
@@ -331,9 +354,9 @@
                             }
                         }
 
-                        // HENT DATA (Parallelle kald for hastighed)
-                        fetchMarineData(lat, lon);      // Henter bølger + primær vind
-                        fetchWeatherStandard(lat, lon); // Henter ikon/temp + backup vind
+                        // DATA FETCH
+                        fetchMarineData(lat, lon);
+                        fetchWeatherStandard(lat, lon);
                     }
 
                 } catch(e) { console.log(e); }
