@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Norröna Onboard - Complete</title>
+    <title>Norröna Onboard</title>
     
     <link href="https://unpkg.com/material-icons@1.13.12/iconfont/material-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
@@ -158,7 +158,6 @@
         .item-link-button.secondary { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: #fff; box-shadow: none; }
         .item-link-button.trailer { background: #e11d48; color: white; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3); }
 
-        /* HOME HERO STYLES (Restored) */
         .home-hero { height: 60vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 32px; position: relative; border-radius: 0 0 40px 40px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
         .home-hero-bg { position: absolute; inset: 0; z-index: 1; background-size: cover; background-position: center; animation: slowZoom 24s infinite alternate ease-in-out; }
         .home-hero::after { content: ''; position: absolute; inset: 0; z-index: 2; background: linear-gradient(to top, var(--primary-dark) 10%, rgba(0,40,54,0.8) 35%, rgba(0,40,54,0) 70%); }
@@ -219,7 +218,6 @@
             let map;
             let liveRouteLine = null;
             
-            // Helper from second code block for Wind Direction
             function getWindDirection(degrees) {
                 const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
                 return directions[Math.round(degrees / 45) % 8];
@@ -236,7 +234,6 @@
                 return L.divIcon({ className: 'ship-marker-container', html: `<div style="transform: rotate(${course}deg); width: 30px; height: 30px;">${svg}</div>`, iconSize: [30, 30], iconAnchor: [15, 15] });
             };
 
-            // UI Builders
             function createImageArea(images) { if (!Array.isArray(images) || images.length === 0) return `<div class="image-container" style="display:none"></div>`; if (images.length === 1) return `<div class="image-container"><img src="${images[0]}" class="item-card-image" loading="lazy"></div>`; const slides = images.map((img, i) => `<div class="slide ${i === 0 ? 'active' : ''}"><img src="${img}"></div>`).join(''); const dots = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join(''); return `<div class="image-container"><div class="slideshow" data-total="${images.length}">${slides}<div class="slideshow-nav"><button class="prev">&lt;</button><button class="next">&gt;</button></div><div class="slideshow-dots">${dots}</div></div></div>`; }
             function createMenu(menuItems) { if (!Array.isArray(menuItems) || menuItems.length === 0) return ''; return `<div style="margin-top:24px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;"><h4 style="color:var(--accent-gold); text-transform:uppercase; font-size:0.7rem; font-weight:700; letter-spacing:1px; margin-bottom:12px;">Details / Schedule</h4>${menuItems.map(item => `<div style="display:flex; justify-content:space-between; margin-bottom:14px; align-items:center;"><div style="flex:1; padding-right:10px;"><div style="font-weight:600; font-size:0.95rem; color:#fff;">${item.name}</div>${item.description ? `<div style="font-size:0.8rem; color:rgba(255,255,255,0.5); margin-top:2px;">${item.description}</div>` : ''}</div><div style="display:flex; align-items:center; gap:10px;"><div style="font-weight:600; color:#fff; font-size:0.95rem;">${item.price}</div>${item.trailerUrl ? `<button onclick="openTrailer('${item.trailerUrl}')" style="background:var(--accent-gold); border:none; border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#002836;"><span class="material-icons" style="font-size:18px;">play_arrow</span></button>` : ''}</div></div>`).join('')}</div>`; }
             function createOffers(offers) { if (!Array.isArray(offers) || offers.length === 0) return ''; return `<div class="offer-box"><h4>Special Offers</h4>${offers.map(o => `<div><div class="offer-item">${o.title}</div><div class="offer-desc">${o.description}</div></div>`).join('<br>')}</div>`; }
@@ -250,12 +247,12 @@
                 document.querySelectorAll('.nav-item').forEach(link => link.classList.toggle('active', link.dataset.id === pageId));
                 
                 if (page.type === 'home') {
-                    // --- HOME PAGE (From First Code Block) ---
+                    // --- HOME PAGE (DEFAULT) ---
                     const heroItem = page.items[0] || { images:[], name:'', description:'' };
                     contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero"><div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div><div class="home-hero-content"><h1>${heroItem.name}</h1><p>${heroItem.description}</p></div></div><div style="padding:24px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Stop</div><div class="value" id="destination-home" style="font-size:1.6rem">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Speed & Course</div><div class="value" style="font-size: 1.2rem;"><span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span></div><div class="sub-value" id="course-home">Course: --°</div></div></div></div></div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
-                    // --- VOYAGE PAGE (Merged: First Code Design + Second Code Features) ---
+                    // --- VOYAGE PAGE (Framed Map + Restored Wind/Waves) ---
                     contentContainer.innerHTML = `
                         <div class="page active voyage-page" style="padding:0">
                             <div class="voyage-map-container">
@@ -295,6 +292,7 @@
                                         <div class="value"><span id="wave-height">--</span> <span class="unit">m</span></div>
                                         <div class="sub-value">Significant</div>
                                     </div>
+
                                     <div class="grid-item">
                                         <div class="label">Distance Left</div>
                                         <div class="value" id="distance" style="font-size:1.5rem">--</div>
@@ -325,12 +323,17 @@
                     const navHtml = appData.categories.map(cat => `<a href="#${cat.id}" class="nav-item" data-id="${cat.id}"><span class="material-icons">${cat.icon}</span>${cat.title}</a>`).join('');
                     document.getElementById("bottom-nav").innerHTML = navHtml;
                     document.querySelectorAll('.nav-item').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); renderPage(e.currentTarget.dataset.id); }); });
-                    const initialPageId = window.location.hash.substring(1) || appData.categories[0]?.id;
-                    if (initialPageId) renderPage(initialPageId);
+                    
+                    // --- FORCE DEFAULT TO HOME ---
+                    const initialPageId = window.location.hash.substring(1);
+                    if (initialPageId) {
+                        renderPage(initialPageId);
+                    } else {
+                        renderPage('home'); // Explicit default
+                    }
                 } catch (error) { console.error(error); contentContainer.innerHTML = `<p>${error.message}</p>`; }
             }
 
-            // CLOCK FUNCTION (Restored)
             function updateHeaderTime() { document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Atlantic/Faroe', hour: '2-digit', minute: '2-digit' }); }
             
             const destinationMap = { 
@@ -344,15 +347,14 @@
             function formatETA(e) { if (!e) return null; try { const t = new Date(e); if (isNaN(t.getTime())) return null; const o = t.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Atlantic/Faroe" }); const a = t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: !1, timeZone: "Atlantic/Faroe" }); return { day: o, time: a }; } catch (e) { return null; } }
             function getWeatherDetails(wCode) { const codeMap = { 0:{desc:'Clear',icon:'01d'}, 1:{desc:'Mainly clear',icon:'02d'}, 2:{desc:'Partly cloudy',icon:'03d'}, 3:{desc:'Overcast',icon:'04d'}, 45:{desc:'Fog',icon:'50d'}, 48:{desc:'Rime fog',icon:'50d'}, 51:{desc:'Light drizzle',icon:'09d'}, 53:{desc:'Drizzle',icon:'09d'}, 55:{desc:'Dense drizzle',icon:'09d'}, 61:{desc:'Slight rain',icon:'10d'}, 63:{desc:'Rain',icon:'10d'}, 65:{desc:'Heavy rain',icon:'10d'}, 71:{desc:'Light snow',icon:'13d'}, 73:{desc:'Snow',icon:'13d'}, 75:{desc:'Heavy snow',icon:'13d'}, 80:{desc:'Light showers',icon:'09d'}, 81:{desc:'Showers',icon:'09d'}, 82:{desc:'Violent showers',icon:'09d'}, 95:{desc:'Thunderstorm',icon:'11d'} }; return codeMap[wCode] || { desc: 'Unknown', icon: '01d' }; }
 
-            // NEW: Marine Data Fetch (Waves/Wind)
+            // MARINE API: Only fetching Waves here now, because Wind was flaky
             async function fetchMarineData(lat, lon) {
                 try {
-                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height,wind_speed_10m,wind_direction_10m&hourly=wave_height&wind_speed_unit=ms&timeformat=unixtime`;
+                    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height&hourly=wave_height&timeformat=unixtime`;
                     const response = await fetch(url);
                     if (!response.ok) return; 
                     const data = await response.json();
                     
-                    // Wave Logic
                     let waveHeight = data.current?.wave_height;
                     if ((waveHeight === null || waveHeight === undefined) && data.hourly?.wave_height) {
                         const now = Math.floor(Date.now() / 1000);
@@ -366,9 +368,26 @@
                     const elWave = document.getElementById('wave-height');
                     if(elWave) elWave.innerText = (waveHeight !== null && waveHeight !== undefined) ? Number(waveHeight).toFixed(1) : "--";
 
-                    // Wind Logic
-                    let windMs = data.current?.wind_speed_10m;
-                    let windDir = data.current?.wind_direction_10m;
+                } catch(e) { console.log("Marine data error", e); }
+            }
+
+            // STANDARD API: Fetches Temp AND Wind (More reliable for wind)
+            async function fetchWeatherData(lat, lon) {
+                 try {
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode,wind_speed_10m,wind_direction_10m&wind_speed_unit=ms&temperature_unit=celsius&timezone=auto`;
+                    const response = await fetch(url); if (!response.ok) throw new Error("Weather Fail"); const data = await response.json();
+                    
+                    // Temp
+                    const temp = Math.round(data.current.temperature_2m);
+                    const wCode = data.current.weathercode;
+                    const { desc, icon } = getWeatherDetails(wCode);
+                    const tempEl = document.getElementById("weather-temp"); if (tempEl) tempEl.textContent = `${temp}°C`;
+                    const descEl = document.getElementById("weather-description"); if (descEl) descEl.textContent = desc;
+                    const weatherIconEl = document.getElementById("weather-icon"); if (weatherIconEl) weatherIconEl.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+
+                    // WIND FIX: Fetching it here ensures we get a number
+                    const windMs = data.current.wind_speed_10m;
+                    const windDir = data.current.wind_direction_10m;
                     const elWindMs = document.getElementById('wind-ms');
                     const elWindKnots = document.getElementById('wind-knots');
                     const elWindDir = document.getElementById('wind-dir-text');
@@ -378,20 +397,7 @@
                         if(elWindKnots) elWindKnots.innerText = Math.round(windMs * 1.94384);
                         if(elWindDir && windDir !== null) elWindDir.innerText = getWindDirection(windDir);
                     }
-                } catch(e) { console.log("Marine data error", e); }
-            }
 
-            async function fetchWeatherData(lat, lon) {
-                 try {
-                    // Standard Weather (Clouds/Temp)
-                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weathercode&temperature_unit=celsius&timezone=auto`;
-                    const response = await fetch(url); if (!response.ok) throw new Error("Weather Fail"); const data = await response.json();
-                    const temp = Math.round(data.current.temperature_2m);
-                    const wCode = data.current.weathercode;
-                    const { desc, icon } = getWeatherDetails(wCode);
-                    const tempEl = document.getElementById("weather-temp"); if (tempEl) tempEl.textContent = `${temp}°C`;
-                    const descEl = document.getElementById("weather-description"); if (descEl) descEl.textContent = desc;
-                    const weatherIconEl = document.getElementById("weather-icon"); if (weatherIconEl) weatherIconEl.src = `https://openweathermap.org/img/wn/${icon}@2x.png`;
                 } catch (e) { console.log("Weather error"); }
             }
 
@@ -443,7 +449,7 @@
                         document.getElementById("course-voyage").textContent = `Course: ${course}°`;
                         document.getElementById("onboard-time").textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
 
-                        // Update Marine Data here (Wind/Waves)
+                        // Update Marine Data (Waves)
                         fetchMarineData(norrona.position.latitude, norrona.position.longitude);
 
                         if (isInPort) {
@@ -479,6 +485,7 @@
                                 map.fitBounds(L.latLngBounds(shipPos, destPos), { padding: [20, 20] });
                             }
                         }
+                        // Update Standard Weather (Temp + WIND now)
                         fetchWeatherData(currentDestInfo.lat, currentDestInfo.lon);
                     }
                 } catch(e) { console.log(e); }
