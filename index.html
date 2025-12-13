@@ -131,8 +131,26 @@
             justify-content: center; align-items: center; min-height: 100px;
         }
         .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); opacity: 0.9; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-weight: 700; }
-        .grid-item .value { font-size: 1.3rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
-        .grid-item .unit { font-size: 0.8rem; opacity: 0.6; font-weight: 400; margin-left: 2px; }
+        
+        /* UPDATED VALUE STYLING FOR UNITS */
+        .grid-item .value { font-size: 1.3rem; font-weight: 600; color: #fff; letter-spacing: -0.5px; display: flex; align-items: baseline; justify-content: center; }
+        
+        /* New distinct styling for units (kn, km/h, m/s) */
+        .grid-item .value .unit { 
+            font-size: 0.7rem; 
+            opacity: 0.6; 
+            font-weight: 400; 
+            margin-left: 3px; 
+            text-transform: lowercase;
+        }
+        
+        /* Styling for the pipe | separator */
+        .grid-item .value .separator {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.2);
+            margin: 0 8px;
+        }
         
         .grid-item .sub-value { 
             font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: 300;
@@ -263,7 +281,34 @@
                 if (page.type === 'home') {
                     // --- HOME PAGE (DEFAULT) ---
                     const heroItem = page.items[0] || { images:[], name:'', description:'' };
-                    contentContainer.innerHTML = `<div class="page active" style="padding:0;"><div class="home-hero"><div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div><div class="home-hero-content"><h1>${heroItem.name}</h1><p>${heroItem.description}</p></div></div><div style="padding:24px;"><div class="voyage-grid"><div class="grid-item"><div id="home-dest-label" class="label">Next Stop</div><div class="value" id="destination-home" style="font-size:1.6rem">--</div><div class="sub-value" id="eta-home">--</div></div><div class="grid-item"><div class="label">Speed & Course</div><div class="value" style="font-size: 1.2rem;"><span id="speed-knots-home">--</span> <span class="unit">|</span> <span id="speed-kmh-home">--</span></div><div class="sub-value" id="course-home">Course: --°</div></div></div></div></div>`;
+                    contentContainer.innerHTML = `
+                    <div class="page active" style="padding:0;">
+                        <div class="home-hero">
+                            <div class="home-hero-bg" style="background-image: url(${heroItem.images[0] || ''})"></div>
+                            <div class="home-hero-content">
+                                <h1>${heroItem.name}</h1>
+                                <p>${heroItem.description}</p>
+                            </div>
+                        </div>
+                        <div style="padding:24px;">
+                            <div class="voyage-grid">
+                                <div class="grid-item">
+                                    <div id="home-dest-label" class="label">Next Stop</div>
+                                    <div class="value" id="destination-home" style="font-size:1.6rem">--</div>
+                                    <div class="sub-value" id="eta-home">--</div>
+                                </div>
+                                <div class="grid-item">
+                                    <div class="label">Speed & Course</div>
+                                    <div class="value" style="font-size: 1.2rem;">
+                                        <span id="speed-knots-home">--</span> <span class="unit">kn</span>
+                                        <span class="separator">|</span> 
+                                        <span id="speed-kmh-home">--</span> <span class="unit">km/h</span>
+                                    </div>
+                                    <div class="sub-value" id="course-home">Course: --°</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
                     updateShipData(true);
                 } else if (page.type === 'voyage') {
                     // --- VOYAGE PAGE ---
@@ -287,7 +332,11 @@
                                 <div class="voyage-grid">
                                     <div class="grid-item">
                                         <div class="label">Speed & Course</div>
-                                        <div class="value" style="font-size: 1.2rem;"><span id="speed-knots">--</span> <span class="unit">|</span> <span id="speed-kmh">--</span></div>
+                                        <div class="value" style="font-size: 1.2rem;">
+                                            <span id="speed-knots">--</span> <span class="unit">kn</span>
+                                            <span class="separator">|</span> 
+                                            <span id="speed-kmh">--</span> <span class="unit">km/h</span>
+                                        </div>
                                         <div class="sub-value" id="course-voyage">Course: --°</div>
                                     </div>
                                     <div class="grid-item">
@@ -471,14 +520,16 @@
                             document.getElementById('destination-home').textContent = currentDestInfo.name;
                             document.getElementById('eta-home').textContent = arrivalTime ? `${arrivalTime.day}, ${arrivalTime.time}` : '--';
                         }
-                        document.getElementById('speed-knots-home').textContent = `${speedKnots} kn`; 
-                        document.getElementById('speed-kmh-home').textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`;
+                        // UPDATED SPEED DISPLAY LOGIC FOR HOME
+                        document.getElementById('speed-knots-home').textContent = speedKnots.toFixed(1); 
+                        document.getElementById('speed-kmh-home').textContent = (speedKnots * 1.852).toFixed(1);
                         document.getElementById('course-home').textContent = `Course: ${course}°`;
                     } else {
                         const page = document.querySelector('.voyage-page'); if(!page) return;
                         
-                        document.getElementById("speed-knots").textContent = `${speedKnots}`; 
-                        document.getElementById("speed-kmh").textContent = `${(speedKnots * 1.852).toFixed(1)} km/h`; 
+                        // UPDATED SPEED DISPLAY LOGIC FOR VOYAGE PAGE
+                        document.getElementById("speed-knots").textContent = speedKnots.toFixed(1); 
+                        document.getElementById("speed-kmh").textContent = (speedKnots * 1.852).toFixed(1); 
                         document.getElementById("course-voyage").textContent = `Course: ${course}°`;
                         document.getElementById("onboard-time").textContent = new Date().toLocaleTimeString("en-GB", { timeZone: "Atlantic/Faroe", hour: "2-digit", minute: "2-digit" });
 
