@@ -19,44 +19,42 @@
             --glass-border: rgba(255, 255, 255, 0.15);
             --nav-height: 75px;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background: var(--primary-dark); 
             color: var(--text-main); 
-            min-height: 100vh;
-            background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 70%);
+            background-image: radial-gradient(circle at 50% -20%, var(--primary-brand) 0%, var(--primary-dark) 70%); 
             background-attachment: fixed;
+            min-height: 100vh;
         }
 
-        #app-shell { max-width: 480px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 100px; }
+        #app-shell { max-width: 480px; margin: 0 auto; padding-bottom: 110px; }
         
         /* HEADER */
         .main-header { position: sticky; top: 0; z-index: 100; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 10px 16px; }
-        .navbar { display: flex; align-items: center; justify-content: space-between; height: 50px; gap: 10px; }
-        .navbar .logo-img { height: 28px; width: auto; }
-        .voyage-status { flex: 1; background: rgba(0,0,0,0.4); padding: 8px 12px; border-radius: 50px; border: 1px solid rgba(252, 185, 0, 0.3); color: var(--accent-gold); font-size: 0.7rem; font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .navbar { display: flex; align-items: center; justify-content: space-between; height: 50px; }
+        .logo-img { height: 26px; }
+        .voyage-status { background: rgba(0,0,0,0.4); padding: 8px 14px; border-radius: 50px; border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
 
         /* PAGES */
-        .page { padding: 24px; display: none; animation: fadeIn 0.4s ease-out; }
+        .page { padding: 24px; display: none; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* VOYAGE MAP */
-        #map { width: 100%; height: 40vh; border-radius: 24px; border: 1px solid var(--glass-border); margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-        /* DATA GRID */
+        /* VOYAGE ELEMENTS */
+        #map { width: 100%; height: 35vh; border-radius: 20px; border: 1px solid var(--glass-border); margin-bottom: 20px; }
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .grid-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; text-align: center; backdrop-filter: blur(10px); }
-        .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; font-weight: 700; }
-        .grid-item .value { font-size: 1.4rem; font-weight: 700; color: #fff; }
-        .grid-item .unit { font-size: 0.8rem; opacity: 0.5; font-weight: 400; margin-left: 4px; }
+        .grid-item { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 18px; padding: 18px; text-align: center; }
+        .grid-item .label { font-size: 0.65rem; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 6px; font-weight: 700; }
+        .grid-item .value { font-size: 1.4rem; font-weight: 700; color: #fff; display: flex; align-items: baseline; justify-content: center; }
+        .grid-item .unit { font-size: 0.75rem; opacity: 0.6; margin-left: 4px; font-weight: 400; }
+        .grid-item .sub-value { font-size: 0.8rem; color: var(--text-muted); margin-top: 5px; }
 
         /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 440px; margin: 0 auto; height: 75px; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
-        .nav-item { color: rgba(255,255,255,0.4); text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; width: 65px; height: 100%; transition: 0.3s; position: relative; }
+        .bottom-nav { position: fixed; bottom: 20px; left: 20px; right: 20px; max-width: 440px; margin: 0 auto; height: 75px; background: rgba(0, 40, 54, 0.95); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid var(--glass-border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; }
+        .nav-item { color: rgba(255,255,255,0.4); text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; }
         .nav-item.active { color: #fff; }
-        .nav-item.active .material-icons { color: var(--accent-gold); transform: translateY(-3px); text-shadow: 0 0 10px rgba(252, 185, 0, 0.5); }
+        .nav-item.active .material-icons { color: var(--accent-gold); transform: translateY(-3px); }
         .nav-item .material-icons { font-size: 26px; margin-bottom: 4px; }
     </style>
 </head>
@@ -65,8 +63,8 @@
         <header class="main-header">
             <nav class="navbar">
                 <img id="header-logo" class="logo-img" src="" alt="Norröna">
-                <div class="voyage-status" id="header-dest-text">LOADING VOYAGE...</div>
-                <div id="onboard-time-header" style="font-size: 0.85rem; font-weight: 700; background: var(--glass-bg); padding: 6px 12px; border-radius: 50px; border: 1px solid var(--glass-border);">00:00</div>
+                <div class="voyage-status" id="header-dest-text">SYNCING...</div>
+                <div id="onboard-time-header" style="font-weight: 700;">00:00</div>
             </nav>
         </header>
         <main id="content-container"></main>
@@ -80,18 +78,9 @@
             let appData = {};
             let map;
 
-            // --- MANUAL CONTROL ---
-            // 1. Set to 'true' to force a destination.
-            // 2. Options: 'oslo', 'torshavn', 'hirtshals', 'seydisfjord'
-            const FORCE_DESTINATION = true; 
-            const DESTINATION_KEY = 'oslo'; 
-
-            const destinationMap = { 
-                torshavn: { name: "Tórshavn", lat: 62.008, lon: -6.770 }, 
-                hirtshals: { name: "Hirtshals", lat: 57.591, lon: 9.962 }, 
-                seydisfjord: { name: "Seyðisfjörður", lat: 65.259, lon: -14.009 },
-                oslo: { name: "Oslo", lat: 59.913, lon: 10.752 }
-            };
+            // --- CONFIG ---
+            const FORCE_OSLO = true; 
+            const OSLO_COORDS = { lat: 59.913, lon: 10.752 };
 
             async function updateShipData() {
                 try {
@@ -100,63 +89,57 @@
                     const norrona = vessels.find(v => v.vesselName?.toUpperCase() === 'NORRONA');
                     if (!norrona) return;
 
-                    // Determine Destination
-                    let rawAis = norrona.destinationFromAIS ? norrona.destinationFromAIS.split(",")[0].toLowerCase().trim() : "torshavn";
-                    let finalKey = FORCE_DESTINATION ? DESTINATION_KEY : rawAis;
+                    // Data extracted from live API
+                    const liveSpeedKn = norrona.position?.speed || 0;
+                    const liveSpeedKmh = liveSpeedKn * 1.852;
+                    const liveCourse = Math.round(norrona.position?.course || 0);
+                    const shipLat = norrona.position.latitude;
+                    const shipLon = norrona.position.longitude;
+
+                    // Update UI Elements
+                    document.getElementById('header-dest-text').textContent = "NEXT STOP: OSLO";
                     
-                    // Fallback if the key doesn't exist in our map
-                    const info = destinationMap[finalKey] || destinationMap['torshavn'];
-                    const speed = norrona.position?.speed || 0;
+                    // Update Home Page Elements
+                    if (document.getElementById('dest-home')) document.getElementById('dest-home').textContent = "Oslo";
+                    if (document.getElementById('speed-home')) document.getElementById('speed-home').textContent = liveSpeedKn.toFixed(1);
+                    if (document.getElementById('course-home')) document.getElementById('course-home').textContent = `Course: ${liveCourse}°`;
 
-                    // Update UI elements
-                    const headerText = document.getElementById('header-dest-text');
-                    if (headerText) headerText.textContent = `SAILING TO ${info.name.toUpperCase()}`;
-                    
-                    const destHome = document.getElementById('destination-home');
-                    if (destHome) destHome.textContent = info.name;
-
-                    const speedHome = document.getElementById('speed-home');
-                    if (speedHome) speedHome.textContent = speed.toFixed(1);
-
-                    const speedVoyage = document.getElementById('speed-voyage');
-                    if (speedVoyage) speedVoyage.textContent = speed.toFixed(1);
-
-                    const destVoyage = document.getElementById('destination-voyage');
-                    if (destVoyage) destVoyage.textContent = info.name;
+                    // Update Voyage Page Elements
+                    if (document.getElementById('speed-v-kn')) document.getElementById('speed-v-kn').textContent = liveSpeedKn.toFixed(1);
+                    if (document.getElementById('speed-v-kmh')) document.getElementById('speed-v-kmh').textContent = liveSpeedKmh.toFixed(1);
+                    if (document.getElementById('course-v')) document.getElementById('course-v').textContent = `${liveCourse}°`;
+                    if (document.getElementById('dest-v')) document.getElementById('dest-v').textContent = "Oslo";
 
                     // Update Map
-                    if (map && norrona.position) {
-                        const shipPos = [norrona.position.latitude, norrona.position.longitude];
+                    if (map) {
+                        const shipPos = [shipLat, shipLon];
                         if (!map.shipMarker) {
                             const shipIcon = L.divIcon({
-                                html: `<span class="material-icons" style="color:#FCB900; font-size:30px; text-shadow: 0 0 10px black;">navigation</span>`,
-                                className: 'custom-div-icon',
-                                iconSize: [30, 30],
-                                iconAnchor: [15, 15]
+                                html: `<span class="material-icons" style="color:#FCB900; font-size:30px; transform:rotate(${liveCourse}deg)">navigation</span>`,
+                                className: 'ship-icon', iconSize: [30, 30], iconAnchor: [15, 15]
                             });
                             map.shipMarker = L.marker(shipPos, {icon: shipIcon}).addTo(map);
                         } else {
                             map.shipMarker.setLatLng(shipPos);
                         }
-                        map.panTo(shipPos);
+                        map.setView(shipPos);
                     }
-                } catch(e) { console.error("Data update failed", e); }
+                } catch(e) { console.error("Update fail", e); }
             }
 
             function renderPage(pageId) {
                 const page = appData.categories.find(c => c.id === pageId);
-                if (!page) return;
-
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.id === pageId));
 
                 if (page.type === 'home') {
                     contentContainer.innerHTML = `
                         <div class="page active">
-                            <div style="height:220px; border-radius:24px; background:url(${page.items[0].images[0]}) center/cover; margin-bottom:24px; border:1px solid var(--glass-border);"></div>
+                            <div style="height:200px; border-radius:24px; background:url(${page.items[0].images[0]}) center/cover; margin-bottom:24px;"></div>
                             <div class="voyage-grid">
                                 <div class="grid-item">
-                                    <div class="label">Next Stop</div>
-                                    <div class="value" id="destination-home">--</div>
+                                    <div class="label">Destination</div>
+                                    <div class="value" id="dest-home">Oslo</div>
+                                    <div class="sub-value" id="course-home">--</div>
                                 </div>
                                 <div class="grid-item">
                                     <div class="label">Speed</div>
@@ -170,49 +153,52 @@
                             <div id="map"></div>
                             <div class="voyage-grid">
                                 <div class="grid-item">
-                                    <div class="label">Next Destination</div>
-                                    <div class="value" id="destination-voyage">--</div>
+                                    <div class="label">Speed (Knots)</div>
+                                    <div class="value"><span id="speed-v-kn">--</span><span class="unit">kn</span></div>
                                 </div>
                                 <div class="grid-item">
-                                    <div class="label">Current Speed</div>
-                                    <div class="value"><span id="speed-voyage">--</span><span class="unit">kn</span></div>
+                                    <div class="label">Speed (Kmh)</div>
+                                    <div class="value"><span id="speed-v-kmh">--</span><span class="unit">km/h</span></div>
+                                </div>
+                                <div class="grid-item">
+                                    <div class="label">Course</div>
+                                    <div class="value" id="course-v">--</div>
+                                </div>
+                                <div class="grid-item">
+                                    <div class="label">Destination</div>
+                                    <div class="value" id="dest-v">Oslo</div>
                                 </div>
                             </div>
                         </div>`;
                     if (map) map.remove();
                     map = L.map("map", {zoomControl:false, attributionControl:false}).setView([60, -2], 5);
                     L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png").addTo(map);
-                } else {
-                    contentContainer.innerHTML = `<div class="page active"><h2 style="margin-bottom:15px;">${page.title}</h2><p style="opacity:0.7;">This section is under maintenance.</p></div>`;
                 }
                 updateShipData();
             }
 
             async function init() {
-                try {
-                    const res = await fetch("data.json");
-                    appData = await res.json();
-                    document.getElementById("header-logo").src = appData.settings.logoUrl;
+                const res = await fetch("data.json");
+                appData = await res.json();
+                document.getElementById("header-logo").src = appData.settings.logoUrl;
 
-                    const nav = document.getElementById("bottom-nav");
-                    nav.innerHTML = appData.categories.map(c => `
-                        <a href="#" class="nav-item" data-id="${c.id}">
-                            <span class="material-icons">${c.icon || 'home'}</span>
-                            <span>${c.title}</span>
-                        </a>`).join('');
+                const nav = document.getElementById("bottom-nav");
+                nav.innerHTML = appData.categories.map(c => `
+                    <a href="#" class="nav-item" data-id="${c.id}">
+                        <span class="material-icons">${c.icon || 'home'}</span>
+                        <span>${c.title}</span>
+                    </a>`).join('');
 
-                    nav.querySelectorAll('.nav-item').forEach(i => i.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        renderPage(e.currentTarget.dataset.id);
-                    }));
+                nav.querySelectorAll('.nav-item').forEach(i => i.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    renderPage(e.currentTarget.dataset.id);
+                }));
 
-                    renderPage('home');
-                    setInterval(updateShipData, 30000);
-                    setInterval(() => {
-                        const faroeTime = new Date().toLocaleTimeString('en-GB', {timeZone:'Atlantic/Faroe', hour:'2-digit', minute:'2-digit'});
-                        document.getElementById('onboard-time-header').textContent = faroeTime;
-                    }, 1000);
-                } catch(e) { console.error("Init failed", e); }
+                renderPage('home');
+                setInterval(updateShipData, 10000); // Fast update for smooth data
+                setInterval(() => {
+                    document.getElementById('onboard-time-header').textContent = new Date().toLocaleTimeString('en-GB', {timeZone:'Atlantic/Faroe', hour:'2-digit', minute:'2-digit'});
+                }, 1000);
             }
             init();
         });
