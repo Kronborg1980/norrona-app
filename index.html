@@ -74,26 +74,19 @@
         
         .btn-dept { background: #fff; border: 1px solid var(--border-light); color: var(--primary-navy); justify-content: flex-start; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .btn-dept .material-icons { color: var(--primary-blue); font-size: 28px;}
-        
-        .btn-back { background: transparent; border: none; padding: 5px 0 15px 0; justify-content: flex-start; color: var(--primary-navy); font-size: 1rem; width: auto; margin-bottom: 0; }
-        .btn-back .material-icons { font-size: 1.2rem; }
-
-        .sub-dept-menu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding-left: 15px; border-left: 2px solid var(--border-light); margin-left: 20px; margin-bottom: 10px;}
-        .sub-dept-menu.active { max-height: 500px; margin-bottom: 20px; }
-        .btn-sub { background: #fff; border: 1px solid var(--border-light); padding: 12px; margin-bottom: 8px; color: var(--primary-navy); width: 100%; border-radius: 8px; text-align: left; font-size: 1rem; font-weight: 600;}
 
         /* Form Inputs */
         .form-label { display: block; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px; font-size: 0.95rem; }
         .form-input, .form-select, .form-textarea { width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 12px; font-size: 1rem; margin-bottom: 20px; background: #fff; color: var(--text-dark); font-family: inherit;}
         .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(0,74,89,0.1); }
         .form-textarea { min-height: 120px; resize: vertical; }
-        
-        .photo-upload-box { border: 2px dashed var(--border-light); border-radius: 12px; padding: 25px 20px; text-align: center; cursor: pointer; background: #fafbfc; margin-bottom: 20px; transition: 0.2s; display: flex; flex-direction: column; align-items: center;}
-        .photo-upload-box:active { background: #f0f4f8; }
-        .photo-preview-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 15px; }
-        .photo-thumbnail-wrapper { position: relative; width: 80px; height: 80px; border-radius: 8px; border: 1px solid var(--border-light); overflow: hidden; background: #000; }
-        .photo-thumbnail { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
-        .photo-remove-btn { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); z-index: 10;}
+
+        /* CREW MESS (SOCIAL FEED) STYLES */
+        .mess-post { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .mess-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--bg-light); padding-bottom: 10px; }
+        .mess-name { font-weight: bold; color: var(--primary-navy); font-size: 1.05rem; }
+        .mess-time { font-size: 0.8rem; color: var(--text-muted); }
+        .mess-body { color: var(--text-dark); line-height: 1.5; font-size: 1rem; }
 
         .progress-bar { display: flex; gap: 5px; margin-bottom: 20px; }
         .progress-step { flex: 1; height: 6px; background: var(--border-light); border-radius: 3px; transition: 0.3s;}
@@ -110,17 +103,12 @@
         .spinner { width: 50px; height: 50px; border: 4px solid var(--border-light); border-top-color: var(--primary-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* ==========================================
-           UPDATED VOYAGE STYLES (From Onboard App)
-           ========================================== */
+        /* VOYAGE STYLES */
         #view-voyage { background: var(--primary-navy); min-height: 100vh; padding: 0; }
-        
         .voyage-map-container { position: relative; width: 100%; height: 35vh; z-index: 1; padding: 12px 12px 0 12px; }
         #map { width: 100%; height: 100%; background: #001e29; filter: saturate(0.8) contrast(1.1); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.8); z-index: 1; }
         .map-gradient { position: absolute; bottom: 0; left: 13px; right: 13px; height: 40px; background: linear-gradient(to bottom, transparent, var(--bg-light)); border-radius: 0 0 20px 20px; pointer-events: none; z-index: 2; }
-        
         .voyage-sheet { position: relative; z-index: 10; margin-top: -16px; background: var(--bg-light); border-radius: 24px 24px 0 0; padding: 24px; box-shadow: 0 -10px 30px rgba(0,0,0,0.2); min-height: 60vh; }
-        
         .voyage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .grid-item { background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .grid-item .label { font-size: 0.7rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 800; width: 100%; text-align: center; }
@@ -128,15 +116,11 @@
         .grid-item .value .unit { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-left: 4px; text-transform: lowercase; }
         .grid-item .value .separator { font-size: 1.2rem; font-weight: 300; color: var(--border-light); margin: 0 8px; }
         .grid-item .sub-value { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center;}
-        .wind-dir-badge { background: rgba(251, 185, 0, 0.15); color: var(--accent-gold); padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; border: 1px solid rgba(251, 185, 0, 0.3); }
-
         .weather-strip { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--border-light); border-radius: 16px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.02);}
         .weather-left { display: flex; align-items: center; gap: 15px; }
-        .weather-left img { width: 50px; height: 50px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
         .weather-temp { font-size: 1.8rem; font-weight: 800; color: var(--primary-navy); line-height: 1; }
         .weather-desc { font-size: 0.85rem; color: var(--primary-blue); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; margin-top: 5px; }
         .weather-label { font-size: 0.75rem; color: var(--text-muted); text-align: right; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
-        
         #ship-status-bar { background: rgba(0, 0, 0, 0.4); color: #fff; text-align: center; padding: 10px; font-weight: 800; font-size: 0.9rem; letter-spacing: 1px; border-radius: 50px; margin: 0 auto 10px auto; width: max-content; border: 1px solid rgba(252, 185, 0, 0.25); box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
         .status-dot { display: inline-block; width: 8px; height: 8px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 8px var(--accent-gold); animation: pulseDot 2s infinite; margin-right: 8px; vertical-align: middle;}
         @keyframes pulseDot { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
@@ -146,7 +130,6 @@
         .chat-fab:active { transform: scale(0.95); }
         .chat-minimize-btn { position: absolute; top: -5px; left: -5px; width: 24px; height: 24px; background: var(--border-light); color: var(--primary-navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; z-index: 10000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .chat-minimized-tab { position: fixed; bottom: 35px; right: 0; width: 40px; height: 40px; background: var(--primary-navy); border-radius: 20px 0 0 20px; display: none; align-items: center; justify-content: center; color: var(--accent-gold); cursor: pointer; z-index: 9999; box-shadow: -2px 2px 10px rgba(0,0,0,0.2); border: 1px solid var(--accent-gold); border-right: none; }
-        
         .chat-panel { position: fixed; bottom: 100px; right: 25px; width: 350px; max-width: calc(100vw - 50px); height: 500px; background: #fff; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 9998; display: none; flex-direction: column; border: 1px solid var(--border-light); overflow: hidden; animation: slideUp 0.3s ease; }
         .chat-panel.active { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -155,9 +138,13 @@
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 12px; font-size: 0.95rem; line-height: 1.4; word-wrap: break-word; }
         .msg.ai { background: #fff; border: 1px solid var(--border-light); color: var(--text-dark); align-self: flex-start; border-bottom-left-radius: 2px; }
         .msg.user { background: var(--primary-blue); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-input-area { display: flex; border-top: 1px solid var(--border-light); background: #fff; padding: 10px; }
+        
+        .chat-input-area { display: flex; border-top: 1px solid var(--border-light); background: #fff; padding: 10px; align-items: center; gap: 5px;}
         .chat-input-area input { flex: 1; border: none; padding: 10px; font-size: 1rem; outline: none; background: transparent; }
-        .chat-input-area button { background: var(--accent-gold); color: var(--primary-navy); border: none; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .chat-input-area .btn-icon { background: transparent; color: var(--primary-navy); border: none; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; transition: 0.2s;}
+        .chat-input-area .btn-icon.active-mic { color: var(--danger); animation: pulseDot 1s infinite; background: rgba(229, 62, 62, 0.1); }
+        .chat-input-area .btn-send { background: var(--accent-gold); color: var(--primary-navy); border: none; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        
         .typing-indicator { font-size: 0.8rem; color: var(--text-muted); align-self: flex-start; margin-left: 5px; display: none; }
     </style>
 </head>
@@ -176,6 +163,8 @@
 
     <div id="nav-overlay">
         <a href="#" class="nav-link" onclick="goToView('view-home')"><span class="material-icons">home</span> Dashboard</a>
+        <!-- NYT MENUPUNKT: CREW MESS -->
+        <a href="#" class="nav-link" onclick="openCrewMess()"><span class="material-icons">forum</span> Crew Mess</a>
         <a href="#" class="nav-link" onclick="openVoyage()"><span class="material-icons">explore</span> Voyage & Ship Status</a>
         <a href="#" class="nav-link" onclick="goToView('view-handbook-select')"><span class="material-icons">menu_book</span> Ship Handbook</a>
         <a href="#" class="nav-link" onclick="openQuestionnaire()"><span class="material-icons">fact_check</span> Clearance Assessment</a>
@@ -205,10 +194,33 @@
                     <h2 style="border-bottom: none; margin-bottom: 10px;">Welcome Aboard</h2>
                     <p>The Ship Handbook is your permanent guide. When you are ready, complete your Clearance Assessment.</p>
                     <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToView('view-handbook-select')">Read the Ship Handbook</button>
-                    <button class="btn btn-outline" onclick="openQuestionnaire()">Take Clearance Assessment</button>
+                    <!-- KNAP TIL CREW MESS -->
+                    <button class="btn btn-outline" style="border-color: var(--primary-blue); color: var(--primary-blue);" onclick="openCrewMess()"><span class="material-icons">forum</span> Check Crew Mess</button>
                     <button class="btn btn-danger-outline" style="margin-top: 10px;" onclick="openReporting()"><span class="material-icons">report_problem</span> Report Safety Issue</button>
                 </div>
             </div>
+        </div>
+
+        <!-- ==========================================
+             NYT VIEW: CREW MESS
+             ========================================== -->
+        <div id="view-crew-mess" class="view">
+            <h2 style="display:flex; align-items:center; gap:10px;"><span class="material-icons" style="color:var(--primary-blue); font-size:2rem;">forum</span> Crew Mess</h2>
+            <p>Internal noticeboard. Ask for shift swaps, announce events, or just say hi!</p>
+
+            <div class="card" style="background: rgba(0, 74, 89, 0.05); border: 1px solid rgba(0, 74, 89, 0.2);">
+                <input type="text" id="mess-name" class="form-input" placeholder="Your Name & Dept (e.g. John - Deck)" style="margin-bottom: 10px;">
+                <textarea id="mess-text" class="form-textarea" placeholder="What's happening?..." style="min-height: 80px; margin-bottom: 10px;"></textarea>
+                <button class="btn btn-primary" style="margin-bottom:0;" onclick="submitCrewPost()">Post Message</button>
+            </div>
+
+            <div id="crew-mess-feed">
+                <!-- Posts will be injected here -->
+            </div>
+            
+            <button class="btn btn-outline" style="margin-top: 30px; width: 100%;" onclick="goToView('view-home')">
+                <span class="material-icons">arrow_back</span> Return to Dashboard
+            </button>
         </div>
 
         <div id="view-reporting" class="view">
@@ -232,16 +244,6 @@
 
                 <label class="form-label">Did you take any immediate action?</label>
                 <input type="text" class="form-input" id="report-action" placeholder="e.g. Cleaned up spill, warned others...">
-
-                <label class="form-label">Attach Photos (Optional)</label>
-                
-                <div id="photo-preview-grid" class="photo-preview-grid"></div>
-
-                <div class="photo-upload-box" onclick="document.getElementById('report-photo').click()">
-                    <span class="material-icons" style="font-size: 32px; color: var(--primary-blue); margin-bottom: 5px;">add_a_photo</span>
-                    <span style="font-weight: 600; font-size: 0.9rem; color: var(--primary-navy);">Tap to Add Photo</span>
-                </div>
-                <input type="file" id="report-photo" accept="image/*" capture="environment" style="display:none;" onchange="previewReportPhoto(event)">
             </div>
 
             <button class="btn btn-primary" onclick="submitSafetyReport()" style="background: var(--danger); color: #fff;">
@@ -263,9 +265,6 @@
             </div>
         </div>
 
-        <!-- ==========================================
-             UPDATED VOYAGE VIEW (Integreret fra Onboard)
-             ========================================== -->
         <div id="view-voyage" class="view">
             <div style="padding: 12px 12px 0 12px;">
                 <div id="ship-status-bar"><span class="status-dot"></span> Locating Ship...</div>
@@ -437,8 +436,10 @@
     </div>
     <div class="typing-indicator" id="chat-typing">AI is thinking...</div>
     <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Ask about rules, uniforms..." onkeypress="handleChatEnter(event)">
-        <button onclick="sendChatMessage()"><span class="material-icons">send</span></button>
+        <!-- NYT: MIKROFON KNAP TIL WALKIE-TALKIE -->
+        <button class="btn-icon" id="mic-btn" onclick="toggleVoiceRecording()" title="Hold to speak"><span class="material-icons">mic</span></button>
+        <input type="text" id="chat-input" placeholder="Ask or speak..." onkeypress="handleChatEnter(event)">
+        <button class="btn-send" onclick="sendChatMessage()"><span class="material-icons">send</span></button>
     </div>
 </div>
 
@@ -492,47 +493,89 @@
     }
 
     // ==========================================
+    // CREW MESS LOGIC (SOCIAL FEED)
+    // ==========================================
+    function openCrewMess() {
+        goToView('view-crew-mess');
+        if (!firebaseActive) {
+            document.getElementById('crew-mess-feed').innerHTML = '<p>Offline mode. Cannot load messages.</p>';
+            return;
+        }
+
+        db.ref('crew_mess').on('value', function(snapshot) {
+            var feed = document.getElementById('crew-mess-feed');
+            feed.innerHTML = '';
+            var posts = [];
+            
+            if (snapshot.exists()) {
+                snapshot.forEach(function(child) {
+                    posts.push(child.val());
+                });
+            }
+
+            if (posts.length === 0) {
+                feed.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:20px;">No messages yet. Be the first to post!</p>';
+                return;
+            }
+
+            posts.reverse(); // Vis nyeste indlæg øverst
+            
+            posts.forEach(function(p) {
+                var dateObj = new Date(p.timestamp);
+                var timeString = dateObj.toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + ' ' + dateObj.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+                
+                var postHtml = '<div class="mess-post">';
+                postHtml += '<div class="mess-header">';
+                postHtml += '<div class="mess-name">' + (p.name || 'Anonymous') + '</div>';
+                postHtml += '<div class="mess-time">' + timeString + '</div>';
+                postHtml += '</div>';
+                postHtml += '<div class="mess-body">' + p.message + '</div>';
+                postHtml += '</div>';
+                
+                feed.innerHTML += postHtml;
+            });
+        });
+    }
+
+    function submitCrewPost() {
+        if(!firebaseActive) { alert("Cannot connect to server."); return; }
+        
+        var nameInput = document.getElementById('mess-name');
+        var msgInput = document.getElementById('mess-text');
+        
+        var name = nameInput.value.trim();
+        var msg = msgInput.value.trim();
+
+        if (msg === "") {
+            alert("Please write a message first.");
+            return;
+        }
+
+        var postData = {
+            name: name !== "" ? name : "Crew Member",
+            message: msg,
+            timestamp: new Date().toISOString()
+        };
+
+        db.ref('crew_mess').push(postData).then(function() {
+            msgInput.value = ''; // Ryd kun beskedfeltet, gem navnet til næste gang
+        }).catch(function(error) {
+            alert("Security Error: Database is locked. Please check your Firebase Rules for 'crew_mess'.");
+        });
+    }
+
+
+    // ==========================================
     // MULTI-PHOTO SAFETY REPORTING LOGIC
     // ==========================================
-    var capturedPhotos = []; 
     function openReporting() {
         document.getElementById('report-type').selectedIndex = 0;
         document.getElementById('report-location').value = "";
         document.getElementById('report-desc').value = "";
         document.getElementById('report-action').value = "";
-        capturedPhotos = [];
-        renderPhotoPreviews();
         goToView('view-reporting');
     }
-    function previewReportPhoto(event) {
-        var file = event.target.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var img = new Image();
-                img.onload = function() {
-                    var canvas = document.createElement('canvas');
-                    var MAX_WIDTH = 800; var scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
-                    var ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    var base64 = canvas.toDataURL('image/jpeg', 0.7); 
-                    capturedPhotos.push(base64); renderPhotoPreviews();
-                }
-                img.src = e.target.result;
-            }
-            reader.readAsDataURL(file); event.target.value = ''; 
-        }
-    }
-    function renderPhotoPreviews() {
-        var container = document.getElementById('photo-preview-grid'); container.innerHTML = ""; 
-        capturedPhotos.forEach(function(photoBase64, index) {
-            var wrapper = document.createElement('div'); wrapper.className = "photo-thumbnail-wrapper";
-            var imgEl = document.createElement('img'); imgEl.className = "photo-thumbnail"; imgEl.src = photoBase64;
-            var deleteBtn = document.createElement('div'); deleteBtn.className = "photo-remove-btn"; deleteBtn.innerHTML = "<span class='material-icons'>close</span>";
-            deleteBtn.onclick = function() { capturedPhotos.splice(index, 1); renderPhotoPreviews(); };
-            wrapper.appendChild(imgEl); wrapper.appendChild(deleteBtn); container.appendChild(wrapper);
-        });
-    }
+
     function submitSafetyReport() {
         if(!firebaseActive) { alert("Cannot connect to server."); return; }
         var type = document.getElementById('report-type').value;
@@ -541,7 +584,7 @@
         var action = document.getElementById('report-action').value.trim();
         if (loc === "" || desc === "") { alert("Please fill in Location and Description."); return; }
 
-        var reportData = { timestamp: new Date().toISOString(), type: type, location: loc, description: desc, immediateAction: action, photos: capturedPhotos };
+        var reportData = { timestamp: new Date().toISOString(), type: type, location: loc, description: desc, immediateAction: action };
         document.getElementById("loading-msg").innerText = "Transmitting to Bridge...";
         document.getElementById("loading-sub").innerText = "Securely sending report to Captain.";
         goToView('view-sending');
@@ -631,7 +674,7 @@
     }
 
     // ==========================================
-    // VOYAGE API LOGIC (UPDATED WITH ONBOARD LOGIC)
+    // VOYAGE API LOGIC
     // ==========================================
     var map, liveRouteLine;
     var mapInitialized = false;
@@ -779,14 +822,12 @@
                 if(topStatusBar) topStatusBar.innerHTML = "<span class='status-dot'></span> SAILING TO " + currentDestInfo.name.toUpperCase();
             }
 
-            // Fetch specific API data
             if(norrona.position) {
                 fetchMarineData(norrona.position.latitude, norrona.position.longitude);
                 fetchShipWeather(norrona.position.latitude, norrona.position.longitude);
             }
             fetchDestWeather(currentDestInfo.lat, currentDestInfo.lon);
 
-            // Update Map
             if (map && norrona.position) {
                 const shipPos = [norrona.position.latitude, norrona.position.longitude]; 
                 const destPos = [currentDestInfo.lat, currentDestInfo.lon];
@@ -819,7 +860,7 @@
     }
 
     // ==========================================
-    // GOOGLE GEMINI AI CHAT LOGIC (MED FORSLAGS-FUNKTION)
+    // GOOGLE GEMINI AI CHAT LOGIC (MED WALKIE-TALKIE)
     // ==========================================
     function minimizeChatTab(e) {
         e.stopPropagation();
@@ -828,6 +869,7 @@
             document.getElementById('chat-panel').classList.remove('active');
         }
         document.getElementById('chat-minimized-tab').style.display = 'flex';
+        window.speechSynthesis.cancel(); // Stop med at snakke, hvis man lukker!
     }
 
     function restoreChatTab() {
@@ -841,6 +883,7 @@
         if (panel.classList.contains("active")) {
             panel.classList.remove("active");
             icon.innerText = "chat";
+            window.speechSynthesis.cancel(); // Stop med at snakke, hvis chatten lukkes!
         } else {
             panel.classList.add("active");
             icon.innerText = "close";
@@ -852,11 +895,9 @@
                     }
                 } else if (typeof LIVE_DATA.ai_knowledge === 'string') {
                     extraIntel = LIVE_DATA.ai_knowledge;
-                } else {
-                    extraIntel = "No extra data provided.";
                 }
                 
-                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Do not invent information.\n\nCRITICAL RULE: If you do not have the answer in the text below, you MUST reply starting with exactly this tag: [UNANSWERED]. After the tag, politely say you don't have that information.\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
+                window.aiContext = "You are the 'Norröna Crew Assistant'. Answer questions based STRICTLY on the Handbook AND the Custom Knowledge provided below. Keep answers short and concise. Do not invent information.\n\nCRITICAL RULE: If you do not have the answer in the text below, you MUST reply starting with exactly this tag: [UNANSWERED]. After the tag, politely say you don't have that information.\n\nCustom Knowledge:\n" + extraIntel + "\n\nHandbook Rules:\n" + JSON.stringify(LIVE_DATA.handbook);
                 window.chatHistory = []; 
             }
         }
@@ -867,6 +908,72 @@
     }
 
     var currentUnansweredQuestion = ""; 
+    
+    // --- VOICE TO TEXT LOGIC ---
+    var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recognition = SpeechRecognition ? new SpeechRecognition() : null;
+    var isVoiceRequested = false; // Flag to check if we should read the response out loud
+
+    if (recognition) {
+        recognition.continuous = false;
+        recognition.lang = 'en-US'; // Sæt evt. til 'da-DK' hvis I snakker dansk til den
+        recognition.interimResults = false;
+
+        recognition.onstart = function() {
+            var btn = document.getElementById('mic-btn');
+            btn.classList.add('active-mic');
+            document.getElementById("chat-input").placeholder = "Listening...";
+        };
+
+        recognition.onresult = function(event) {
+            var transcript = event.results[0][0].transcript;
+            document.getElementById('chat-input').value = transcript;
+            isVoiceRequested = true; 
+            sendChatMessage(); // Send automatisk når man er færdig med at tale
+        };
+
+        recognition.onerror = function(e) {
+            console.error("Speech error", e);
+            resetVoiceUI();
+        };
+
+        recognition.onend = function() {
+            resetVoiceUI();
+        }
+    }
+
+    function resetVoiceUI() {
+        var btn = document.getElementById('mic-btn');
+        btn.classList.remove('active-mic');
+        document.getElementById("chat-input").placeholder = "Ask or speak...";
+    }
+
+    function toggleVoiceRecording() {
+        if (!recognition) { 
+            alert('Voice recognition is not supported in your browser (Use Chrome or Safari).'); 
+            return; 
+        }
+        var btn = document.getElementById('mic-btn');
+        if (btn.classList.contains('active-mic')) {
+            recognition.stop();
+        } else {
+            window.speechSynthesis.cancel(); // Stop igangværende tale
+            recognition.start();
+        }
+    }
+
+    function speakAIResponse(text) {
+        if ('speechSynthesis' in window && isVoiceRequested) {
+            // Fjern HTML-tags som <strong> før oplæsning
+            var cleanText = text.replace(/<[^>]*>?/gm, '');
+            var utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = 'en-US'; 
+            utterance.rate = 1.0; 
+            window.speechSynthesis.speak(utterance);
+            isVoiceRequested = false; // Nulstil flag
+        }
+    }
+    // ----------------------------
 
     async function sendChatMessage() {
         var inputEl = document.getElementById("chat-input");
@@ -888,7 +995,7 @@
                     document.getElementById("chat-typing").style.display = "none";
                     addMessage("Assistant", "Thank you! I have sent your suggestion to the Admin for approval.", "ai");
                     currentUnansweredQuestion = ""; 
-                    inputEl.placeholder = "Ask about rules, uniforms...";
+                    inputEl.placeholder = "Ask or speak...";
                     document.getElementById("chat-typing").innerText = "AI is thinking...";
                 }).catch(function(err) {
                     console.error("Firebase write blocked:", err);
@@ -930,6 +1037,9 @@
 
                 addMessage("Assistant", aiReply, "ai");
                 window.chatHistory.push({ "role": "model", "parts": [{ "text": aiReply }] });
+                
+                // LÆS SVARET HØJT, HVIS DET BLEV SPURGT VIA VOICE
+                speakAIResponse(aiReply);
             }
         } catch (error) {
             document.getElementById("chat-typing").style.display = "none";
